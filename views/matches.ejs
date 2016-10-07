@@ -1,0 +1,58 @@
+<% include ../partials/header %>
+<link rel="stylesheet" type="text/css" href="/stylesheets/matches.css">
+
+</head>
+<body>
+  <% if(currentUser){ %>
+    <li><a href="/users/<%= currentUser._id %>/edit">signed in as <%= currentUser.firstName %></a></li>
+    <li><a href="/logout">logout</a></li>
+  <% } %>
+
+  <h1>matches</h1>
+<div class="ui grid container">
+  <div class="sixteen wide column">
+    <div class="ui four stackable cards">
+
+    <% var color = ['blue', 'pink', 'yellow'] %>
+    <% var n = 0 %>
+
+    <% users.forEach(function(user){ %>
+
+      <a class="ui fluid card <%= color[n] %>" href="/users/<%= user._id %>/view">
+          <div class="image">
+            <img src="<%= user.photos[0] %>"/>
+          </div>
+          <div class="content">
+            <div class="info">
+              <h3><%= user.firstName %> <%= user.lastName %></h3>
+              <h4><%= user.city %>, <%= user.country %></h4>
+              <div class="speaks-container">
+                <h5>speaks</h5>
+                  <% user.spokenLanguages.forEach(function(lang, i){ %>
+                      <p><%= lang %></p>
+                  <% }); %>
+              </div>
+              <div class="learning-container">
+                <h5>learning</h5>
+                  <% user.learningLanguages.forEach(function(lang, i){ %>
+                    <p><%= lang %></p>
+                  <% }); %>
+              </div>
+            </div>
+          </div>
+        </a>
+
+      <% if(n >= 2){ %>
+        <% n = 0 %>
+      <% } else { %>
+        <% n++ %>
+      <% } %>
+
+    <% }); %>
+
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="/scripts/matches.js"></script>
+
+<% include ../partials/footer %>

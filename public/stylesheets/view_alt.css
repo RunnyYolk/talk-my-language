@@ -1,0 +1,140 @@
+body, html {
+  background-color: #7CF0FF;
+}
+
+.profile-container {
+  position: relative;
+  margin-top: 40px;
+}
+
+.title-container {
+  text-align: right;
+  display: inline-block;
+  color: white;
+}
+
+h1 {
+  font-family: 'Open Sans', sans-serif;
+  text-align: left;
+  font-weight: 300;
+  letter-spacing: .15em;
+  margin-right: -.15em;
+  font-size: 5em;
+  color: white;
+  text-transform: uppercase;
+}
+
+h2 {
+  text-align: left;
+  margin: 0;
+  font-family: 'Libre Baskerville', serif;
+  text-transform: capitalize;
+  font-size: 1.4em;
+  letter-spacing: 3px;
+}
+
+.image-container {
+  margin-top: 58px;
+}
+
+.info-container {
+  font-weight: 300;
+  font-family: 'Open Sans', sans-serif;
+  margin-top: 33px;
+  padding: 30px;
+  font-size: 1.1em;
+  color: white;
+  background-color: #37D9EE;
+}
+
+.info-container h4 {
+  display: inline-block;
+  font-weight: 400;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.2em;
+  border-bottom: 1px solid;
+  padding-bottom: 3px;
+}
+
+.speaks-wrapper {
+  width: 50%;
+  display: inline-block;
+  overflow: auto;
+  padding-left: 50px;
+}
+
+.learning-wrapper {
+  width: 50%;
+  float: left;
+  display: inline;
+  overflow: auto;
+  padding-right: 50px;
+  border-right: 1px solid;
+}
+
+.spoken-languages {
+  float: right;
+}
+
+.spoken-languages p {
+  text-align: left;
+  font-size: 1.2em;
+  margin-bottom: 5px;
+}
+
+.learning-languages {
+  float: right;
+}
+
+.learning-languages p {
+  text-align: left;
+  font-size: 1.2em;
+  margin-bottom: 5px;
+}
+
+h5  {
+  display: inline-block;
+  position: relative;
+  font-weight: 300;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.2em;
+}
+
+h5 span {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1em;
+  font-weight: 400;
+  border-bottom: 1px solid;
+  padding-bottom: 3px;
+}
+
+.com-method p {
+  text-align: left;
+  font-size: 1.2em;
+  margin-bottom: 5px;
+}
+
+.age-gender {
+  width: 50%;
+  display: block;
+}
+
+.age {
+  border-bottom: 1px solid;
+  padding-bottom: 3px;
+}
+
+.gender {
+  display: inline-block;
+  border-bottom: 1px solid;
+  padding-bottom: 3px;
+}
+
+.com-method {
+  width: 50%;
+  display: inline-block;
+}
+
+.age-gender h5 {
+  margin-left: 0px;
+}

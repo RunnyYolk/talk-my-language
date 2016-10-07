@@ -1,0 +1,92 @@
+<% include ../partials/header %>
+<link rel="stylesheet" type="text/css" href="/stylesheets/view.css">
+<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
+
+</head>
+<body>
+
+  <div class="ui inverted secondary menu">
+  <a class="item">
+    <span class="t">T</span><span class="ml">ML</span>
+  </a>
+  <a class="item">
+    <span>messages</span>
+  </a>
+  <a class="item">
+    <span>friends</span>
+  </a>
+  <% if(currentUser){ %>
+    <a class="item" href="/users/<%= currentUser._id %>/edit">
+      <span><%= currentUser.firstName %></span>
+    </a>
+    <a class="item" href="/logout">
+      <span>logout</span>
+    </a>
+  <% } %>
+</div>
+
+
+  <div class="ui grid container">
+    <div class="ten wide column">
+      <div class="profile-container">
+        <div class="title-container">
+          <h1><%= user.firstName %> <%=user.lastName%></h1>
+          <h2><%= user.city %>, <%= user.country %></h2>
+        </div>
+        <div class="info-container">
+          <div class="speaks-wrapper">
+            <h4>Speaks</h4>
+            <div class="spoken-languages">
+              <% user.spokenLanguages.forEach(function(lang, i){ %>
+                <p><%= lang %></p>
+              <% }); %>
+            </div>
+          </div>
+          <div class="learning-wrapper">
+            <h4>Learning</h4>
+            <div class="learning-languages">
+              <% user.learningLanguages.forEach(function(lang, i){ %>
+                <p><%= lang %></p>
+              <% }); %>
+            </div>
+          </div>
+          <div class="age-gender">
+            <h4>Age</h4>
+            <h5><%= user.age %></h5>
+            <h4>Gender</h4>
+            <h5><%= user.gender %></h5>
+          </div>
+          <div class="com-method">
+            <h4>Communication Methods</h4>
+            <% user.comMethod.forEach(function(com, i){ %>
+              <p><%= com %></p>
+            <% }); %>
+          </div>
+          <div class="info">
+            <p><%= user.info %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="six wide column">
+      <div class="image-container">
+        <div class="ui grid">
+          <div class="one column row">
+            <div class="column">
+              <img class="ui large image" src="<%= user.photos[0] %>" alt="" data-num="<%= 0 %>" />
+            </div>
+          </div>
+          <div class="four column row">
+            <% user.photos.forEach(function(img, i){ %>
+              <% if(i > 0) { %>
+                <div class="column">
+                  <img class="ui wireframe image" src="<%= img %>" alt="" data-num="<%= i %>" />
+                </div>
+              <% } %>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% include ../partials/footer %>

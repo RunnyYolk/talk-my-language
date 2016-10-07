@@ -1,0 +1,652 @@
+<% include ../partials/header %>
+<link rel="stylesheet" type="text/css" href="/stylesheets/register.css">
+
+</head>
+<body>
+  <% if(currentUser){ %>
+    <li><a href="/users/<%= currentUser._id %>/edit">signed in as <%= currentUser.firstName %></a></li>
+    <li><a href="/logout">logout</a></li>
+  <% } %>
+
+    <h1 class="header">join up</h1>
+    <div class="ui four column doubling stackable centered grid container">
+      <form class="ui form" action="/signup" method="post" enctype="multipart/form-data">
+          <div class="two fields">
+            <div class="field">
+              <input type="text" name="fname" placeholder="first name">
+            </div>
+            <div class="field">
+              <input type="text" name="lname" placeholder="last name">
+            </div>
+          </div>
+        <div class="field">
+            <div class="two fields">
+              <div class="field">
+                  <input type="text" name="username">
+              </div>
+              <div class="field">
+                <input type="password" name="password" placeholder="password">
+              </div>
+            </div>
+        </div>
+        <div class="field">
+          <div class="ui selection dropdown">
+            <input type="hidden" name="age">
+            <i class="dropdown icon"></i>
+            <div class="default text">age</div>
+            <div class="menu">
+              <div class="item" data-value="<18">younger than 18</div>
+              <div class="item" data-value="18-25">18-25</div>
+              <div class="item" data-value="25-35">25-35</div>
+              <div class="item" data-value="35-45">35-45</div>
+              <div class="item" data-value="45-55">45-55</div>
+              <div class="item" data-value="55+">55+</div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui selection dropdown">
+            <input type="hidden" name="gender">
+            <i class="dropdown icon"></i>
+            <div class="default text">gender</div>
+            <div class="menu">
+              <div class="item" data-value="male">male</div>
+              <div class="item" data-value="female">female</div>
+              <div class="item" data-value="trans">trans</div>
+              <div class="item" data-value="other">other</div>
+              <div class="item" data-value="prefer not to say">prefer not to say</div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui multiple search selection dropdown">
+            <input type="hidden" name="spokenlanguages" id="selectedItemLists">
+            <i class="dropdown icon"></i>
+            <div class="default text">fluent language or languages</div>
+            <div class="menu">
+              <div class="item" data-value="Afrikaans">Afrikaans</div>
+              <div class="item" data-value="Akan">Akan</div>
+              <div class="item" data-value="Albanian">Albanian</div>
+              <div class="item" data-value="American Sign Language">American Sign Language</div>
+              <div class="item" data-value="Amharic">Amharic</div>
+              <div class="item" data-value="Arabic">Arabic</div>
+              <div class="item" data-value="Arabic (Egyptian)">Arabic (Egyptian)</div>
+              <div class="item" data-value="Arabic (Middle Eastern)">Arabic (Middle Eastern)</div>
+              <div class="item" data-value="Arabic (Moroccan)">Arabic (Moroccan)</div>
+              <div class="item" data-value="Aramaic">Aramaic</div>
+              <div class="item" data-value="Armenian">Armenian</div>
+              <div class="item" data-value="Assamese">Assamese</div>
+              <div class="item" data-value="Assyrian">Assyrian</div>
+              <div class="item" data-value="Aymara">Aymara</div>
+              <div class="item" data-value="Azerbaijani">Azerbaijani</div>
+              <div class="item" data-value="Bahasa (Indonesia)">Bahasa (Indonesia)</div>
+              <div class="item" data-value="Bahasa (Malaysia)">Bahasa (Malaysia)</div>
+              <div class="item" data-value="Bambara">Bambara</div>
+              <div class="item" data-value="Basque">Basque</div>
+              <div class="item" data-value="Belarusian">Belarusian</div>
+              <div class="item" data-value="Bengali">Bengali</div>
+              <div class="item" data-value="Berber">Berber</div>
+              <div class="item" data-value="Bosnian">Bosnian</div>
+              <div class="item" data-value="Breton">Breton</div>
+              <div class="item" data-value="Bulgarian">Bulgarian</div>
+              <div class="item" data-value="Burmese">Burmese</div>
+              <div class="item" data-value="Cambodian (Khmer)">Cambodian (Khmer)</div>
+              <div class="item" data-value="Catalan">Catalan</div>
+              <div class="item" data-value="Cebuano">Cebuano</div>
+              <div class="item" data-value="Chichewa (Nyanja)">Chichewa (Nyanja)</div>
+              <div class="item" data-value="Chinese (Cantonese)">Chinese (Cantonese)</div>
+              <div class="item" data-value="Chinese (Mandarin)">Chinese (Mandarin)</div>
+              <div class="item" data-value="Chinese (other)">Chinese (other)</div>
+              <div class="item" data-value="Creole">Creole</div>
+              <div class="item" data-value="Croatian">Croatian</div>
+              <div class="item" data-value="Czech">Czech</div>
+              <div class="item" data-value="Danish">Danish</div>
+              <div class="item" data-value="Dhivehi (Maldivian)">Dhivehi (Maldivian)</div>
+              <div class="item" data-value="Dutch">Dutch</div>
+              <div class="item" data-value="English">English</div>
+              <div class="item" data-value="Esperanto">Esperanto</div>
+              <div class="item" data-value="Estonian">Estonian</div>
+              <div class="item" data-value="Fijian">Fijian</div>
+              <div class="item" data-value="Filipino (Tagalog)">Filipino (Tagalog)</div>
+              <div class="item" data-value="Finnish">Finnish</div>
+              <div class="item" data-value="French">French</div>
+              <div class="item" data-value="Gaelic (Irish)">Gaelic (Irish)</div>
+              <div class="item" data-value="Gaelic (Scottish)">Gaelic (Scottish)</div>
+              <div class="item" data-value="Galician">Galician</div>
+              <div class="item" data-value="Georgian">Georgian</div>
+              <div class="item" data-value="German">German</div>
+              <div class="item" data-value="Greek">Greek</div>
+              <div class="item" data-value="Greek (Ancient)">Greek (Ancient)</div>
+              <div class="item" data-value="Greenlandic">Greenlandic</div>
+              <div class="item" data-value="Guaraní">Guaraní</div>
+              <div class="item" data-value="Gujarati">Gujarati</div>
+              <div class="item" data-value="Hawaiian">Hawaiian</div>
+              <div class="item" data-value="Hebrew">Hebrew</div>
+              <div class="item" data-value="Hindi">Hindi</div>
+              <div class="item" data-value="Hmong">Hmong</div>
+              <div class="item" data-value="Hungarian">Hungarian</div>
+              <div class="item" data-value="Icelandic">Icelandic</div>
+              <div class="item" data-value="Ido">Ido</div>
+              <div class="item" data-value="Interlingua">Interlingua</div>
+              <div class="item" data-value="International Sign Language">International Sign Language</div>
+              <div class="item" data-value="Italian">Italian</div>
+              <div class="item" data-value="Japanese">Japanese</div>
+              <div class="item" data-value="Japanese sign language">Japanese sign language</div>
+              <div class="item" data-value="Kamilaroi">Kamilaroi</div>
+              <div class="item" data-value="Kannada">Kannada</div>
+              <div class="item" data-value="Kashmiri">Kashmiri</div>
+              <div class="item" data-value="Kazakh">Kazakh</div>
+              <div class="item" data-value="Kikuyu">Kikuyu</div>
+              <div class="item" data-value="Klingon">Klingon</div>
+              <div class="item" data-value="Konkani">Konkani</div>
+              <div class="item" data-value="Korean">Korean</div>
+              <div class="item" data-value="Kurdish">Kurdish</div>
+              <div class="item" data-value="Kurmanji">Kurmanji</div>
+              <div class="item" data-value="Kyrgyz">Kyrgyz</div>
+              <div class="item" data-value="Lao">Lao</div>
+              <div class="item" data-value="Latin">Latin</div>
+              <div class="item" data-value="Latvian">Latvian</div>
+              <div class="item" data-value="Lithuanian">Lithuanian</div>
+              <div class="item" data-value="Luxembourgian">Luxembourgian</div>
+              <div class="item" data-value="Macedonian">Macedonian</div>
+              <div class="item" data-value="Malagasy">Malagasy</div>
+              <div class="item" data-value="Malayalam">Malayalam</div>
+              <div class="item" data-value="Maltese">Maltese</div>
+              <div class="item" data-value="Maori">Maori</div>
+              <div class="item" data-value="Marathi">Marathi</div>
+              <div class="item" data-value="Mongolian">Mongolian</div>
+              <div class="item" data-value="Nepali">Nepali</div>
+              <div class="item" data-value="Newari">Newari</div>
+              <div class="item" data-value="Norwegian">Norwegian</div>
+              <div class="item" data-value="Occitan">Occitan</div>
+              <div class="item" data-value="Oriya">Oriya</div>
+              <div class="item" data-value="Oromo">Oromo</div>
+              <div class="item" data-value="Papiamento">Papiamento</div>
+              <div class="item" data-value="Persian">Persian</div>
+              <div class="item" data-value="Polish">Polish</div>
+              <div class="item" data-value="Portuguese">Portuguese</div>
+              <div class="item" data-value="Punjabi">Punjabi</div>
+              <div class="item" data-value="Pushto (Pashto)">Pushto (Pashto)</div>
+              <div class="item" data-value="Quechua">Quechua</div>
+              <div class="item" data-value="Romanian">Romanian</div>
+              <div class="item" data-value="Romansch">Romansch</div>
+              <div class="item" data-value="Russian">Russian</div>
+              <div class="item" data-value="Sanskrit">Sanskrit</div>
+              <div class="item" data-value="Serbian">Serbian</div>
+              <div class="item" data-value="Shona">Shona</div>
+              <div class="item" data-value="Sindhi">Sindhi</div>
+              <div class="item" data-value="Sinhalese">Sinhalese</div>
+              <div class="item" data-value="Slovak">Slovak</div>
+              <div class="item" data-value="Slovenian">Slovenian</div>
+              <div class="item" data-value="Somali">Somali</div>
+              <div class="item" data-value="Spanish">Spanish</div>
+              <div class="item" data-value="Swahili">Swahili</div>
+              <div class="item" data-value="Swedish">Swedish</div>
+              <div class="item" data-value="Tajik">Tajik</div>
+              <div class="item" data-value="Tamil">Tamil</div>
+              <div class="item" data-value="Telugu">Telugu</div>
+              <div class="item" data-value="Tetum">Tetum</div>
+              <div class="item" data-value="Thai">Thai</div>
+              <div class="item" data-value="Tibetan">Tibetan</div>
+              <div class="item" data-value="Tongan">Tongan</div>
+              <div class="item" data-value="Tswana">Tswana</div>
+              <div class="item" data-value="Turkish">Turkish</div>
+              <div class="item" data-value="Turkmen">Turkmen</div>
+              <div class="item" data-value="Ukrainian">Ukrainian</div>
+              <div class="item" data-value="Urdu">Urdu</div>
+              <div class="item" data-value="Uyghur">Uyghur</div>
+              <div class="item" data-value="Uzbek">Uzbek</div>
+              <div class="item" data-value="Vietnamese">Vietnamese</div>
+              <div class="item" data-value="Welsh">Welsh</div>
+              <div class="item" data-value="Yiddish">Yiddish</div>
+              <div class="item" data-value="Zulu">Zulu</div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui multiple search selection dropdown">
+            <input type="hidden" name="learninglanguages">
+            <i class="dropdown icon"></i>
+            <div class="default text">language or languages you want to practice</div>
+            <div class="menu">
+              <div class="item" data-value="Afrikaans">Afrikaans</div>
+              <div class="item" data-value="Akan">Akan</div>
+              <div class="item" data-value="Albanian">Albanian</div>
+              <div class="item" data-value="American Sign Language">American Sign Language</div>
+              <div class="item" data-value="Amharic">Amharic</div>
+              <div class="item" data-value="Arabic">Arabic</div>
+              <div class="item" data-value="Arabic (Egyptian)">Arabic (Egyptian)</div>
+              <div class="item" data-value="Arabic (Middle Eastern)">Arabic (Middle Eastern)</div>
+              <div class="item" data-value="Arabic (Moroccan)">Arabic (Moroccan)</div>
+              <div class="item" data-value="Aramaic">Aramaic</div>
+              <div class="item" data-value="Armenian">Armenian</div>
+              <div class="item" data-value="Assamese">Assamese</div>
+              <div class="item" data-value="Assyrian">Assyrian</div>
+              <div class="item" data-value="Aymara">Aymara</div>
+              <div class="item" data-value="Azerbaijani">Azerbaijani</div>
+              <div class="item" data-value="Bahasa (Indonesia)">Bahasa (Indonesia)</div>
+              <div class="item" data-value="Bahasa (Malaysia)">Bahasa (Malaysia)</div>
+              <div class="item" data-value="Bambara">Bambara</div>
+              <div class="item" data-value="Basque">Basque</div>
+              <div class="item" data-value="Belarusian">Belarusian</div>
+              <div class="item" data-value="Bengali">Bengali</div>
+              <div class="item" data-value="Berber">Berber</div>
+              <div class="item" data-value="Bosnian">Bosnian</div>
+              <div class="item" data-value="Breton">Breton</div>
+              <div class="item" data-value="Bulgarian">Bulgarian</div>
+              <div class="item" data-value="Burmese">Burmese</div>
+              <div class="item" data-value="Cambodian (Khmer)">Cambodian (Khmer)</div>
+              <div class="item" data-value="Catalan">Catalan</div>
+              <div class="item" data-value="Cebuano">Cebuano</div>
+              <div class="item" data-value="Chichewa (Nyanja)">Chichewa (Nyanja)</div>
+              <div class="item" data-value="Chinese (Cantonese)">Chinese (Cantonese)</div>
+              <div class="item" data-value="Chinese (Mandarin)">Chinese (Mandarin)</div>
+              <div class="item" data-value="Chinese (other)">Chinese (other)</div>
+              <div class="item" data-value="Creole">Creole</div>
+              <div class="item" data-value="Croatian">Croatian</div>
+              <div class="item" data-value="Czech">Czech</div>
+              <div class="item" data-value="Danish">Danish</div>
+              <div class="item" data-value="Dhivehi (Maldivian)">Dhivehi (Maldivian)</div>
+              <div class="item" data-value="Dutch">Dutch</div>
+              <div class="item" data-value="English">English</div>
+              <div class="item" data-value="Esperanto">Esperanto</div>
+              <div class="item" data-value="Estonian">Estonian</div>
+              <div class="item" data-value="Fijian">Fijian</div>
+              <div class="item" data-value="Filipino (Tagalog)">Filipino (Tagalog)</div>
+              <div class="item" data-value="Finnish">Finnish</div>
+              <div class="item" data-value="French">French</div>
+              <div class="item" data-value="Gaelic (Irish)">Gaelic (Irish)</div>
+              <div class="item" data-value="Gaelic (Scottish)">Gaelic (Scottish)</div>
+              <div class="item" data-value="Galician">Galician</div>
+              <div class="item" data-value="Georgian">Georgian</div>
+              <div class="item" data-value="German">German</div>
+              <div class="item" data-value="Greek">Greek</div>
+              <div class="item" data-value="Greek (Ancient)">Greek (Ancient)</div>
+              <div class="item" data-value="Greenlandic">Greenlandic</div>
+              <div class="item" data-value="Guaraní">Guaraní</div>
+              <div class="item" data-value="Gujarati">Gujarati</div>
+              <div class="item" data-value="Hawaiian">Hawaiian</div>
+              <div class="item" data-value="Hebrew">Hebrew</div>
+              <div class="item" data-value="Hindi">Hindi</div>
+              <div class="item" data-value="Hmong">Hmong</div>
+              <div class="item" data-value="Hungarian">Hungarian</div>
+              <div class="item" data-value="Icelandic">Icelandic</div>
+              <div class="item" data-value="Ido">Ido</div>
+              <div class="item" data-value="Interlingua">Interlingua</div>
+              <div class="item" data-value="International Sign Language">International Sign Language</div>
+              <div class="item" data-value="Italian">Italian</div>
+              <div class="item" data-value="Japanese">Japanese</div>
+              <div class="item" data-value="Japanese sign language">Japanese sign language</div>
+              <div class="item" data-value="Kamilaroi">Kamilaroi</div>
+              <div class="item" data-value="Kannada">Kannada</div>
+              <div class="item" data-value="Kashmiri">Kashmiri</div>
+              <div class="item" data-value="Kazakh">Kazakh</div>
+              <div class="item" data-value="Kikuyu">Kikuyu</div>
+              <div class="item" data-value="Klingon">Klingon</div>
+              <div class="item" data-value="Konkani">Konkani</div>
+              <div class="item" data-value="Korean">Korean</div>
+              <div class="item" data-value="Kurdish">Kurdish</div>
+              <div class="item" data-value="Kurmanji">Kurmanji</div>
+              <div class="item" data-value="Kyrgyz">Kyrgyz</div>
+              <div class="item" data-value="Lao">Lao</div>
+              <div class="item" data-value="Latin">Latin</div>
+              <div class="item" data-value="Latvian">Latvian</div>
+              <div class="item" data-value="Lithuanian">Lithuanian</div>
+              <div class="item" data-value="Luxembourgian">Luxembourgian</div>
+              <div class="item" data-value="Macedonian">Macedonian</div>
+              <div class="item" data-value="Malagasy">Malagasy</div>
+              <div class="item" data-value="Malayalam">Malayalam</div>
+              <div class="item" data-value="Maltese">Maltese</div>
+              <div class="item" data-value="Maori">Maori</div>
+              <div class="item" data-value="Marathi">Marathi</div>
+              <div class="item" data-value="Mongolian">Mongolian</div>
+              <div class="item" data-value="Nepali">Nepali</div>
+              <div class="item" data-value="Newari">Newari</div>
+              <div class="item" data-value="Norwegian">Norwegian</div>
+              <div class="item" data-value="Occitan">Occitan</div>
+              <div class="item" data-value="Oriya">Oriya</div>
+              <div class="item" data-value="Oromo">Oromo</div>
+              <div class="item" data-value="Papiamento">Papiamento</div>
+              <div class="item" data-value="Persian">Persian</div>
+              <div class="item" data-value="Polish">Polish</div>
+              <div class="item" data-value="Portuguese">Portuguese</div>
+              <div class="item" data-value="Punjabi">Punjabi</div>
+              <div class="item" data-value="Pushto (Pashto)">Pushto (Pashto)</div>
+              <div class="item" data-value="Quechua">Quechua</div>
+              <div class="item" data-value="Romanian">Romanian</div>
+              <div class="item" data-value="Romansch">Romansch</div>
+              <div class="item" data-value="Russian">Russian</div>
+              <div class="item" data-value="Sanskrit">Sanskrit</div>
+              <div class="item" data-value="Serbian">Serbian</div>
+              <div class="item" data-value="Shona">Shona</div>
+              <div class="item" data-value="Sindhi">Sindhi</div>
+              <div class="item" data-value="Sinhalese">Sinhalese</div>
+              <div class="item" data-value="Slovak">Slovak</div>
+              <div class="item" data-value="Slovenian">Slovenian</div>
+              <div class="item" data-value="Somali">Somali</div>
+              <div class="item" data-value="Spanish">Spanish</div>
+              <div class="item" data-value="Swahili">Swahili</div>
+              <div class="item" data-value="Swedish">Swedish</div>
+              <div class="item" data-value="Tajik">Tajik</div>
+              <div class="item" data-value="Tamil">Tamil</div>
+              <div class="item" data-value="Telugu">Telugu</div>
+              <div class="item" data-value="Tetum">Tetum</div>
+              <div class="item" data-value="Thai">Thai</div>
+              <div class="item" data-value="Tibetan">Tibetan</div>
+              <div class="item" data-value="Tongan">Tongan</div>
+              <div class="item" data-value="Tswana">Tswana</div>
+              <div class="item" data-value="Turkish">Turkish</div>
+              <div class="item" data-value="Turkmen">Turkmen</div>
+              <div class="item" data-value="Ukrainian">Ukrainian</div>
+              <div class="item" data-value="Urdu">Urdu</div>
+              <div class="item" data-value="Uyghur">Uyghur</div>
+              <div class="item" data-value="Uzbek">Uzbek</div>
+              <div class="item" data-value="Vietnamese">Vietnamese</div>
+              <div class="item" data-value="Welsh">Welsh</div>
+              <div class="item" data-value="Yiddish">Yiddish</div>
+              <div class="item" data-value="Zulu">Zulu</div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="box box__input">
+            <input class="box__file" type="file" name="photos" id="file" data-multiple-caption="{count} files selected" multiple />
+            <label for="file"><strong>Choose a file</strong><span class="box__dragndrop"> or drag it here</span>.</label>
+            <button class="box__button" type="submit">Upload</button>
+          </div>
+          <div class="box__uploading">Uploading&hellip;</div>
+          <div class="box__success">Done!</div>
+          <div class="box__error">Error! <span></span>.</div>
+        </div>
+        <div class="field">
+          <label for="info">personal info</label>
+          <textarea name="info" rows="8" cols="40"></textarea>
+        </div>
+        <div class="two fields">
+          <div class="field">
+            <div class="ui search selection dropdown">
+              <input type="hidden" name="country">
+              <i class="dropdown icon"></i>
+              <div class="default text">which country do you live in?</div>
+              <div class="menu">
+                <div class="item" data-value="Afghanistan">Afghanistan</div>
+                <div class="item" data-value="Åland Islands">Åland Islands</div>
+                <div class="item" data-value="Albania">Albania</div>
+                <div class="item" data-value="Algeria">Algeria</div>
+                <div class="item" data-value="American Samoa">American Samoa</div>
+                <div class="item" data-value="Andorra">Andorra</div>
+                <div class="item" data-value="Angola">Angola</div>
+                <div class="item" data-value="Anguilla">Anguilla</div>
+                <div class="item" data-value="Antarctica">Antarctica</div>
+                <div class="item" data-value="Antigua and Barbuda">Antigua and Barbuda</div>
+                <div class="item" data-value="Argentina">Argentina</div>
+                <div class="item" data-value="Armenia">Armenia</div>
+                <div class="item" data-value="Aruba">Aruba</div>
+                <div class="item" data-value="Australia">Australia</div>
+                <div class="item" data-value="Austria">Austria</div>
+                <div class="item" data-value="Azerbaijan">Azerbaijan</div>
+                <div class="item" data-value="Bahamas">Bahamas</div>
+                <div class="item" data-value="Bahrain">Bahrain</div>
+                <div class="item" data-value="Bangladesh">Bangladesh</div>
+                <div class="item" data-value="Barbados">Barbados</div>
+                <div class="item" data-value="Belarus">Belarus</div>
+                <div class="item" data-value="Belgium">Belgium</div>
+                <div class="item" data-value="Belize">Belize</div>
+                <div class="item" data-value="Benin">Benin</div>
+                <div class="item" data-value="Bermuda">Bermuda</div>
+                <div class="item" data-value="Bhutan">Bhutan</div>
+                <div class="item" data-value="Bolivia, Plurinational State of">Bolivia, Plurinational State of</div>
+                <div class="item" data-value="Bonaire, Sint Eustatius and Saba">Bonaire, Sint Eustatius and Saba</div>
+                <div class="item" data-value="Bosnia and Herzegovina">Bosnia and Herzegovina</div>
+                <div class="item" data-value="Botswana">Botswana</div>
+                <div class="item" data-value="Bouvet Island">Bouvet Island</div>
+                <div class="item" data-value="Brazil">Brazil</div>
+                <div class="item" data-value="British Indian Ocean Territory">British Indian Ocean Territory</div>
+                <div class="item" data-value="Brunei Darussalam">Brunei Darussalam</div>
+                <div class="item" data-value="Bulgaria">Bulgaria</div>
+                <div class="item" data-value="Burkina Faso">Burkina Faso</div>
+                <div class="item" data-value="Burundi">Burundi</div>
+                <div class="item" data-value="Cambodia">Cambodia</div>
+                <div class="item" data-value="Cameroon">Cameroon</div>
+                <div class="item" data-value="Canada">Canada</div>
+                <div class="item" data-value="Cape Verde">Cape Verde</div>
+                <div class="item" data-value="Cayman Islands">Cayman Islands</div>
+                <div class="item" data-value="Central African Republic">Central African Republic</div>
+                <div class="item" data-value="Chad">Chad</div>
+                <div class="item" data-value="Chile">Chile</div>
+                <div class="item" data-value="China">China</div>
+                <div class="item" data-value="Christmas Island">Christmas Island</div>
+                <div class="item" data-value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</div>
+                <div class="item" data-value="Colombia">Colombia</div>
+                <div class="item" data-value="Comoros">Comoros</div>
+                <div class="item" data-value="Congo">Congo</div>
+                <div class="item" data-value="Congo, the Democratic Republic of the">Congo, the Democratic Republic of the</div>
+                <div class="item" data-value="Cook Islands">Cook Islands</div>
+                <div class="item" data-value="Costa Rica">Costa Rica</div>
+                <div class="item" data-value="Côte d'Ivoire">Côte d'Ivoire</div>
+                <div class="item" data-value="Croatia">Croatia</div>
+                <div class="item" data-value="Cuba">Cuba</div>
+                <div class="item" data-value="Curaçao">Curaçao</div>
+                <div class="item" data-value="Cyprus">Cyprus</div>
+                <div class="item" data-value="Czech Republic">Czech Republic</div>
+                <div class="item" data-value="Denmark">Denmark</div>
+                <div class="item" data-value="Djibouti">Djibouti</div>
+                <div class="item" data-value="Dominica">Dominica</div>
+                <div class="item" data-value="Dominican Republic">Dominican Republic</div>
+                <div class="item" data-value="Ecuador">Ecuador</div>
+                <div class="item" data-value="Egypt">Egypt</div>
+                <div class="item" data-value="El Salvador">El Salvador</div>
+                <div class="item" data-value="Equatorial Guinea">Equatorial Guinea</div>
+                <div class="item" data-value="Eritrea">Eritrea</div>
+                <div class="item" data-value="Estonia">Estonia</div>
+                <div class="item" data-value="Ethiopia">Ethiopia</div>
+                <div class="item" data-value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</div>
+                <div class="item" data-value="Faroe Islands">Faroe Islands</div>
+                <div class="item" data-value="Fiji">Fiji</div>
+                <div class="item" data-value="Finland">Finland</div>
+                <div class="item" data-value="France">France</div>
+                <div class="item" data-value="French Guiana">French Guiana</div>
+                <div class="item" data-value="French Polynesia">French Polynesia</div>
+                <div class="item" data-value="French Southern Territories">French Southern Territories</div>
+                <div class="item" data-value="Gabon">Gabon</div>
+                <div class="item" data-value="Gambia">Gambia</div>
+                <div class="item" data-value="Georgia">Georgia</div>
+                <div class="item" data-value="Germany">Germany</div>
+                <div class="item" data-value="Ghana">Ghana</div>
+                <div class="item" data-value="Gibraltar">Gibraltar</div>
+                <div class="item" data-value="Greece">Greece</div>
+                <div class="item" data-value="Greenland">Greenland</div>
+                <div class="item" data-value="Grenada">Grenada</div>
+                <div class="item" data-value="Guadeloupe">Guadeloupe</div>
+                <div class="item" data-value="Guam">Guam</div>
+                <div class="item" data-value="Guatemala">Guatemala</div>
+                <div class="item" data-value="Guernsey">Guernsey</div>
+                <div class="item" data-value="Guinea">Guinea</div>
+                <div class="item" data-value="Guinea-Bissau">Guinea-Bissau</div>
+                <div class="item" data-value="Guyana">Guyana</div>
+                <div class="item" data-value="Haiti">Haiti</div>
+                <div class="item" data-value="Heard Island and McDonald Islands">Heard Island and McDonald Islands</div>
+                <div class="item" data-value="Holy See (Vatican City State)">Holy See (Vatican City State)</div>
+                <div class="item" data-value="Honduras">Honduras</div>
+                <div class="item" data-value="Hong Kong">Hong Kong</div>
+                <div class="item" data-value="Hungary">Hungary</div>
+                <div class="item" data-value="Iceland">Iceland</div>
+                <div class="item" data-value="India">India</div>
+                <div class="item" data-value="Indonesia">Indonesia</div>
+                <div class="item" data-value="Iran, Islamic Republic of">Iran, Islamic Republic of</div>
+                <div class="item" data-value="Iraq">Iraq</div>
+                <div class="item" data-value="Ireland">Ireland</div>
+                <div class="item" data-value="Isle of Man">Isle of Man</div>
+                <div class="item" data-value="Israel">Israel</div>
+                <div class="item" data-value="Italy">Italy</div>
+                <div class="item" data-value="Jamaica">Jamaica</div>
+                <div class="item" data-value="Japan">Japan</div>
+                <div class="item" data-value="Jersey">Jersey</div>
+                <div class="item" data-value="Jordan">Jordan</div>
+                <div class="item" data-value="Kazakhstan">Kazakhstan</div>
+                <div class="item" data-value="Kenya">Kenya</div>
+                <div class="item" data-value="Kiribati">Kiribati</div>
+                <div class="item" data-value="Korea, Democratic People's Republic of">Korea, Democratic People's Republic of</div>
+                <div class="item" data-value="Korea, Republic of">Korea, Republic of</div>
+                <div class="item" data-value="Kuwait">Kuwait</div>
+                <div class="item" data-value="Kyrgyzstan">Kyrgyzstan</div>
+                <div class="item" data-value="Lao People's Democratic Republic">Lao People's Democratic Republic</div>
+                <div class="item" data-value="Latvia">Latvia</div>
+                <div class="item" data-value="Lebanon">Lebanon</div>
+                <div class="item" data-value="Lesotho">Lesotho</div>
+                <div class="item" data-value="Liberia">Liberia</div>
+                <div class="item" data-value="Libya">Libya</div>
+                <div class="item" data-value="Liechtenstein">Liechtenstein</div>
+                <div class="item" data-value="Lithuania">Lithuania</div>
+                <div class="item" data-value="Luxembourg">Luxembourg</div>
+                <div class="item" data-value="Macao">Macao</div>
+                <div class="item" data-value="Macedonia, the former Yugoslav Republic of">Macedonia, the former Yugoslav Republic of</div>
+                <div class="item" data-value="Madagascar">Madagascar</div>
+                <div class="item" data-value="Malawi">Malawi</div>
+                <div class="item" data-value="Malaysia">Malaysia</div>
+                <div class="item" data-value="Maldives">Maldives</div>
+                <div class="item" data-value="Mali">Mali</div>
+                <div class="item" data-value="Malta">Malta</div>
+                <div class="item" data-value="Marshall Islands">Marshall Islands</div>
+                <div class="item" data-value="Martinique">Martinique</div>
+                <div class="item" data-value="Mauritania">Mauritania</div>
+                <div class="item" data-value="Mauritius">Mauritius</div>
+                <div class="item" data-value="Mayotte">Mayotte</div>
+                <div class="item" data-value="Mexico">Mexico</div>
+                <div class="item" data-value="Micronesia, Federated States of">Micronesia, Federated States of</div>
+                <div class="item" data-value="Moldova, Republic of">Moldova, Republic of</div>
+                <div class="item" data-value="Monaco">Monaco</div>
+                <div class="item" data-value="Mongolia">Mongolia</div>
+                <div class="item" data-value="Montenegro">Montenegro</div>
+                <div class="item" data-value="Montserrat">Montserrat</div>
+                <div class="item" data-value="Morocco">Morocco</div>
+                <div class="item" data-value="Mozambique">Mozambique</div>
+                <div class="item" data-value="Myanmar">Myanmar</div>
+                <div class="item" data-value="Namibia">Namibia</div>
+                <div class="item" data-value="Nauru">Nauru</div>
+                <div class="item" data-value="Nepal">Nepal</div>
+                <div class="item" data-value="Netherlands">Netherlands</div>
+                <div class="item" data-value="New Caledonia">New Caledonia</div>
+                <div class="item" data-value="New Zealand">New Zealand</div>
+                <div class="item" data-value="Nicaragua">Nicaragua</div>
+                <div class="item" data-value="Niger">Niger</div>
+                <div class="item" data-value="Nigeria">Nigeria</div>
+                <div class="item" data-value="Niue">Niue</div>
+                <div class="item" data-value="Norfolk Island">Norfolk Island</div>
+                <div class="item" data-value="Northern Mariana Islands">Northern Mariana Islands</div>
+                <div class="item" data-value="Norway">Norway</div>
+                <div class="item" data-value="Oman">Oman</div>
+                <div class="item" data-value="Pakistan">Pakistan</div>
+                <div class="item" data-value="Palau">Palau</div>
+                <div class="item" data-value="Palestinian Territory, Occupied">Palestinian Territory, Occupied</div>
+                <div class="item" data-value="Panama">Panama</div>
+                <div class="item" data-value="Papua New Guinea">Papua New Guinea</div>
+                <div class="item" data-value="Paraguay">Paraguay</div>
+                <div class="item" data-value="Peru">Peru</div>
+                <div class="item" data-value="Philippines">Philippines</div>
+                <div class="item" data-value="Pitcairn">Pitcairn</div>
+                <div class="item" data-value="Poland">Poland</div>
+                <div class="item" data-value="Portugal">Portugal</div>
+                <div class="item" data-value="Puerto Rico">Puerto Rico</div>
+                <div class="item" data-value="Qatar">Qatar</div>
+                <div class="item" data-value="Réunion">Réunion</div>
+                <div class="item" data-value="Romania">Romania</div>
+                <div class="item" data-value="Russian Federation">Russian Federation</div>
+                <div class="item" data-value="Rwanda">Rwanda</div>
+                <div class="item" data-value="Saint Barthélemy">Saint Barthélemy</div>
+                <div class="item" data-value="Saint Helena, Ascension and Tristan da Cunha">Saint Helena, Ascension and Tristan da Cunha</div>
+                <div class="item" data-value="Saint Kitts and Nevis">Saint Kitts and Nevis</div>
+                <div class="item" data-value="Saint Lucia">Saint Lucia</div>
+                <div class="item" data-value="Saint Martin (French part)">Saint Martin (French part)</div>
+                <div class="item" data-value="Saint Pierre and Miquelon">Saint Pierre and Miquelon</div>
+                <div class="item" data-value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines</div>
+                <div class="item" data-value="Samoa">Samoa</div>
+                <div class="item" data-value="San Marino">San Marino</div>
+                <div class="item" data-value="Sao Tome and Principe">Sao Tome and Principe</div>
+                <div class="item" data-value="Saudi Arabia">Saudi Arabia</div>
+                <div class="item" data-value="Senegal">Senegal</div>
+                <div class="item" data-value="Serbia">Serbia</div>
+                <div class="item" data-value="Seychelles">Seychelles</div>
+                <div class="item" data-value="Sierra Leone">Sierra Leone</div>
+                <div class="item" data-value="Singapore">Singapore</div>
+                <div class="item" data-value="Sint Maarten (Dutch part)">Sint Maarten (Dutch part)</div>
+                <div class="item" data-value="Slovakia">Slovakia</div>
+                <div class="item" data-value="Slovenia">Slovenia</div>
+                <div class="item" data-value="Solomon Islands">Solomon Islands</div>
+                <div class="item" data-value="Somalia">Somalia</div>
+                <div class="item" data-value="South Africa">South Africa</div>
+                <div class="item" data-value="South Georgia and the South Sandwich Islands">South Georgia and the South Sandwich Islands</div>
+                <div class="item" data-value="South Sudan">South Sudan</div>
+                <div class="item" data-value="Spain">Spain</div>
+                <div class="item" data-value="Sri Lanka">Sri Lanka</div>
+                <div class="item" data-value="Sudan">Sudan</div>
+                <div class="item" data-value="Suriname">Suriname</div>
+                <div class="item" data-value="Svalbard and Jan Mayen">Svalbard and Jan Mayen</div>
+                <div class="item" data-value="Swaziland">Swaziland</div>
+                <div class="item" data-value="Sweden">Sweden</div>
+                <div class="item" data-value="Switzerland">Switzerland</div>
+                <div class="item" data-value="Syrian Arab Republic">Syrian Arab Republic</div>
+                <div class="item" data-value="Taiwan, Province of China">Taiwan, Province of China</div>
+                <div class="item" data-value="Tajikistan">Tajikistan</div>
+                <div class="item" data-value="Tanzania, United Republic of">Tanzania, United Republic of</div>
+                <div class="item" data-value="Thailand">Thailand</div>
+                <div class="item" data-value="Timor-Leste">Timor-Leste</div>
+                <div class="item" data-value="Togo">Togo</div>
+                <div class="item" data-value="Tokelau">Tokelau</div>
+                <div class="item" data-value="Tonga">Tonga</div>
+                <div class="item" data-value="Trinidad and Tobago">Trinidad and Tobago</div>
+                <div class="item" data-value="Tunisia">Tunisia</div>
+                <div class="item" data-value="Turkey">Turkey</div>
+                <div class="item" data-value="Turkmenistan">Turkmenistan</div>
+                <div class="item" data-value="Turks and Caicos Islands">Turks and Caicos Islands</div>
+                <div class="item" data-value="Tuvalu">Tuvalu</div>
+                <div class="item" data-value="Uganda">Uganda</div>
+                <div class="item" data-value="Ukraine">Ukraine</div>
+                <div class="item" data-value="United Arab Emirates">United Arab Emirates</div>
+                <div class="item" data-value="United Kingdom">United Kingdom</div>
+                <div class="item" data-value="United States">United States</div>
+                <div class="item" data-value="United States Minor Outlying Islands">United States Minor Outlying Islands</div>
+                <div class="item" data-value="Uruguay">Uruguay</div>
+                <div class="item" data-value="Uzbekistan">Uzbekistan</div>
+                <div class="item" data-value="Vanuatu">Vanuatu</div>
+                <div class="item" data-value="Venezuela, Bolivarian Republic of">Venezuela, Bolivarian Republic of</div>
+                <div class="item" data-value="Viet Nam">Viet Nam</div>
+                <div class="item" data-value="Virgin Islands, British">Virgin Islands, British</div>
+                <div class="item" data-value="Virgin Islands, U.S.">Virgin Islands, U.S.</div>
+                <div class="item" data-value="Wallis and Futuna">Wallis and Futuna</div>
+                <div class="item" data-value="Western Sahara">Western Sahara</div>
+                <div class="item" data-value="Yemen">Yemen</div>
+                <div class="item" data-value="Zambia">Zambia</div>
+                <div class="item" data-value="Zimbabwe">Zimbabwe</div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <input type="text" name="city" placeholder="town / city">
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui multiple selection dropdown">
+            <input type="hidden" name="commethod">
+            <i class="dropdown icon"></i>
+            <div class="default text">how do you like to communicate</div>
+            <div class="menu">
+              <div class="item" data-value="skype">skype</div>
+              <div class="item" data-value="whatsapp">whatsapp</div>
+              <div class="item" data-value="email">email</div>
+              <div class="item" data-value="face to face">face to face</div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui checkbox">
+            <input type="checkbox" name="terms">
+            <label>I accept the terms and conditions</label>
+          </div>
+        </div>
+        <button class="ui button" type="submit" name="submit">submit</button>
+      </form>
+      <div class="selected-images"></div>
+     </div>
+  <script src="/scripts/register.js"></script>
+<% include ../partials/footer %>

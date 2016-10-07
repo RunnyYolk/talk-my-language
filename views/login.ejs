@@ -1,0 +1,27 @@
+<% include ../partials/header %>
+
+</head>
+<body>
+  <% if(currentUser){ %>
+    <li><a href="/users/<%= currentUser._id %>/edit">signed in as <%= currentUser.firstName %></a></li>
+    <li><a href="/logout">logout</a></li>
+  <% } %>
+
+  <h1>login</h1>
+  <div class="ui four column doubling stackable centered grid container">
+    <form class="ui form" action="/login" method="post">
+      <div class="two fields">
+        <div class="field">
+          <input type="text" name="username">
+        </div>
+        <div class="field">
+          <input type="password" name="password" placeholder="password">
+        </div>
+        <button type="submit" name="button">login</button>
+      </div>
+    </form>
+  </div>
+  <script type="text/javascript" src="scripts/login.js"></script>
+
+
+<% include ../partials/footer %>

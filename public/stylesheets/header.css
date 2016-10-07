@@ -1,0 +1,28 @@
+.ui.inverted.secondary.menu {
+  background-color: #37D9EE;
+  height: 100px;
+}
+
+.ui.inverted.secondary.menu span {
+  font-family: "HelveticaNeue-Ultra-Light", "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 200;
+  color: white;
+  font-size: 1.7em;
+}
+
+.ui.inverted.secondary.menu .t {
+  font-family: "HelveticaNeue-Ultra-Light", "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 500;
+  font-size: 2em;
+  color: white;
+  padding-left: 10px;
+  margin-bottom: -6px;
+}
+
+.ui.inverted.secondary.menu .ml {
+  font-family: 'Galada', cursive;
+  text-transform: capitalize;
+  font-size: 2em;
+  color: white;
+  margin-bottom: -14px;
+}

@@ -1,0 +1,60 @@
+body {
+  background:
+    linear-gradient(
+      rgba(055,217,238,0.7),
+      rgba(055,217,238,0.7)
+      ),
+    url('/stylesheets/front.jpg') no-repeat center top ;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.header {
+  text-align: center;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  color: white;
+  font-weight: 100;
+  padding: 20px;
+  font-size: 3em;
+}
+
+input {
+  background: #FFCF6B;
+}
+
+.box__dragndrop,
+.box__uploading,
+.box__success,
+.box__error {
+  display: none;
+}
+
+.box.has-advanced-upload {
+  background-color: white;
+  outline: 2px dashed black;
+  outline-offset: -10px;
+}
+
+.box.has-advanced-upload .box__dragndrop {
+  display: inline;
+}
+
+.box.is-dragover {
+  background-color: grey;
+}
+
+.box.is-uploading .box__input {
+  visibility: none;
+}
+.box.is-uploading .box__uploading {
+  display: block;
+}
+
+.box__button {
+  display: none;
+}
+.no-js .box__button {
+  display: block;
+}
