@@ -17,6 +17,8 @@ var bodyParser     = require("body-parser"),
     multiparty     = require('multiparty'),
     Promise        = require("bluebird"),
     User           = require('./models/user'),
+    Conversation   = require('./models/conversation'),
+    Message        = require('./models/message'),
     passportLocalMongoose = require('passport-local-mongoose'),
     methodOverride = require("method-override"),
     app = express();
@@ -79,6 +81,8 @@ function isLoggedIn(req, res, next){
   }
   res.redirect('/login');
 }
+
+Conversation.create();
 
 // ROUTES
 
@@ -230,7 +234,6 @@ app.get('/matches', isLoggedIn, function(req, res){
       foundUsers.forEach(function(user){
         loadedProfiles.push(user._id)
       });
-      console.log(req.user);
       res.render('matches', {users:foundUsers, currentUser: req.user});
     }
   });
@@ -252,6 +255,7 @@ app.post('/matches', function(req, res){
   });
 });
 
+//View a user's profile
 app.get('/users/:_id/view', function(req, res){
   User.findById(req.params._id, function(err, foundUser){
     if(err){
@@ -260,6 +264,89 @@ app.get('/users/:_id/view', function(req, res){
       res.render('view', {user: foundUser, currentUser: req.user});
     }
   });
+});
+
+app.post('/messages', function(req, res){
+  var message = { // Create an object with the message data
+    senderId: req.body.senderId,
+    senderName: req.body.senderName,
+    recipientId: req.body.recipientId,
+    recipientName: req.body.recipientName,
+    messageContent: req.body.msgCont,
+    timeSent: Date.now()
+  };
+  Message.create(message, function(err, newMessage){ // Add the message to MongoDB
+    if(err){
+      console.log("===========================================");
+      console.log('Error Creating Message' + Err);
+      console.log("===========================================");
+    } else {
+      console.log("===========================================");
+      console.log("The New Message " + newMessage)
+      console.log("===========================================");
+      // Query DB for conversations with both sender and recipient at participants
+      Conversation.findOne(
+        {$and : [
+        {$or : [
+          {"participants.user1.id" : req.body.senderId},
+          {"participants.user1.id" : req.body.recipientId}
+        ]},
+        {$or : [
+          {"participants.user2.id" : req.body.senderId},
+          {"participants.user2.id" : req.body.recipientId}
+        ]},
+      ]}, function(err, convo){
+        if(err){
+          console.log("===========================================");
+          console.log('Error finding convo ' + err);
+          console.log("===========================================");
+        } else {
+          if(convo == null){
+            var conv = {
+              participants : {
+                "user1" : {
+                  "id" : req.body.senderId,
+                  "username" : req.body.senderName
+                },
+                "user2" : {
+                  "id" : req.body.recipientId,
+                  "username" : req.body.recipientName
+                }
+              },
+              created : Date.now(),
+              messages : [] // The message _id is pushed in later.
+            }
+            console.log("===========================================");
+            console.log("conv variable... " + conv);
+            console.log("===========================================");
+            Conversation.create(conv, function(err, newConvo){
+              if(err){
+                console.log('Error creating new convo ' + err);
+              } else {
+                newConvo.messages.push(newMessage);
+                newConvo.save();
+                console.log("===========================================");
+                console.log("New Convo! " + newConvo);
+                console.log("===========================================");
+              }
+            })
+          } else {
+            console.log("===========================================");
+            console.log('No new convo created. Looks like a match was found');
+            console.log("===========================================");
+            convo.messages.push(newMessage);
+            convo.save();
+          }
+        }
+      });
+      // If returns null
+
+      // Create conversation and add message
+
+      // Else add message to returned conversation
+    }
+  });
+  res.redirect('/matches');
 });
 
 // ======== For Heroku ========

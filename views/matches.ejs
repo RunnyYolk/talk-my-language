@@ -24,8 +24,10 @@
           </div>
           <div class="content">
             <div class="info">
-              <h3><%= user.firstName %> <%= user.lastName %></h3>
-              <h4><%= user.city %>, <%= user.country %></h4>
+              <div class="name-location">
+                <h3><%= user.firstName %> <%= user.lastName %></h3>
+                <h4><%= user.city %>, <%= user.country %></h4>
+              </div>
               <div class="speaks-container">
                 <h5>speaks</h5>
                   <% user.spokenLanguages.forEach(function(lang, i){ %>

@@ -33,39 +33,68 @@
           <h1><%= user.firstName %> <%=user.lastName%></h1>
           <h2><%= user.city %>, <%= user.country %></h2>
         </div>
-        <div class="info-container">
+        <div class="languages-wrapper">
           <div class="speaks-wrapper">
             <h4>Speaks</h4>
             <div class="spoken-languages">
-              <% user.spokenLanguages.forEach(function(lang, i){ %>
-                <p><%= lang %></p>
-              <% }); %>
+              <ul>
+                <% user.spokenLanguages.forEach(function(lang, i){ %>
+                  <li><%= lang %></li>
+                <% }); %>
+              </ul>
             </div>
           </div>
           <div class="learning-wrapper">
             <h4>Learning</h4>
             <div class="learning-languages">
-              <% user.learningLanguages.forEach(function(lang, i){ %>
-                <p><%= lang %></p>
-              <% }); %>
+              <ul>
+                <% user.learningLanguages.forEach(function(lang, i){ %>
+                  <li><%= lang %></li>
+                <% }); %>
+              </ul>
             </div>
           </div>
-          <div class="age-gender">
+        </div>
+        <div class="age-gender-wrapper">
+          <div class="age-wrapper">
             <h4>Age</h4>
             <h5><%= user.age %></h5>
+          </div>
+          <div class="gender-wrapper">
             <h4>Gender</h4>
             <h5><%= user.gender %></h5>
           </div>
+        </div>
+        <div class="com-method-wrapper">
+          <h4>Communication Methods</h4>
           <div class="com-method">
-            <h4>Communication Methods</h4>
-            <% user.comMethod.forEach(function(com, i){ %>
-              <p><%= com %></p>
-            <% }); %>
-          </div>
-          <div class="info">
-            <p><%= user.info %></p>
+            <ul>
+              <% user.comMethod.forEach(function(com, i){ %>
+                <li><%= com %></li>
+              <% }); %>
+            </ul>
           </div>
         </div>
+        <div class="info">
+          <p><%= user.info %></p>
+        </div>
+      </div>
+      <div class="message-container">
+        <form class="ui form" action="/messages" method="post">
+          <div class="field">
+            <div class="textarea-titles-wrapper">
+              <h4>Write Your Message to <%= user.firstName %></h4>
+              <p class="cancel-message">
+                Cancel Message
+              </p>
+            </div>
+            <textarea class="message-content" name="msgCont" rows="8" cols="40"></textarea>
+          </div>
+          <input type="hidden" name="senderId" value="<%= currentUser._id %>">
+          <input type="hidden" name="senderName" value="<%= currentUser.firstName %>">
+          <input type="hidden" name="recipientId" value="<%= user._id %>">
+          <input type="hidden" name="recipientName" value="<%= user.firstName %>">
+        </form>
       </div>
     </div>
     <div class="six wide column">
@@ -88,5 +117,11 @@
         </div>
       </div>
     </div>
+    <div class="button-wrapper">
+      <button type="button" name="message"><p class="show-msg">Send <%= user.firstName %> a Message</p><p class="send-msg">Send Message!</p></button>
+    </div>
   </div>
+
+<script type="text/javascript" src="/scripts/view.js"></script>
+
 <% include ../partials/footer %>
