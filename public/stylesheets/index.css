@@ -242,6 +242,7 @@ h1 {
   overflow-x: hidden;
   width: 100px;
   margin: auto;
+  margin-top: 30px;
   display: flex;
   align-items: center;
   height: 50px;

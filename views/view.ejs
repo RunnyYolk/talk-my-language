@@ -6,24 +6,24 @@
 <body>
 
   <div class="ui inverted secondary menu">
-  <a class="item">
-    <span class="t">T</span><span class="ml">ML</span>
-  </a>
-  <a class="item">
-    <span>messages</span>
-  </a>
-  <a class="item">
-    <span>friends</span>
-  </a>
-  <% if(currentUser){ %>
-    <a class="item" href="/users/<%= currentUser._id %>/edit">
-      <span><%= currentUser.firstName %></span>
+    <a class="item">
+      <span class="t">T</span><span class="ml">ML</span>
     </a>
-    <a class="item" href="/logout">
-      <span>logout</span>
+    <a class="item">
+      <span>messages</span>
     </a>
-  <% } %>
-</div>
+    <a class="item">
+      <span>friends</span>
+    </a>
+    <% if(currentUser){ %>
+      <a class="item" href="/users/<%= currentUser._id %>/edit">
+        <span><%= currentUser.firstName %></span>
+      </a>
+      <a class="item" href="/logout">
+        <span>logout</span>
+      </a>
+    <% } %>
+  </div>
 
 
   <div class="ui grid container">

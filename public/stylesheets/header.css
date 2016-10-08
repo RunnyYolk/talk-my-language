@@ -1,6 +1,8 @@
 .ui.inverted.secondary.menu {
   background-color: #37D9EE;
   height: 70px;
+  margin-bottom: 0;
+
 }
 
 .ui.inverted.secondary.menu span {

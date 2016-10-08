@@ -1,14 +1,36 @@
 <% include ../partials/header %>
 <link rel="stylesheet" type="text/css" href="/stylesheets/matches.css">
+<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
 
 </head>
 <body>
-  <% if(currentUser){ %>
-    <li><a href="/users/<%= currentUser._id %>/edit">signed in as <%= currentUser.firstName %></a></li>
-    <li><a href="/logout">logout</a></li>
-  <% } %>
+  <div class="ui inverted secondary menu">
+    <a class="item">
+      <span class="t">T</span><span class="ml">ML</span>
+    </a>
+    <a class="item">
+      <span>messages</span>
+    </a>
+    <a class="item">
+      <span>friends</span>
+    </a>
+    <% if(currentUser){ %>
+      <a class="item" href="/users/<%= currentUser._id %>/edit">
+        <span><%= currentUser.firstName %></span>
+      </a>
+      <a class="item" href="/logout">
+        <span>logout</span>
+      </a>
+    <% } %>
+  </div>
 
-  <h1>matches</h1>
+  <div class="title-wrapper">
+    <div class="ui grid container">
+      <div class="sixteen wide column">
+        <h1>matches</h1>
+      </div>
+    </div>
+  </div>
 <div class="ui grid container">
   <div class="sixteen wide column">
     <div class="ui four stackable cards">
@@ -16,29 +38,31 @@
     <% var color = ['blue', 'pink', 'yellow'] %>
     <% var n = 0 %>
 
-    <% users.forEach(function(user){ %>
+    <% users.forEach(function(user, i){ %>
 
-      <a class="ui fluid card <%= color[n] %>" href="/users/<%= user._id %>/view">
-          <div class="image">
+      <a class="ui fluid card <%= color[n] %>" href="/users/<%= user._id %>/view" data-num="<%= i %>">
+          <div class="image-wrapper">
             <img src="<%= user.photos[0] %>"/>
           </div>
           <div class="content">
             <div class="info">
-              <div class="name-location">
-                <h3><%= user.firstName %> <%= user.lastName %></h3>
-                <h4><%= user.city %>, <%= user.country %></h4>
-              </div>
+              <h3><%= user.firstName %> <span class="bold"><%= user.lastName %></span></h3>
+              <h4><%= user.city %>, <%= user.country %></h4>
               <div class="speaks-container">
                 <h5>speaks</h5>
-                  <% user.spokenLanguages.forEach(function(lang, i){ %>
-                      <p><%= lang %></p>
-                  <% }); %>
+                  <ul>
+                    <% user.spokenLanguages.forEach(function(lang, i){ %>
+                        <li><%= lang %></li>
+                    <% }); %>
+                  </ul>
               </div>
               <div class="learning-container">
                 <h5>learning</h5>
-                  <% user.learningLanguages.forEach(function(lang, i){ %>
-                    <p><%= lang %></p>
-                  <% }); %>
+                  <ul>
+                    <% user.learningLanguages.forEach(function(lang, i){ %>
+                      <li><%= lang %></li>
+                    <% }); %>
+                  </ul>
               </div>
             </div>
           </div>

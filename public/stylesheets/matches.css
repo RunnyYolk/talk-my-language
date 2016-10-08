@@ -1,16 +1,25 @@
 body, html {
-  background-color: #7CF0FF;
+  background-color: white;
 }
 
-h1 {
-  font-family: "HelveticaNeue-Ultra-Light", "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-weight: 100;
+.title-wrapper {
+  background-color: #7CF0FF;
+  height: 200px;
+  margin-top: 14px;
+  margin-bottom: 40px;
+}
+
+.sixteen.wide.column h1 {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
   letter-spacing: .2em;
-  font-size: 5em;
+  font-size: 7em;
   color: white;
+  margin: 0;
+  margin-top: -14px;
+  margin-left: -6px;
+  line-height: 200px;
   text-transform: uppercase;
-  padding-top: 40px;
-  padding-bottom: 40px;
 }
 
 .profile {
@@ -19,65 +28,99 @@ h1 {
 }
 
 .ui.fluid.card.blue {
-  background-color: #37D9EE;
-  box-shadow: none;
-  border: 3px solid white;
+  background-color: white;
+  box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.2);
 }
 
 .ui.fluid.card.pink {
-  background-color: #EC008C;
-  box-shadow: none;
-  border: 3px solid white;
+  background-color: white;
+  box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.2);
 }
 
 .ui.fluid.card.yellow {
-  background-color: #FDBE3C;
-  box-shadow: none;
-  border: 3px solid white;
+  background-color: white;
+  box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.2);
 }
 
 .ui.fluid.card.blue:hover {
-  background-color: #37D9EE;
-  box-shadow: none;
-  border: 3px solid white;
+  background-color: white;
+  box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.2);
 }
 
 .ui.fluid.card.pink:hover {
-  background-color: #EC008C;
-  box-shadow: none;
-  border: 3px solid white;
+  background-color: white;
+  box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.2);
 }
 
 .ui.fluid.card.yellow:hover {
-  background-color: #FDBE3C;
-  box-shadow: none;
-  border: 3px solid white;
+  background-color: white;
+  box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.2);
 }
 
-img {
-  width: 100%;
+.image-wrapper {
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.ui.fluid.card.blue img {
+  display: inline-block;
+  border-radius: 50%;
+  border: 8px solid #37D9EE;
+  padding: 6px;
+  width: 70%;
+}
+
+.ui.fluid.card.pink img {
+  display: inline-block;
+  border-radius: 50%;
+  border: 8px solid #EC008C;
+  padding: 6px;
+  width: 70%;
+}
+
+.ui.fluid.card.yellow img {
+  display: inline-block;
+  border-radius: 50%;
+  border: 8px solid #FDBE3C;
+  padding: 6px;
+  width: 70%;
 }
 
 .info {
-  color: #3C3838;
+  color: #3d4451;
 }
 
 h3 {
-  font-family: "HelveticaNeue-Ultra-Light", "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  text-align: left;
-  font-weight: 700;
-  letter-spacing: .1em;
-  font-size: 1.8em;
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+  font-weight: 100;
+  text-transform: uppercase;
+  letter-spacing: .25em;
+  word-spacing: -.6em;
+  font-size: 1.4em;
   margin-bottom: 0;
 }
 
+.bold {
+  font-weight: 700;
+  letter-spacing: normal;
+}
+
+.content {
+  background-color: white;
+  border-color: white;
+}
+
 .info h4 {
-  text-align: left;
+  text-align: center;
   margin: 0;
   margin-top: 5px;
-  border-bottom: 1px solid #3C3838;
-  padding-bottom: 9px;
-  margin-bottom: -9px;
+  border-bottom: 1px solid #dedede;
+  padding-bottom: 15px;
+  margin-left: -14px;
+  margin-right: -14px;
+  margin-bottom: -5px;
   font-family: 'Libre Baskerville', serif;
   text-transform: capitalize;
   font-size: .9em;
@@ -85,38 +128,59 @@ h3 {
 }
 
 .speaks-container h5 {
-  font-family: "HelveticaNeue-Ultra-Light", "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  display: inline-block;
+  font-family: 'Open Sans', sans-serif;
   text-align: left;
-  font-size: 1.1em;
-  margin-bottom: 7px;
-  font-weight: 400;
+  font-size: 12px;
+  margin-bottom: 8px;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
 .learning-container h5 {
-  font-family: "HelveticaNeue-Ultra-Light", "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  text-align: right;
-  font-size: 1.1em;
-  margin-bottom: 7px;
-  font-weight: 400;
+  display: inline-block;
+  font-family: 'Open Sans', sans-serif;
+  text-align: left;
+  font-size: 12px;
+  margin-bottom: 8px;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
 .speaks-container {
+  width: 100%;
   display: inline-block;
+  float: left;
   width: 50%;
   margin-top: 20px;
   justify-content: space-between;
 }
 
-.speaks-container p {
-  font-family: "HelveticaNeue-Ultra-Light", "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-size: 1.1em;
-  font-weight: 100;
+.speaks-container ul {
+  display: -webkit-box;
+  margin: 0;
+  padding: 0;
+}
+
+.learning-container ul {
+  display: -webkit-box;
+  margin: 0;
+  padding: 0;
+}
+
+.speaks-container li {
+  display: inline-block;
+  text-align: left;
+  font-family: 'Open Sans', sans-serif;
+  color: #9da0a7;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
 }
 
 .learning-container {
-  display: inline;
+  width: 100%;
+  display: inline-block;
   width: 50%;
   float: right;
   text-align: right;
@@ -124,10 +188,26 @@ h3 {
   justify-content: space-between;
 }
 
-.learning-container p {
-  font-family: "HelveticaNeue-Ultra-Light", "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-size: 1.1em;
-  font-weight: 100;
+.learning-container li {
+  list-style: none;
+  display: inline-block;
+  font-family: 'Open Sans', sans-serif;
+  color: #9da0a7;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+li:after {
+  content: ", ";
+}
+
+li:nth-last-child(2):after {
+  content: ", and ";
+}
+
+li:last-child:after {
+  content: "";
 }
 
 .spoken-languages {
@@ -138,6 +218,267 @@ h3 {
 
 .learning-languages {
   position: relative;
-  text-align: right;
+  text-align: left;
   margin-bottom: 0px;
+}
+
+[data-num="0"] {
+    -moz-animation-name: dropHeader;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-fill-mode: backwards;
+    -moz-animation-delay: 0;
+    -moz-animation-duration: 0.6s;
+
+    -webkit-animation-name: dropHeader;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-fill-mode: backwards;
+    -webkit-animation-delay: 0;
+    -webkit-animation-duration: 0.6s;
+
+    animation-name: dropHeader;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+    animation-delay: 0;
+    animation-duration: 0.6s;
+}
+
+[data-num="1"] {
+    -moz-animation-name: dropHeader;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-fill-mode: backwards;
+    -moz-animation-delay: .05s;
+    -moz-animation-duration: 0.6s;
+
+    -webkit-animation-name: dropHeader;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-fill-mode: backwards;
+    -webkit-animation-delay: .05s;
+    -webkit-animation-duration: 0.6s;
+
+    animation-name: dropHeader;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+    animation-delay: .05s;
+    animation-duration: 0.6s;
+}
+
+[data-num="2"] {
+    -moz-animation-name: dropHeader;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-fill-mode: backwards;
+    -moz-animation-delay: .1s;
+    -moz-animation-duration: 0.6s;
+
+    -webkit-animation-name: dropHeader;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-fill-mode: backwards;
+    -webkit-animation-delay: .1s;
+    -webkit-animation-duration: 0.6s;
+
+    animation-name: dropHeader;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+    animation-delay: .1s;
+    animation-duration: 0.6s;
+}
+
+[data-num="3"] {
+    -moz-animation-name: dropHeader;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-fill-mode: backwards;
+    -moz-animation-delay: .15s;
+    -moz-animation-duration: 0.6s;
+
+    -webkit-animation-name: dropHeader;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-fill-mode: backwards;
+    -webkit-animation-delay: .15s;
+    -webkit-animation-duration: 0.6s;
+
+    animation-name: dropHeader;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+    animation-delay: .15s;
+    animation-duration: 0.6s;
+}
+
+[data-num="4"] {
+    -moz-animation-name: dropHeader;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-fill-mode: backwards;
+    -moz-animation-delay: .2s;
+    -moz-animation-duration: 0.6s;
+
+    -webkit-animation-name: dropHeader;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-fill-mode: backwards;
+    -webkit-animation-delay: .2s;
+    -webkit-animation-duration: 0.6s;
+
+    animation-name: dropHeader;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+    animation-delay: .2s;
+    animation-duration: 0.6s;
+}
+
+[data-num="5"] {
+    -moz-animation-name: dropHeader;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-fill-mode: backwards;
+    -moz-animation-delay: .25s;
+    -moz-animation-duration: 0.6s;
+
+    -webkit-animation-name: dropHeader;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-fill-mode: backwards;
+    -webkit-animation-delay: .25s;
+    -webkit-animation-duration: 0.6s;
+
+    animation-name: dropHeader;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+    animation-delay: .25s;
+    animation-duration: 0.6s;
+}
+
+[data-num="6"] {
+    -moz-animation-name: dropHeader;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-fill-mode: backwards;
+    -moz-animation-delay: .3s;
+    -moz-animation-duration: 0.6s;
+
+    -webkit-animation-name: dropHeader;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-fill-mode: backwards;
+    -webkit-animation-delay: .3s;
+    -webkit-animation-duration: 0.6s;
+
+    animation-name: dropHeader;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+    animation-delay: .3s;
+    animation-duration: 0.6s;
+}
+
+[data-num="7"] {
+    -moz-animation-name: dropHeader;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-fill-mode: backwards;
+    -moz-animation-delay: .35s;
+    -moz-animation-duration: 0.6s;
+
+    -webkit-animation-name: dropHeader;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-fill-mode: backwards;
+    -webkit-animation-delay: .35s;
+    -webkit-animation-duration: 0.6s;
+
+    animation-name: dropHeader;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+    animation-delay: .35s;
+    animation-duration: 0.6s;
+}
+
+[data-num="8"] {
+    -moz-animation-name: dropHeader;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-fill-mode: backwards;
+    -moz-animation-delay: .4s;
+    -moz-animation-duration: 0.6s;
+
+    -webkit-animation-name: dropHeader;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-fill-mode: backwards;
+    -webkit-animation-delay: .4s;
+    -webkit-animation-duration: 0.6s;
+
+    animation-name: dropHeader;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+    animation-delay: .4s;
+    animation-duration: 0.6s;
+}
+
+[data-num="9"] {
+    -moz-animation-name: dropHeader;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-fill-mode: backwards;
+    -moz-animation-delay: .45s;
+    -moz-animation-duration: 0.6s;
+
+    -webkit-animation-name: dropHeader;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-fill-mode: backwards;
+    -webkit-animation-delay: .45s;
+    -webkit-animation-duration: 0.6s;
+
+    animation-name: dropHeader;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+    animation-delay: .45s;
+    animation-duration: 0.6s;
+}
+
+@-moz-keyframes dropHeader {
+    0% {
+        -moz-transform: translateY(80px);
+        opacity: 0;
+    }
+    100% {
+        -moz-transform: translateY(0);
+        opacity: 1;
+    }
+}
+@-webkit-keyframes dropHeader {
+    0% {
+        -webkit-transform: translateY(80px);
+        opacity: 0;
+    }
+    100% {
+        -webkit-transform: translateY(0);
+        opacity: 1;
+    }
+}
+@keyframes dropHeader {
+    0% {
+        transform: translateY(80px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }

@@ -371,3 +371,54 @@ textarea {
   margin: 25px;
   border: 1px solid #FDBE3C;
 }
+
+.ten.wide.column, .six.wide.column, .button-wrapper {
+    -moz-animation-name: dropHeader;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-fill-mode: backwards;
+    -moz-animation-duration: 0.6s;
+
+    -webkit-animation-name: dropHeader;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-fill-mode: backwards;
+    -webkit-animation-duration: 0.6s;
+
+    animation-name: dropHeader;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+    animation-duration: 0.6s;
+}
+
+@-moz-keyframes dropHeader {
+    0% {
+        -moz-transform: translateY(80px);
+        opacity: 0;
+    }
+    100% {
+        -moz-transform: translateY(0);
+        opacity: 1;
+    }
+}
+@-webkit-keyframes dropHeader {
+    0% {
+        -webkit-transform: translateY(80px);
+        opacity: 0;
+    }
+    100% {
+        -webkit-transform: translateY(0);
+        opacity: 1;
+    }
+}
+@keyframes dropHeader {
+    0% {
+        transform: translateY(80px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
