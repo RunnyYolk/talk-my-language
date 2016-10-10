@@ -22,7 +22,10 @@ var bodyParser     = require("body-parser"),
     Message        = require('./models/message'),
     passportLocalMongoose = require('passport-local-mongoose'),
     methodOverride = require("method-override"),
-    app = express();
+    app            = express(),
+    http           = require('http'),
+    server         = http.createServer(app),
+    io             = require('socket.io').listen(server);
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb){
@@ -51,7 +54,7 @@ function isLoggedIn(req, res, next){
 // ========== For Local =============
 mongoose.connect("mongodb://localhost/tml");
 // ========== For Heroku ============
-// mongoose.connect("mongodb://nick:1234@ds019766.mlab.com:19766/akira");
+// mongodb://<nick>:<1234>@ds053176.mlab.com:53176/talkmylanguage
 // mongoose.Promise = Promise;
 
 
@@ -92,7 +95,60 @@ function isLoggedIn(req, res, next){
   res.redirect('/');
 }
 
-Conversation.create();
+var connections = [];
+var users = [];
+
+function saveMessage(message, thread){
+  Message.create(message, function(err, newMessage){
+    if(err){
+      console.log("error creating message " + err);
+    } else {
+      console.log('newMessage')
+      console.log(newMessage)
+      Conversation.findById(thread).exec(function(err, conv){
+        if(err){
+          console.log('Error fetching conversation ' + err);
+        } else {
+          conv.messages.push(newMessage)
+          conv.save();
+        }
+      });
+    }
+  });
+}
+
+// Conversation.create();
+
+var noMsgsSent = 0;
+
+io.on('connection', function(socket){
+  socket.on('room', function(room){
+    socket.join(room);
+    console.log("someone's joinged room " + room);
+  })
+  connections.push(socket);
+  console.log('Connections: %s sockets connected', connections.length);
+
+  //Disconnect
+  socket.on('disconnect', function(data){
+    connections.splice(connections.indexOf(socket), 1)
+    console.log('Disconnected: %s sockets connected', connections.length);
+  });
+
+  // New message
+  socket.on('new message', function(newMsg, thread){
+    saveMessage(newMsg, thread);
+    console.log(newMsg);
+    console.log(thread);
+    console.log("=============================")
+    console.log('newMsg.sender.id')
+    console.log(typeof newMsg.sender.id)
+    console.log("=============================")
+    io.sockets.emit('message', {msg: newMsg.messageContent, senderId: newMsg.sender.id});
+    noMsgsSent++;
+    console.log(noMsgsSent)
+  });
+});
 
 // ROUTES
 
@@ -423,6 +479,7 @@ app.get('/messages/:_id', isLoggedIn, function(req, res){
             messages.push(msg);
           }
           if(conv.messages.length == messages.length) {
+            // connectSocket(req.params._id)
             res.render('message_view', {thread: thread, messages: messages});
           }
         })
@@ -434,6 +491,6 @@ app.get('/messages/:_id', isLoggedIn, function(req, res){
 // ======== For Heroku ========
 // app.listen(process.env.PORT, process.env.IP, function(){
 // ======== For Local =========
-app.listen(27017, process.env.IP, function(){
+server.listen(27017, process.env.IP, function(){
   console.log('Fire it UP!');
 });
