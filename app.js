@@ -54,8 +54,8 @@ function isLoggedIn(req, res, next){
 // ========== For Local =============
 mongoose.connect("mongodb://localhost/tml");
 // ========== For Heroku ============
-// mongodb://<nick>:<1234>@ds053176.mlab.com:53176/talkmylanguage
-// mongoose.Promise = Promise;
+mongoose.connect("mongodb://<dbuser>:<dbpassword>@ds053176.mlab.com:53176/talkmylanguage");
+mongoose.Promise = Promise;
 
 
 app.use(bodyParser.urlencoded({extended:true}));
@@ -489,8 +489,8 @@ app.get('/messages/:_id', isLoggedIn, function(req, res){
 })
 
 // ======== For Heroku ========
-// app.listen(process.env.PORT, process.env.IP, function(){
+app.listen(process.env.PORT, process.env.IP, function(){
 // ======== For Local =========
-server.listen(27017, process.env.IP, function(){
+// server.listen(27017, process.env.IP, function(){
   console.log('Fire it UP!');
 });
