@@ -1,7 +1,7 @@
 "use strict";
 
 var bodyParser     = require("body-parser"),
-    $              = require('jQuery'),
+    $              = require('jquery'),
     express        = require('express'),
     multer         = require('multer'),
     mongoose       = require('mongoose'),
@@ -52,7 +52,7 @@ function isLoggedIn(req, res, next){
 
 //connect mongoDB
 // ========== For Local =============
-mongoose.connect("mongodb://localhost/tml");
+// mongoose.connect("mongodb://localhost/tml");
 // ========== For Heroku ============
 mongoose.connect("mongodb://<dbuser>:<dbpassword>@ds053176.mlab.com:53176/talkmylanguage");
 mongoose.Promise = Promise;
