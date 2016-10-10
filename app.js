@@ -54,7 +54,7 @@ function isLoggedIn(req, res, next){
 // ========== For Local =============
 // mongoose.connect("mongodb://localhost/tml");
 // ========== For Heroku ============
-mongoose.connect("mongodb://<dbuser>:<dbpassword>@ds053176.mlab.com:53176/talkmylanguage");
+mongoose.connect("mongodb://<nick>:<1234>@ds053176.mlab.com:53176/talkmylanguage");
 mongoose.Promise = Promise;
 
 
