@@ -3,17 +3,11 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 var MessageSchema = new mongoose.Schema({
   sender: {
-    id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
-        },
+    id: String,
     username: String
   },
   recipient: {
-    id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
-        },
+    id: String,
     username: String
   },
   messageContent: String,

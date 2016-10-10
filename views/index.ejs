@@ -1,12 +1,41 @@
 <% include ../partials/header %>
 <link rel="stylesheet" type="text/css" href="/stylesheets/index.css">
+<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
 
 </head>
 <body>
   <% if(currentUser){ %>
-    <li><a href="/users/<%= currentUser._id %>/edit">signed in as <%= currentUser.firstName %></a></li>
-    <li><a href="/logout">logout</a></li>
+    <div class="ui fixed inverted secondary menu navbar page">
+      <a class="item">
+        <span class="t">T</span><span class="ml">ML</span>
+      </a>
+      <a class="item" href="/messages">
+        <span>Messages</span>
+      </a>
+      <a class="item" href="/matches">
+        <span>Matches</span>
+      </a>
+        <a class="item" href="/users/<%= currentUser._id %>/edit">
+          <span><%= currentUser.firstName %></span>
+        </a>
+        <a class="item" href="/logout">
+          <span>logout</span>
+        </a>
+    </div>
   <% } %>
+
+  <div class="ui container">
+    <% if(error && error.length > 0){ %>
+      <div class="ui red message" rolde="alert">
+        <%= error %>
+      </div>
+    <% } %>
+    <% if(success && success.length > 0){ %>
+      <div class="ui green message" rolde="alert">
+        <%= success %>
+      </div>
+    <% } %>
+  </div>
 
   <h1><span class="talk">TALK</span> <span class="ml">My langugage</span></h1>
   <p class="tagline">
@@ -15,9 +44,9 @@
     <div class="login-wrapper">
       <form class="login-form" action="/login" method="post">
         <div class="faux-textinput">
-          <input type="text" class="email input" name="username" autocomplete="off" placeholder="enter your email" autofocus>
+          <input type="text" class="email input" tabindex="-1" name="username" autocomplete="off" placeholder="enter your email" autofocus>
           <div class="reveal-div">
-            <input type="password" class="password input" name="password" placeholder="enter your password">
+            <input type="password" tabindex="-1" class="password input" name="password" placeholder="enter your password">
           </div>
         </div>
         <button type="button" class="signup-btn" tabindex="0"><span class="signup-text">sign up!</span><span class="login">log in!</span></button>

@@ -1,0 +1,58 @@
+body, html {
+  height: 100%;
+}
+
+.main-wrapper {
+  width: 50%;
+  margin: auto;
+  margin-top: 30px;
+  overflow: auto;
+}
+
+.msg-wrapper {
+  display: inline-block;
+}
+
+.msg {
+  display: inline-block;
+  width: auto;
+  padding: 7px;
+  padding-left: 30px;
+  padding-right: 30px;
+  margin: 6px;
+  border-radius: 50px;
+}
+
+.current-user {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.other-user {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.msg-current-user {
+  background-color: #FFCF6B;
+  margin-right: 10px;
+}
+
+.msg-other-user {
+  background-color: #7CF0FF;
+  margin-left: 10px;
+}
+
+textarea {
+  width: 100%;
+  height: 100%;
+}
+
+button {
+  display: block;
+  background-color: #37D9EE;
+  border: 0;
+  width: 130px;
+  height: 50px;
+  margin: auto;
+}

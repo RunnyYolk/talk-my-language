@@ -15,6 +15,7 @@ var bodyParser     = require("body-parser"),
     rimraf         = require('rimraf'),
     mkdirp         = require('mkdirp'),
     multiparty     = require('multiparty'),
+    flash          = require('connect-flash'),
     Promise        = require("bluebird"),
     User           = require('./models/user'),
     Conversation   = require('./models/conversation'),
@@ -60,6 +61,7 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.static('semantic'));
 app.use(methodOverride('_method'));
+app.use(flash());
 app.use('/images', express.static(__dirname + '/writable'));
 
 // Passport Configuration
@@ -74,12 +76,20 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use(function(req, res, next){          //Pass these to every route
+  res.locals.currentUser = req.user;
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
+  next();
+})
+
 // Middleware to check if the user is logged in
 function isLoggedIn(req, res, next){
   if(req.isAuthenticated()){
     return next();
   }
-  res.redirect('/login');
+  req.flash("error", "Please Log In or Sign Up")
+  res.redirect('/');
 }
 
 Conversation.create();
@@ -88,12 +98,12 @@ Conversation.create();
 
 // Landing Page
 app.get('/', function(req, res){
-  res.render('index', {currentUser: req.user});
+  res.render('index');
 });
 
 //Sign up page
 app.get('/signup', function(req, res){
-  res.render('register', {currentUser: req.user});
+  res.render('register');
 });
 
 //New user creation
@@ -151,22 +161,13 @@ app.get('/users/:_id/edit', function(req, res){
     if(err){
       res.redirect("back");
     } else {
-      console.log("============================================================")
-      console.log("============================================================")
-      console.log(foundUser)
-      console.log(req.user);
-      res.render("edit", {currentUser: req.user, user_id: req.params._id, user: foundUser});
+      res.render("edit", {user_id: req.params._id, user: foundUser});
     }
   });
 });
 
 // PUT edits
 app.put('/users/:_id', function(req, res){
-  console.log("============================================================")
-  console.log("============================================================")
-  console.log(req.body);
-  console.log("============================================================")
-  console.log("============================================================")
   // var spokenLangs = req.body.spokenlanguages.split(',');
   // var learnLangs = req.body.learninglanguages.split(',');
   // var comms = req.body.commethod.split(',');
@@ -204,16 +205,12 @@ app.put('/users/:_id', function(req, res){
 
 //Login routes
 
-// Show Login Form
-app.get('/login', function(req, res){
-  res.render('login', {currentUser: req.user});
-});
-
 // Handle login logic
 app.post('/login', passport.authenticate('local',
   {
     successRedirect: '/matches',
-    failureRedirect: '/login' //To do: Flash message 'error logging in'
+    failureRedirect: '/',
+    failureFlash: true
   }), function(req, res){
 });
 
@@ -227,21 +224,21 @@ app.get('/logout', function(req, res){
 //Matches Page
 app.get('/matches', isLoggedIn, function(req, res){
   loadedProfiles = [];
-  var q = User.find({learningLanguages: {$in: req.user.spokenLanguages}}).sort({"_id":-1}).limit(5)
+  var q = User.find({learningLanguages: {$in: req.user.spokenLanguages}}).sort({"_id":-1}).limit(6)
   q.exec(function(err, foundUsers){
     if(err){
     } else {
       foundUsers.forEach(function(user){
         loadedProfiles.push(user._id)
       });
-      res.render('matches', {users:foundUsers, currentUser: req.user});
+      res.render('matches', {users:foundUsers});
     }
   });
 });
 
 // More matches request  / infinite scrolling
-app.post('/matches', function(req, res){
-  var q = User.find({$and: [{_id: {$nin: loadedProfiles}}, {learningLanguages: {$in: req.user.spokenLanguages}}]}).sort({"_id":-1}).limit(10);
+app.post('/matches', isLoggedIn, function(req, res){
+  var q = User.find({$and: [{_id: {$nin: loadedProfiles}}, {learningLanguages: {$in: req.user.spokenLanguages}}]}).sort({"_id":-1}).limit(3);
   q.exec(function(err, nextUsers){
     if(err){
       console.log('error getting next profiles');
@@ -250,40 +247,40 @@ app.post('/matches', function(req, res){
         nextUsers.forEach(function(user){
           loadedProfiles.push(user._id);
         });
-        res.send({nextUsers: nextUsers, currentUser: req.user});
+        res.send({nextUsers: nextUsers});
     }
   });
 });
 
 //View a user's profile
-app.get('/users/:_id/view', function(req, res){
+app.get('/users/:_id/view', isLoggedIn, function(req, res){
   User.findById(req.params._id, function(err, foundUser){
     if(err){
       res.redirect("back");
     } else {
-      res.render('view', {user: foundUser, currentUser: req.user});
+      res.render('view', {user: foundUser});
     }
   });
 });
 
-app.post('/messages', function(req, res){
+// Send a new message to another user
+app.post('/messages', isLoggedIn, function(req, res){
   var message = { // Create an object with the message data
-    senderId: req.body.senderId,
-    senderName: req.body.senderName,
-    recipientId: req.body.recipientId,
-    recipientName: req.body.recipientName,
+    sender : {
+      "id" : req.body.senderId,
+      "username" : req.body.senderName
+    },
+    recipient : {
+      "id" : req.body.recipientId,
+      "username" : req.body.recipientName
+    },
     messageContent: req.body.msgCont,
     timeSent: Date.now()
   };
   Message.create(message, function(err, newMessage){ // Add the message to MongoDB
     if(err){
-      console.log("===========================================");
-      console.log('Error Creating Message' + Err);
-      console.log("===========================================");
+      console.log('Error Creating Message ' + err)
     } else {
-      console.log("===========================================");
-      console.log("The New Message " + newMessage)
-      console.log("===========================================");
       // Query DB for conversations with both sender and recipient at participants
       Conversation.findOne(
         {$and : [
@@ -297,57 +294,142 @@ app.post('/messages', function(req, res){
         ]},
       ]}, function(err, convo){
         if(err){
-          console.log("===========================================");
           console.log('Error finding convo ' + err);
-          console.log("===========================================");
         } else {
           if(convo == null){
             var conv = {
               participants : {
-                "user1" : {
-                  "id" : req.body.senderId,
-                  "username" : req.body.senderName
+                user1 : {
+                  id : req.body.senderId,
+                  username : req.body.senderName
                 },
-                "user2" : {
-                  "id" : req.body.recipientId,
-                  "username" : req.body.recipientName
+                user2 : {
+                  id : req.body.recipientId,
+                  username : req.body.recipientName
                 }
               },
               created : Date.now(),
               messages : [] // The message _id is pushed in later.
             }
-            console.log("===========================================");
-            console.log("conv variable... " + conv);
-            console.log("===========================================");
             Conversation.create(conv, function(err, newConvo){
               if(err){
                 console.log('Error creating new convo ' + err);
               } else {
                 newConvo.messages.push(newMessage);
                 newConvo.save();
-                console.log("===========================================");
-                console.log("New Convo! " + newConvo);
-                console.log("===========================================");
               }
             })
           } else {
-            console.log("===========================================");
-            console.log('No new convo created. Looks like a match was found');
-            console.log("===========================================");
             convo.messages.push(newMessage);
             convo.save();
           }
         }
       });
-      // If returns null
-
-      // Create conversation and add message
-
-      // Else add message to returned conversation
     }
   });
+  req.flash("success", "You Send a Message!")
   res.redirect('/matches');
 });
+
+// Send a message from existing thread
+app.post('/messages/:_id', isLoggedIn, function(req, res){
+  console.log("=================================================")
+  console.log('req.body');
+  console.log(req.body);
+  console.log("=================================================")
+  var message = {
+    sender : {
+      "id" : req.body.senderId,
+      "username" : req.body.senderName
+    },
+    recipient : {
+      "id" : req.body.recipientId,
+      "username" : req.body.recipientName
+    },
+    messageContent: req.body.newMessage,
+    timeSent: Date.now()
+  };
+  Message.create(message, function(err, newMessage){
+    if(err){
+      console.log("error creating message " + err);
+    } else {
+      Conversation.findById(req.params._id).exec(function(err, conv){
+        console.log('========================================================')
+        console.log('message');
+        console.log(message);
+        if(err){
+          console.log('Error fetching conversation ' + err);
+        } else {
+          console.log('========================================================')
+          console.log('newMessage')
+          console.log(newMessage)
+          conv.messages.push(newMessage)
+          conv.save();
+        }
+      });
+      res.redirect('back');
+    }
+  });
+});
+
+// view all conversations a user belongs to
+app.get('/messages', isLoggedIn, function(req, res){
+  var profilePics = {};
+  var ids = [];
+  Conversation.find({
+    $or : [
+      {"participants.user1.id" : req.user._id},
+      {"participants.user2.id" : req.user._id}
+    ]
+  }, function(err, convos){
+    if(err){
+      console.log('Error getting Convos ' + err)
+    } else {
+      convos.forEach(function(cnv, i){
+        if(cnv.participants.user1.id == req.user._id){
+          ids.push(cnv.participants.user2.id);
+        } else {
+          ids.push(cnv.participants.user1.id);
+        }
+      })
+      ids.forEach(function(id, i){
+        User.findById(id, function(err, foundUser){
+          var k = id
+          var v = foundUser.photos[0]
+          profilePics[k] = v
+          if(i == (ids.length - 1)){
+            console.log(profilePics);
+            res.render('messages', {convos: convos, profilePics: profilePics});
+          }
+        });
+      });
+    }
+  });
+});
+
+//View individual conversations
+app.get('/messages/:_id', isLoggedIn, function(req, res){
+  var messages = [];
+  var thread = req.params._id;
+  Conversation.findById(req.params._id).exec(function(err, conv){
+    if(err){
+      console.log("Error finding conversation " + err);
+    } else {
+      conv.messages.forEach(function(messageId, i){
+        Message.findById(messageId).exec(function(err, msg){
+          if(err){
+            console.log('error getting message' + err);
+          } else {
+            messages.push(msg);
+          }
+          if(conv.messages.length == messages.length) {
+            res.render('message_view', {thread: thread, messages: messages});
+          }
+        })
+      })
+    }
+  })
+})
 
 // ======== For Heroku ========
 // app.listen(process.env.PORT, process.env.IP, function(){

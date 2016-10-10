@@ -85,7 +85,8 @@ var fileList;
           error: function(xhr, textStatus, errorThrown) {
             console.log(xhr.statusText);
             console.log(textStatus);
-            console.log(errorThrown);          }
+            console.log(errorThrown);
+          }
         });
 
       } else {

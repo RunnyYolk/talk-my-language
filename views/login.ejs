@@ -2,11 +2,6 @@
 
 </head>
 <body>
-  <% if(currentUser){ %>
-    <li><a href="/users/<%= currentUser._id %>/edit">signed in as <%= currentUser.firstName %></a></li>
-    <li><a href="/logout">logout</a></li>
-  <% } %>
-
   <h1>login</h1>
   <div class="ui four column doubling stackable centered grid container">
     <form class="ui form" action="/login" method="post">

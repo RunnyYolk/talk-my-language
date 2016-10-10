@@ -1,0 +1,67 @@
+<% include ../partials/header %>
+<link rel="stylesheet" type="text/css" href="/stylesheets/messages.css">
+<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
+
+</head>
+<body>
+
+  <div class="ui fixed inverted secondary menu navbar page">
+    <a class="item">
+      <span class="t">T</span><span class="ml">ML</span>
+    </a>
+    <a class="item" href="/messages">
+      <span>Messages</span>
+    </a>
+    <a class="item" href="/matches">
+      <span>Matches</span>
+    </a>
+    <% if(currentUser){ %>
+      <a class="item" href="/users/<%= currentUser._id %>/edit">
+        <span><%= currentUser.firstName %></span>
+      </a>
+      <a class="item" href="/logout">
+        <span>logout</span>
+      </a>
+    <% } %>
+  </div>
+
+  <div class="ui container">
+    <% if(error && error.length > 0){ %>
+      <div class="ui red message" rolde="alert">
+        <%= error %>
+      </div>
+    <% } %>
+    <% if(success && success.length > 0){ %>
+      <div class="ui green message" rolde="alert">
+        <%= success %>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="ui grid container">
+    <div class="sixteen wide column">
+      <div class="messages-container">
+        <% var otherUser = "" %>
+        <% convos.forEach(function(convo, i){ %>
+        <% if(convo.participants.user1.id == currentUser._id){ %>
+            <% otherUserName = convo.participants.user2.username %>
+            <% otherUserId = convo.participants.user2.id %>
+          <% } else { %>
+            <% otherUserName = convo.participants.user1.username %>
+            <% otherUserId = convo.participants.user1.id %>
+          <% } %>
+          <% console.log(otherUserId) %>
+          <a class="convo-wrapper" href="/messages/<%= convo._id %>">
+            <img src="<%= profilePics[otherUserId] %>" alt="" />
+            <h3>Your conversation with <%= otherUserName %></h3>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+
+
+  </div>
+
+<script type="text/javascript" src="/scripts/view.js"></script>
+
+<% include ../partials/footer %>

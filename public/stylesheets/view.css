@@ -30,17 +30,19 @@ body, html {
 }
 
 .ui.grid.container {
-  margin-top: 20px;
+  margin-top: 90px;
   box-shadow: 0px 0px 20px -5px #888888;
 }
 
 .ten.wide.column {
   background-color: white;
   overflow: hidden;
+  margin-top: -39px;
 }
 
 .six.wide.column {
   background-color: white;
+  margin-top: -39px;
 }
 
 h1 {
@@ -372,7 +374,7 @@ textarea {
   border: 1px solid #FDBE3C;
 }
 
-.ten.wide.column, .six.wide.column, .button-wrapper {
+.ui.grid.container {
     -moz-animation-name: dropHeader;
     -moz-animation-iteration-count: 1;
     -moz-animation-timing-function: ease-in-out;

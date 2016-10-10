@@ -21,16 +21,28 @@ $(document).ready(function(){
       $('.login-text-container').toggleClass('active');
       $('.cancel-text-container').toggleClass('active');
       $('.email.input').prop('disabled').toggle;
-      $('.email.input').blur();
+      $('.email.input').blur()
     }
   };
 
   $('.clicker').click(showPasswordBox);
 
   $(".email.input").bind("keydown", function(event) {
+    if(event.which == 9 && $('.email.input').val()) {
+        event.preventDefault();
+        showPasswordBox();
+        setTimeout(function(){
+          $('.password.input').focus()
+        }, 400);
+    }
+  });
+  $(".password.input").bind("keydown", function(event) {
     if(event.which == 9) {
         event.preventDefault();
         showPasswordBox();
+        setTimeout(function(){
+          $('.email.input').focus()
+        }, 400);
     }
   });
 });

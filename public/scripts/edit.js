@@ -1,10 +1,8 @@
-$('.ui.dropdown')
-  .dropdown()
-;
+$('.ui.dropdown').dropdown();
 
-$('#age').dropdown('set selected', user.age);
+$('#age').dropdown("set selected", user.age) ;
 
-$('#gender').dropdown('set selected', user.gender );
+$('#gender').dropdown('set selected', user.gender);
 
 $('#spokenlanguages').dropdown('set selected', user.spokenLanguages);
 
@@ -13,9 +11,6 @@ $('#learninglanguages').dropdown('set selected', user.learningLanguages);
 $('#country').dropdown('set selected', user.country);
 
 $('#commethod').dropdown('set selected', user.comMethod);
-
-var email = sessionStorage.getItem('email');
-document.querySelector('input[name="username"]').value = email
 
 var fileList;
 

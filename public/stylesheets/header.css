@@ -28,3 +28,86 @@
   color: white;
   margin-bottom: -14px;
 }
+
+#userName, #logout {
+  float: right;
+}
+
+.ui .message {
+  z-index: 1;
+}
+
+.ui .message {
+    -moz-animation-name: animateMessage;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-fill-mode: forwards;
+    -moz-animation-duration: 4s;
+
+    -webkit-animation-name: animateMessage;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-fill-mode: forwards;
+    -webkit-animation-duration: 4s;
+
+    animation-name: animateMessage;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-duration: 4s;
+}
+
+@-moz-keyframes animateMessage {
+    0% {
+        -moz-transform: translateY(0px);
+        opacity: 0;
+    }
+    25% {
+      -moz-transform: translateY(92px);
+      opacity: 1;
+    }
+    75% {
+      -moz-transform: translateY(92px);
+      opacity: 1;
+    }
+    100% {
+        -moz-transform: translateY(0px);
+        opacity: 0;
+    }
+}
+@-webkit-keyframes animateMessage {
+    0% {
+        -webkit-transform: translateY(0px);
+        opacity: 0;
+    }
+    25% {
+      -webkit-transform: translateY(92px);
+      opacity: 1;
+    }
+    75% {
+      -webkit-transform: translateY(92px);
+      opacity: 1;
+    }
+    100% {
+        -webkit-transform: translateY(0px);
+        opacity: 0;
+    }
+}
+@keyframes animateMessage {
+    0% {
+        transform: translateY(0px);
+        opacity: 0;
+    }
+    25% {
+      transform: translateY(92px);
+      opacity: 1;
+    }
+    75% {
+      transform: translateY(92px);
+      opacity: 1;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 0;
+    }
+}

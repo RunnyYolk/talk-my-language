@@ -13,24 +13,14 @@
         <form class="ui form" action="/users/<%= user_id %>/?_method=PUT" method="post" enctype="multipart/form-data">
           <div class="two fields">
             <div class="field">
-              <input type="text" name="fname" placeholder="first name">
+              <input type="text" name="fname" placeholder="first name" value="<%= currentUser.firstName %>">
             </div>
             <div class="field">
-              <input type="text" name="lname" placeholder="last name">
+              <input type="text" name="lname" placeholder="last name" value="<%= currentUser.lastName %>">
             </div>
           </div>
         <div class="field">
-            <div class="two fields">
-              <div class="field">
-                  <input type="text" name="username">
-              </div>
-              <div class="field">
-                <input type="password" name="password" placeholder="password">
-              </div>
-            </div>
-        </div>
-        <div class="field">
-          <div class="ui selection dropdown">
+          <div class="ui selection dropdown" id="age">
             <input type="hidden" name="age">
             <i class="dropdown icon"></i>
             <div class="default text">age</div>
@@ -45,7 +35,7 @@
           </div>
         </div>
         <div class="field">
-          <div class="ui selection dropdown">
+          <div class="ui selection dropdown" id="gender">
             <input type="hidden" name="gender">
             <i class="dropdown icon"></i>
             <div class="default text">gender</div>
@@ -59,7 +49,7 @@
           </div>
         </div>
         <div class="field">
-          <div class="ui multiple search selection dropdown">
+          <div class="ui multiple search selection dropdown" id="spokenlanguages">
             <input type="hidden" name="spokenlanguages" id="selectedItemLists">
             <i class="dropdown icon"></i>
             <div class="default text">fluent language or languages</div>
@@ -204,7 +194,7 @@
           </div>
         </div>
         <div class="field">
-          <div class="ui multiple search selection dropdown">
+          <div class="ui multiple search selection dropdown" id="learninglanguages">
             <input type="hidden" name="learninglanguages">
             <i class="dropdown icon"></i>
             <div class="default text">language or languages you want to practice</div>
@@ -360,11 +350,11 @@
         </div>
         <div class="field">
           <label for="info">personal info</label>
-          <textarea name="info" rows="8" cols="40"></textarea>
+          <textarea name="info" rows="8" cols="40"><%= user.info %></textarea>
         </div>
         <div class="two fields">
           <div class="field">
-            <div class="ui search selection dropdown">
+            <div class="ui search selection dropdown" id="country">
               <input type="hidden" name="country">
               <i class="dropdown icon"></i>
               <div class="default text">which country do you live in?</div>
@@ -622,11 +612,11 @@
             </div>
           </div>
           <div class="field">
-            <input type="text" name="city" placeholder="town / city">
+            <input type="text" name="city" value="<%= user.city %>">
           </div>
         </div>
         <div class="field">
-          <div class="ui multiple selection dropdown">
+          <div class="ui multiple selection dropdown" id="commethod">
             <input type="hidden" name="commethod">
             <i class="dropdown icon"></i>
             <div class="default text">how do you like to communicate</div>
