@@ -489,7 +489,7 @@ app.get('/messages/:_id', isLoggedIn, function(req, res){
 })
 
 // ======== For Heroku ========
-app.listen(process.env.PORT || 8080 , process.env.IP, function(){
+http.listen(process.env.PORT || 8080 , process.env.IP, function(){
 // ======== For Local =========
 // server.listen(27017, process.env.IP, function(){
   console.log('Fire it UP!');
