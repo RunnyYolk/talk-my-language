@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+console.log('This is Jquery speaking.')
+
 var $form = $(".write-message-form");
 
 var NoMsgsPrinted = 0;
