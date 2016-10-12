@@ -39,10 +39,6 @@ var storage = multer.diskStorage({
 });
 
 var loadedProfiles = [];
-var searchQ = {};
-
-console.log('Object.keys(searchQ) .length');
-console.log(Object.keys(searchQ).length);
 
 var upload = multer({storage: storage}).any('photos');
 
@@ -278,7 +274,7 @@ app.get('/logout', function(req, res){
 
 //Matched and Profiles
 
-// Get Matches
+//Matches Page
 app.get('/matches', isLoggedIn, function(req, res){
   loadedProfiles = [];
   var q = User.find({learningLanguages: {$in: req.user.spokenLanguages}}).sort({"_id":-1}).limit(6)
@@ -323,28 +319,42 @@ app.get('/search', isLoggedIn, function(req, res){
   res.render('search');
 });
 
+// { '$and':
+//    [ { learningLanguages: [Object] },
+//      { spokenLanguages: [Object] },
+//      { country: [Object] },
+//      { comMethod: [Object] } ] }
+//
+// { '$and':
+//   [ '{learningLanguages: {$in: American Sign Language,Amharic,Arabic,Arabic (Egyptian)}}',
+//     '{spokenLanguages: {$in: Afrikaans,Amharic,Arabic,Arabic (Egyptian)}}',
+//     '{country: {$in: Afghanistan}}',
+//     '{comMethod: {$in: email,face to face,whatsapp,skype}}' ] }
+
+// q["$and"].push('{learningLanguages: {$in: ' + req.body.learninglanguages.split(",") + '}}');
+
 // Fetch search results
 app.post('/search', isLoggedIn, function(req,res){
   loadedProfiles = [];
-  searchQ['$and']=[]; // filter the search by any criteria given by the user
-  if((req.body.learninglanguages).length > 0){ // if the criteria has a value or values
-    searchQ["$and"].push({ learningLanguages: {$in: req.body.learninglanguages.split(",") }}); // add to the query object
+  var q = {};
+  q['$and']=[];
+  if((req.body.learninglanguages).length > 0){
+    q["$and"].push('{learningLanguages: {$in: ' + req.body.learninglanguages.split(",") + '}}');
   }
   if((req.body.spokenlanguages).length > 0){
-    searchQ["$and"].push({ spokenLanguages: {$in: req.body.spokenlanguages.split(",") }});
+    q["$and"].push('{spokenLanguages: {$in: ' + req.body.spokenlanguages.split(",") + '}}');
   }
   if((req.body.country).length > 0){
-    searchQ["$and"].push({ country: {$in: req.body.country.split(",") }});
+    q["$and"].push('{country: {$in: ' + req.body.country.split(",") + '}}');
   }
   if((req.body.commethod).length > 0){
-    searchQ["$and"].push({ comMethod: {$in: req.body.commethod.split(",") }});
+    q["$and"].push('{comMethod: {$in: ' + req.body.commethod.split(",") + '}}');
   }
-  // console.log('typeof req.body.learninglanguages.split(","')
-  // console.log(req.body.learninglanguages.split(","))
-  console.log('Object.keys(searchQ) .length');
-  console.log(Object.keys(searchQ).length);
-  var query = User.find(searchQ).sort({"_id":-1}).limit(6);
-  query.exec(function(err, foundUsers){
+  console.log('typeof req.body.learninglanguages.split(","')
+  console.log(req.body.learninglanguages.split(","))
+  console.log(q);
+  var q = User.find().sort({"_id":-1}).limit(6);
+  q.exec(function(err, foundUsers){
     if(err){
       console.log("error getting matches from database");
       console.log(err);
@@ -356,6 +366,35 @@ app.post('/search', isLoggedIn, function(req,res){
     }
   });
 })
+
+// var query = {};
+//
+// query["$or"]=[];
+// query["$or"].push({"field":"value1"});
+// query["$or"].push({"field":"value2"});
+// query["date_created"]="whatever";
+//
+// query
+// {
+//     "$or" : [
+//         {
+//             "field" : "value1"
+//         },
+//         {
+//             "field" : "value2"
+//         }
+//     ],
+//     "date_created" : "whatever"
+// }
+
+// ({$and:
+//   [
+//     {learningLanguages: {$in: learnLangsArr}},
+//     {spokenLanguages: {$in: spokenLangsArr}},
+//     {country: {$in: countryArr}},
+//     {comMethod: {$in: comMethodArr}}
+//   ]
+//   }).sort({"_id":-1}).limit(6);
 
 //View a user's profile
 app.get('/users/:_id/view', isLoggedIn, function(req, res){

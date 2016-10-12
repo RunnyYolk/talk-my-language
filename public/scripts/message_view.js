@@ -7,7 +7,7 @@ var $form = $(".write-message-form");
 var NoMsgsPrinted = 0;
 var counter = 0;
 
-var thread = "/" + $('[name="thread"]').val()
+var thread = $('[name="thread"]').val()
 
   var socket = io(),
       $newMessage = $('.new-message'),

@@ -14,14 +14,19 @@
     <a class="item" href="/matches">
       <span>Matches</span>
     </a>
-    <% if(currentUser){ %>
-      <a class="item" href="/users/<%= currentUser._id %>/edit">
-        <span><%= currentUser.firstName %></span>
+    <div class="menu-content-right">
+      <a class="search-button" href="/search">
+        <span class="search-icon"></span>
       </a>
-      <a class="item" href="/logout">
-        <span>logout</span>
-      </a>
-    <% } %>
+      <% if(currentUser){ %>
+        <a class="item" href="/users/<%= currentUser._id %>/edit">
+          <span><%= currentUser.firstName %></span>
+        </a>
+        <a class="item" href="/logout">
+          <span>logout</span>
+        </a>
+      <% } %>
+    </div>
   </div>
 
   <div class="title-wrapper">
