@@ -14,7 +14,7 @@ var ConversationSchema = new mongoose.Schema({
           username: String,
         },
     },
-  started: Number,
+  updated: Number,
   messages: [
     {
       type: mongoose.Schema.Types.ObjectId,

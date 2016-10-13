@@ -1,4 +1,6 @@
-$('.ui.dropdown').dropdown();
+$('.ui.dropdown').dropdown({
+  forceSelection: false
+});
 
 $('#age').dropdown("set selected", user.age) ;
 

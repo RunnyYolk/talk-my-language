@@ -38,12 +38,6 @@ var storage = multer.diskStorage({
   }
 });
 
-var loadedProfiles = [];
-var searchQ = {};
-
-console.log('Object.keys(searchQ) .length');
-console.log(Object.keys(searchQ).length);
-
 var upload = multer({storage: storage}).any('photos');
 
 // Middleware to check if the user is logged in
@@ -95,7 +89,7 @@ function isLoggedIn(req, res, next){
   if(req.isAuthenticated()){
     return next();
   }
-  req.flash("error", "Please Log In or Sign Up")
+  req.flash("error", "Please Log In or Sign Up");
   res.redirect('/');
 }
 
@@ -113,17 +107,14 @@ function saveMessage(message, thread){
         if(err){
           console.log('Error fetching conversation ' + err);
         } else {
-          conv.messages.push(newMessage)
+          conv.updated = Date.now();
+          conv.messages.push(newMessage);
           conv.save();
         }
       });
     }
   });
 }
-
-// Conversation.create();
-
-var noMsgsSent = 0;
 
 io.on('connection', function(socket){
   socket.on('room', function(room){
@@ -263,13 +254,49 @@ app.put('/users/:_id', function(req, res){
 //Login routes
 
 // Handle login logic
-app.post('/login', passport.authenticate('local',
-  {
-    successRedirect: '/matches',
-    failureRedirect: '/',
-    failureFlash: true
-  }), function(req, res){
+// app.post('/login', passport.authenticate('local',
+//   {
+//     successRedirect: '/matches',
+//     failureRedirect: '/',
+//     failureFlash: true
+//   }, function(req, res){
+//     User.findByIdAndUpdate(req.user._id, {lastLogin: Date.now()}, function(err, updatedUser){
+//       if(err){
+//         console.log('error finding / updating user')
+//         console.log(err)
+//       } else {
+//         console.log(updatedUser)
+//         console.log('updatedUser')
+//       }
+//     });
+//     console.log("User logged in!")
+//   })
+// );
+
+app.post('/login', function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+    if (err) { return next(err); }
+    if (!user) {
+      req.flash("error", "Invalid email address or password");
+      res.redirect('/'); return}
+
+    req.logIn(user, function(err) {
+      User.findByIdAndUpdate(req.user._id, {lastLogin: Date.now()}, function(err, updatedUser){
+        if(err){
+          console.log('error finding / updating user')
+          console.log(err)
+        } else {
+          console.log(updatedUser)
+          console.log('updatedUser')
+        }
+      });
+      console.log("login")
+      if (err) { return next(err); }
+      return res.redirect('/matches');
+    });
+  })(req, res, next);
 });
+
 
 app.get('/logout', function(req, res){
     req.logout();
@@ -280,16 +307,21 @@ app.get('/logout', function(req, res){
 
 // Get Matches
 app.get('/matches', isLoggedIn, function(req, res){
-  loadedProfiles = [];
-  var q = User.find({learningLanguages: {$in: req.user.spokenLanguages}}).sort({"_id":-1}).limit(6)
+  req.session.loadedProfiles = [];
+  req.session.query = {learningLanguages: {$in: req.user.spokenLanguages}}
+  var q = User.find(req.session.query).sort({"lastLogin":-1}).limit(6)
+  console.log('req.session.query')
+  console.log(req.session.query)
   q.exec(function(err, foundUsers){
     if(err){
       console.log("error getting matches from database");
       console.log(err);
     } else {
       foundUsers.forEach(function(user){
-        loadedProfiles.push(user._id);
+        req.session.loadedProfiles.push(user._id);
       });
+      console.log('req.session.loadedProfiles from first load')
+      console.log(req.session.loadedProfiles)
       res.render('matches', {users:foundUsers});
     }
   });
@@ -297,20 +329,25 @@ app.get('/matches', isLoggedIn, function(req, res){
 
 // More matches request  / infinite scrolling
 app.post('/matches', isLoggedIn, function(req, res){
-  var q = User.find({$and:
+  req.session.query = {$and:
     [
-      {_id: {$nin: loadedProfiles}},
-      {learningLanguages: {$in: req.user.spokenLanguages}}
+      {_id: {$nin: req.session.loadedProfiles}},
+      req.session.query
     ]
-    }).sort({"_id":-1}).limit(3);
+    }
+  var q = User.find(req.session.query).sort({"lastLogin":-1}).limit(3);
   q.exec(function(err, nextUsers){
     if(err){
       console.log('error getting next profiles');
       console.log(err);
     } else {
         nextUsers.forEach(function(user){
-          loadedProfiles.push(user._id);
+          req.session.loadedProfiles.push(user._id);
+          console.log('user._id')
+          console.log(user._id)
         });
+        console.log('more matches req.session.loadedProfiles from infinite loading')
+        console.log(req.session.loadedProfiles)
         res.send({nextUsers: nextUsers});
     }
   });
@@ -325,25 +362,22 @@ app.get('/search', isLoggedIn, function(req, res){
 
 // Fetch search results
 app.post('/search', isLoggedIn, function(req,res){
-  loadedProfiles = [];
-  searchQ['$and']=[]; // filter the search by any criteria given by the user
+  req.session.query = {};
+  var loadedProfiles = [];
+  req.session.query['$and']=[]; // filter the search by any criteria given by the user
   if((req.body.learninglanguages).length > 0){ // if the criteria has a value or values
-    searchQ["$and"].push({ learningLanguages: {$in: req.body.learninglanguages.split(",") }}); // add to the query object
+    req.session.query["$and"].push({ learningLanguages: {$in: req.body.learninglanguages.split(",") }}); // add to the query object
   }
   if((req.body.spokenlanguages).length > 0){
-    searchQ["$and"].push({ spokenLanguages: {$in: req.body.spokenlanguages.split(",") }});
+    req.session.query["$and"].push({ spokenLanguages: {$in: req.body.spokenlanguages.split(",") }});
   }
   if((req.body.country).length > 0){
-    searchQ["$and"].push({ country: {$in: req.body.country.split(",") }});
+    req.session.query["$and"].push({ country: {$in: req.body.country.split(",") }});
   }
   if((req.body.commethod).length > 0){
-    searchQ["$and"].push({ comMethod: {$in: req.body.commethod.split(",") }});
+    req.session.query["$and"].push({ comMethod: {$in: req.body.commethod.split(",") }});
   }
-  // console.log('typeof req.body.learninglanguages.split(","')
-  // console.log(req.body.learninglanguages.split(","))
-  console.log('Object.keys(searchQ) .length');
-  console.log(Object.keys(searchQ).length);
-  var query = User.find(searchQ).sort({"_id":-1}).limit(6);
+  var query = User.find(req.session.query).sort({"lastLogin":-1}).limit(6);
   query.exec(function(err, foundUsers){
     if(err){
       console.log("error getting matches from database");
@@ -352,6 +386,8 @@ app.post('/search', isLoggedIn, function(req,res){
       foundUsers.forEach(function(user){
         loadedProfiles.push(user._id);
       });
+      console.log('loadedProfiles')
+      console.log(loadedProfiles)
       res.render('matches', {users:foundUsers});
     }
   });
@@ -413,7 +449,7 @@ app.post('/messages', isLoggedIn, function(req, res){
                   username : req.body.recipientName
                 }
               },
-              created : Date.now(),
+              updated : Date.now(),
               messages : [] // The message _id is pushed in later.
             }
             Conversation.create(conv, function(err, newConvo){
@@ -466,9 +502,11 @@ app.post('/messages/:_id', isLoggedIn, function(req, res){
           console.log('Error fetching conversation ' + err);
         } else {
           console.log('========================================================')
-          console.log('newMessage')
-          console.log(newMessage)
-          conv.messages.push(newMessage)
+          console.log('newMessage');
+          console.log(newMessage);
+          conv.updated = Date.now();
+          conv.save();
+          conv.messages.push(newMessage);
           conv.save();
         }
       });
@@ -509,7 +547,7 @@ app.get('/messages', isLoggedIn, function(req, res){
         });
       });
     }
-  });
+  }).sort({"updated":-1});
 });
 
 //View individual conversations

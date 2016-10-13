@@ -1,6 +1,6 @@
-$('.ui.dropdown')
-  .dropdown()
-;
+$('.ui.dropdown').dropdown({
+  forceSelection: false
+});
 
 var email = sessionStorage.getItem('email');
 document.querySelector('input[name="username"]').value = email
