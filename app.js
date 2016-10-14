@@ -93,6 +93,30 @@ function isLoggedIn(req, res, next){
   res.redirect('/');
 }
 
+
+// Middleware to check ownership of a conversation
+
+function checkConversationOwership (req, res, next) {
+    if(req.isAuthenticated()){
+            Conversation.findById(req.params._id, function(err, foundConversation){
+                if(err){
+                    res.redirect("back");
+                } else {
+                    // does user own the conversation?
+                    if(foundConversation.participants.user1.id == req.user._id || foundConversation.participants.user2.id == req.user._id) {
+                        next();
+                    } else {
+                        req.flash("error", "You are not a member of this conversation");
+                        res.redirect("back");
+                    }
+                }
+            });
+    } else {
+        req.flash("error", "You need to be logged in to do that")
+        res.redirect("back");
+    }
+}
+
 var connections = [];
 var users = [];
 
@@ -551,7 +575,7 @@ app.get('/messages', isLoggedIn, function(req, res){
 });
 
 //View individual conversations
-app.get('/messages/:_id', isLoggedIn, function(req, res){
+app.get('/messages/:_id', checkConversationOwership, function(req, res){
   var messages = [];
   var thread = req.params._id;
   Conversation.findById(req.params._id).exec(function(err, conv){
