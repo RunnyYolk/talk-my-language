@@ -40,5 +40,9 @@
     "semantic-ui": "^2.2.4",
     "socket-io": "0.0.0",
     "uid2": "0.0.3"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.17.5",
+    "gulp": "^3.9.1"
   }
 }

@@ -1,22 +1,32 @@
-$('.ui.dropdown').dropdown({
-  forceSelection: false
-});
+$(document).ready(function(){
 
-var email = sessionStorage.getItem('email');
-document.querySelector('input[name="username"]').value = email
 
-var fileList;
+  $('.ui.multiple.search.selection.dropdown.active.visible').addClass('input-filled')
+
+    // .menu.transition hidden / visible
+
+    $('.ui.dropdown').dropdown({
+      forceSelection: false
+    });
+
+    var email = sessionStorage.getItem('email');
+    document.querySelector('input[name="username"]').value = email
+
+    var fileList;
 
     var isAdvancedUpload = function() {
       var div = document.createElement('div');
       return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
     }();
 
+    console.log('isAdvancedUpload')
+    console.log(isAdvancedUpload)
+
     var $form = $('.ui .form');
     var $inputBox = $('.box');
 
     var $input = $form.find('input[type="file"]'),
-      $label = $form.find('label');
+      $label = $('[for="file"]');
     showFiles = function(files) {
       $label.text(files.length > 1 ? ($input.attr('data-multiple-caption') || '').replace('{count}', files.length) : files[0].name);
     };
@@ -112,6 +122,8 @@ var fileList;
     $input.on('change', function(e) {
       showFiles(e.target.files);
     });
+
+
 
 // Form validation
 //
@@ -231,3 +243,6 @@ var fileList;
 //     inline: true,
 //   });
 // ;
+
+
+});

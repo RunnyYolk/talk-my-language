@@ -161,8 +161,6 @@ io.on('connection', function(socket){
     console.log('thread');
     console.log(thread);
     io.to(thread).emit('message', {msg: newMsg.messageContent, senderId: newMsg.sender.id});
-    noMsgsSent++;
-    console.log(noMsgsSent)
   });
 });
 
@@ -211,6 +209,8 @@ app.post('/signup', function(req, res){
         lastLogin: Date.now()
       }
     );
+    console.log('newUser')
+    console.log(newUser)
     User.register(newUser, req.body.password, function(err, user){
       if(err){
         console.log('error registering user');
@@ -274,28 +274,22 @@ app.put('/users/:_id', function(req, res){
   });
 });
 
-
-//Login routes
-
-// Handle login logic
-// app.post('/login', passport.authenticate('local',
-//   {
-//     successRedirect: '/matches',
-//     failureRedirect: '/',
-//     failureFlash: true
-//   }, function(req, res){
-//     User.findByIdAndUpdate(req.user._id, {lastLogin: Date.now()}, function(err, updatedUser){
-//       if(err){
-//         console.log('error finding / updating user')
-//         console.log(err)
-//       } else {
-//         console.log(updatedUser)
-//         console.log('updatedUser')
-//       }
-//     });
-//     console.log("User logged in!")
-//   })
-// );
+app.post('/users/block', function(req,res){
+  var newBlockedUser = req.body.blockedUserId;
+  User.findByIdAndUpdate(
+    req.body.blockingUser,
+    {$push: {"blockedUsers": newBlockedUser}},
+    {upsert: true},
+    function(err, blockedUser) {
+      if(err){
+        console.log("Error blocking user " + err);
+      } else {
+        req.flash("success", "You Blocked" + req.body.blockedUserUsername);
+        res.redirect("/matches");
+      }
+    }
+  );
+});
 
 app.post('/login', function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
@@ -310,8 +304,6 @@ app.post('/login', function(req, res, next) {
           console.log('error finding / updating user')
           console.log(err)
         } else {
-          console.log(updatedUser)
-          console.log('updatedUser')
         }
       });
       console.log("login")
@@ -320,7 +312,6 @@ app.post('/login', function(req, res, next) {
     });
   })(req, res, next);
 });
-
 
 app.get('/logout', function(req, res){
     req.logout();
@@ -332,10 +323,17 @@ app.get('/logout', function(req, res){
 // Get Matches
 app.get('/matches', isLoggedIn, function(req, res){
   req.session.loadedProfiles = [];
-  req.session.query = {learningLanguages: {$in: req.user.spokenLanguages}}
+  if(req.user.blockedUsers){
+    req.session.query = {$and:
+      [
+        {learningLanguages: {$in: req.user.spokenLanguages}},
+        {_id: {$nin: req.user.blockedUsers.split(",")}}
+      ]
+      }
+  } else {
+    req.session.query = {learningLanguages: {$in: req.user.spokenLanguages}}
+  }
   var q = User.find(req.session.query).sort({"lastLogin":-1}).limit(6)
-  console.log('req.session.query')
-  console.log(req.session.query)
   q.exec(function(err, foundUsers){
     if(err){
       console.log("error getting matches from database");
@@ -344,8 +342,6 @@ app.get('/matches', isLoggedIn, function(req, res){
       foundUsers.forEach(function(user){
         req.session.loadedProfiles.push(user._id);
       });
-      console.log('req.session.loadedProfiles from first load')
-      console.log(req.session.loadedProfiles)
       res.render('matches', {users:foundUsers});
     }
   });
@@ -367,11 +363,7 @@ app.post('/matches', isLoggedIn, function(req, res){
     } else {
         nextUsers.forEach(function(user){
           req.session.loadedProfiles.push(user._id);
-          console.log('user._id')
-          console.log(user._id)
         });
-        console.log('more matches req.session.loadedProfiles from infinite loading')
-        console.log(req.session.loadedProfiles)
         res.send({nextUsers: nextUsers});
     }
   });
@@ -541,35 +533,46 @@ app.post('/messages/:_id', isLoggedIn, function(req, res){
 
 // view all conversations a user belongs to
 app.get('/messages', isLoggedIn, function(req, res){
-  var profilePics = {};
-  var ids = [];
+  var profilePics = {}; // empty object for other useres' profile pictures
+  var ids = []; // empty array for other users' ids
   Conversation.find({
     $or : [
       {"participants.user1.id" : req.user._id},
-      {"participants.user2.id" : req.user._id}
-    ]
-  }, function(err, convos){
+      {"participants.user2.id" : req.user._id} // find all conversations which
+    ]                                          // current user is a part of
+  }, function(err, convos){                    // and keep them in 'convos'
     if(err){
       console.log('Error getting Convos ' + err)
     } else {
       convos.forEach(function(cnv, i){
-        if(cnv.participants.user1.id == req.user._id){
-          ids.push(cnv.participants.user2.id);
-        } else {
-          ids.push(cnv.participants.user1.id);
-        }
-      })
-      ids.forEach(function(id, i){
-        User.findById(id, function(err, foundUser){
-          var k = id
-          var v = foundUser.photos[0]
-          profilePics[k] = v
-          if(i == (ids.length - 1)){
-            console.log(profilePics);
-            res.render('messages', {convos: convos, profilePics: profilePics});
+        Message.findById(cnv.messages[cnv.messages.length -1], function(err, message){
+          if(err){
+            console.log('error getting message' + err)
+          } else {
+            cnv.lastMessage = message.messageContent
+            if(cnv.lastMessage.length > 50){
+              cnv.lastMessage = cnv.lastMessage.substring(0,49)+"...";
+            }
+            console.log('cnv.lastMessage');
+            console.log(cnv.lastMessage);
           }
+        })
+        if(cnv.participants.user1.id == req.user._id){
+          ids.push(cnv.participants.user2.id); // If current user is convo participant
+        } else {                               // one, then push participant 2 into
+          ids.push(cnv.participants.user1.id); // ids array, and vis versa
+        }
+        ids.forEach(function(id, i){
+          User.findById(id, function(err, foundUser){
+            var k = id
+            cnv.profilePic = foundUser.photos[0]
+            // profilePics[k] = v
+            if(i == (ids.length - 1)){
+              res.render('messages', {convos: convos});
+            }
+          });
         });
-      });
+      })
     }
   }).sort({"updated":-1});
 });
@@ -602,6 +605,6 @@ app.get('/messages/:_id', checkConversationOwership, function(req, res){
 // ======== For Heroku ========
 // server.listen(process.env.PORT || 8080 , process.env.IP, function(){
 // ======== For Local =========
-server.listen(27017, process.env.IP, function(){
+server.listen(3000, process.env.IP, function(){
   console.log('Fire it UP!');
 });

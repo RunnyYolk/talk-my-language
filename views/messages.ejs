@@ -25,6 +25,12 @@
     <% } %>
   </div>
 
+  <div class="title-wrapper">
+    <div class="header-wrapper">
+      <h1>Messages</h1>
+    </div>
+  </div>
+
   <div class="ui container">
     <% if(error && error.length > 0){ %>
       <div class="ui red message" rolde="alert">
@@ -38,28 +44,33 @@
     <% } %>
   </div>
 
-  <div class="ui grid container">
-    <div class="sixteen wide column">
-      <div class="messages-container">
-        <% var otherUser = "" %>
-        <% convos.forEach(function(convo, i){ %>
-        <% if(convo.participants.user1.id == currentUser._id){ %>
-            <% otherUserName = convo.participants.user2.username %>
-            <% otherUserId = convo.participants.user2.id %>
-          <% } else { %>
-            <% otherUserName = convo.participants.user1.username %>
-            <% otherUserId = convo.participants.user1.id %>
-          <% } %>
-          <% console.log(otherUserId) %>
-          <a class="convo-wrapper" href="/messages/<%= convo._id %>">
-            <img src="<%= profilePics[otherUserId] %>" alt="" />
-            <h3>Your conversation with <%= otherUserName %></h3>
-          </a>
-        <% }) %>
-      </div>
+  <div class="main-wrapper">
+    <div class="messages-wrapper">
+      <% var otherUser = "" %>
+      <% convos.forEach(function(convo, i){ %>
+      <% if(convo.participants.user1.id == currentUser._id){ %>
+          <% otherUserName = convo.participants.user2.username %>
+          <% otherUserId = convo.participants.user2.id %>
+        <% } else { %>
+          <% otherUserName = convo.participants.user1.username %>
+          <% otherUserId = convo.participants.user1.id %>
+        <% } %>
+        <% console.log(otherUserId) %>
+        <a class="convo-wrapper" href="/messages/<%= convo._id %>">
+          <div class="image-flex-wrapper">
+            <div class="img-wrapper">
+              <img src="<%= convo.profilePic %>" alt="" />
+            </div>
+          </div>
+          <div class="message-flex-wrapper">
+            <h3><%= otherUserName %></h3>
+            <p>
+              "<%= convo.lastMessage %>"
+            </p>
+          </div>
+        </a>
+      <% }) %>
     </div>
-
-
   </div>
 
 <script type="text/javascript" src="/scripts/view.js"></script>

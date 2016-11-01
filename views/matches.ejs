@@ -28,7 +28,6 @@
       <% } %>
     </div>
   </div>
-
   <div class="title-wrapper">
     <div class="ui grid container">
       <div class="sixteen wide column">
@@ -53,21 +52,19 @@
             <div class="info">
               <h3><%= user.firstName %> <span class="bold"><%= user.lastName %></span></h3>
               <h4><%= user.city %>, <%= user.country %></h4>
-              <div class="speaks-container">
-                <h5>speaks</h5>
-                  <ul>
+              <div class="languages">
+                <div class="speaks-container">
+                  <h5>speaks</h5>
                     <% user.spokenLanguages.forEach(function(lang, i){ %>
-                        <li><%= lang %></li>
+                        <p><%= lang %></p>
                     <% }); %>
-                  </ul>
-              </div>
-              <div class="learning-container">
-                <h5>learning</h5>
-                  <ul>
+                </div>
+                <div class="learning-container">
+                  <h5>learning</h5>
                     <% user.learningLanguages.forEach(function(lang, i){ %>
-                      <li><%= lang %></li>
+                      <p><%= lang %></p>
                     <% }); %>
-                  </ul>
+                </div>
               </div>
             </div>
           </div>
@@ -80,10 +77,8 @@
       <% } %>
 
     <% }); %>
-
     </div>
   </div>
 </div>
 <script type="text/javascript" src="/scripts/matches.js"></script>
-
 <% include ../partials/footer %>

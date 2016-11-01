@@ -1,5 +1,5 @@
 body, html {
-  background-color: white;
+  background-color: #f9f9f9;
 }
 
 .title-wrapper {
@@ -95,16 +95,10 @@ h3 {
   font-family: 'Open Sans', sans-serif;
   text-align: center;
   font-weight: 100;
-  text-transform: uppercase;
+  text-transform: capitalize;
   letter-spacing: .25em;
-  word-spacing: -.6em;
   font-size: 1.4em;
   margin-bottom: 0;
-}
-
-.bold {
-  font-weight: 700;
-  letter-spacing: normal;
 }
 
 .content {
@@ -129,13 +123,29 @@ h3 {
   letter-spacing: 3px;
 }
 
+.languages {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.speaks-container {
+  margin-top: 20px;
+  flex: 1;
+}
+
+.learning-container {
+  margin-top: 20px;
+  flex: 1;
+  text-align: right;
+}
+
 .speaks-container h5 {
   display: inline-block;
   font-family: 'Open Sans', sans-serif;
   text-align: left;
-  font-size: 12px;
+  font-size: 15px;
   margin-bottom: 8px;
-  font-weight: 700;
+  font-weight: 400;
   text-transform: uppercase;
 }
 
@@ -143,73 +153,30 @@ h3 {
   display: inline-block;
   font-family: 'Open Sans', sans-serif;
   text-align: left;
-  font-size: 12px;
+  font-size: 15px;
   margin-bottom: 8px;
-  font-weight: 700;
+  font-weight: 400;
   text-transform: uppercase;
 }
 
-.speaks-container {
-  width: 100%;
-  display: inline-block;
-  float: left;
-  width: 50%;
-  margin-top: 20px;
-  justify-content: space-between;
-}
-
-.speaks-container ul {
-  display: -webkit-box;
-  margin: 0;
-  padding: 0;
-}
-
-.learning-container ul {
-  display: -webkit-box;
-  margin: 0;
-  padding: 0;
-}
-
-.speaks-container li {
-  display: inline-block;
+.speaks-container p {
+  font-family: 'Open Sans', sans-serif;
   text-align: left;
-  font-family: 'Open Sans', sans-serif;
-  color: #9da0a7;
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 20px;
+  font-weight: 300;
+  text-transform: capitalize;
+  letter-spacing: .15em;
+  font-size: .9em;
+  margin: 0;
 }
 
-.learning-container {
-  width: 100%;
-  display: inline-block;
-  width: 50%;
-  float: right;
+.learning-container p {
+  font-family: 'Open Sans', sans-serif;
   text-align: right;
-  margin-top: 20px;
-  justify-content: space-between;
-}
-
-.learning-container li {
-  list-style: none;
-  display: inline-block;
-  font-family: 'Open Sans', sans-serif;
-  color: #9da0a7;
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 20px;
-}
-
-li:after {
-  content: ", ";
-}
-
-li:nth-last-child(2):after {
-  content: ", and ";
-}
-
-li:last-child:after {
-  content: "";
+  font-weight: 300;
+  text-transform: capitalize;
+  letter-spacing: .15em;
+  font-size: .9em;
+  margin: 0;
 }
 
 .spoken-languages {

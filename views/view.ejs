@@ -18,7 +18,7 @@
         <a class="item" id="userName" href="/users/<%= currentUser._id %>/edit">
           <span><%= currentUser.firstName %></span>
         </a>
-        <a class="item" id="logout href="/logout">
+        <a class="item" id="logout" href="/logout">
           <span>logout</span>
         </a>
       <% } %>
@@ -116,7 +116,28 @@
       </div>
     </div>
     <div class="button-wrapper">
-      <button type="button" name="message"><p class="show-msg">Send <%= user.firstName %> a Message</p><p class="send-msg">Send Message!</p></button>
+      <button id="message" type="button" name="message"><p class="show-msg">Send <%= user.firstName %> a Message</p><p class="send-msg">Send Message!</p></button>
+      <p id="block">Block <%= user.firstName %></p>
+    </div>
+  </div>
+  <div class="block-form">
+    <div class="form-wrapper">
+      <div class="form-header">
+        <h2>Do you want to block <%= user.firstName %>?</h2>
+        <p>
+          This user will no longer be able to contact you or view your profile. The website administrators will be notified.
+        </p>
+      </div>
+      <form class="block-user" action="/users/block" method="post">
+        <textarea name="block-reason" placeholder="OPTIONAL - reason for blocking this user"></textarea>
+        <button type="submit" name="block">Block <%= user.firstName %></button>
+        <input type="hidden" name="blockedUserId" value="<%= user.id %>">
+        <input type="hidden" name="blockedUserUsername" value="<%= user.firstName %>">
+        <input type="hidden" name="blockingUser" value="<%= currentUser.id %>">
+      </form>
+      <p class="cancel-block">
+        Cancel
+      </p>
     </div>
   </div>
 

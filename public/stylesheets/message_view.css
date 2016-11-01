@@ -17,10 +17,10 @@ body, html {
   display: inline-block;
   width: auto;
   padding: 7px;
-  padding-left: 30px;
-  padding-right: 30px;
+  padding-left: 16px;
+  padding-right: 16px;
   margin: 6px;
-  border-radius: 50px;
+  border-radius: 20px;
 }
 
 .current-user {
@@ -36,11 +36,13 @@ body, html {
 .msg-current-user {
   background-color: #FFCF6B;
   margin-right: 10px;
+  border-top-left-radius: 4px;
 }
 
 .msg-other-user {
   background-color: #7CF0FF;
   margin-left: 10px;
+  border-top-right-radius: 4px;
 }
 
 textarea {

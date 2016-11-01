@@ -33,13 +33,13 @@ $(document).ready(function(){
             var spokenLangs = ""
             var learningLangs = ""
             user.spokenLanguages.forEach(function(lang, i){
-              spokenLangs += "<li>" + lang + "</li>"
+              spokenLangs += "<p>" + lang + "</p>"
             });
             user.learningLanguages.forEach(function(lang, i){
-              learningLangs += "<li>" + lang + "</li>"
+              learningLangs += "<p>" + lang + "</p>"
             });
             profilesList.append('\
-            <a class="ui fluid card '+ color[n] +'" href="/users/'+ user._id +'/view" data-num="'+ i +'">\
+              <a class="ui fluid card '+ color[n] +'" href="/users/'+ user._id +'/view" data-num="'+ i +'">\
                 <div class="image-wrapper">\
                   <img src="'+ user.photos[0] +'"/>\
                 </div>\
@@ -47,10 +47,14 @@ $(document).ready(function(){
                   <div class="info">\
                     <h3>'+ user.firstName +' <span class="bold">'+ user.lastName +'</span></h3>\
                     <h4>'+ user.city +', '+ user.country +'</h4>\
-                    <div class="speaks-container">\
-                      <h5>speaks</h5><ul>'+ spokenLangs +'</ul></div>\
-                    <div class="learning-container">\
-                      <h5>learning</h5><ul>'+ learningLangs +'</ul></div>\
+                    <div class="languages">\
+                      <div class="speaks-container">\
+                        <h5>speaks</h5><p>'+ spokenLangs +'</p>\
+                      </div>\
+                      <div class="learning-container">\
+                        <h5>learning</h5><p>'+ learningLangs +'</p>\
+                      </div>\
+                    </div>\
                   </div>\
                 </div>\
               </a>\

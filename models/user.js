@@ -15,7 +15,8 @@ var UserSchema = new mongoose.Schema({
   country: String,
   city: String,
   comMethod: Array,
-  lastLogin: Number
+  lastLogin: Number,
+  blockedUsers: String
 });
 
 UserSchema.plugin(passportLocalMongoose);
