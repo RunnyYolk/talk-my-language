@@ -177,6 +177,8 @@ button {
   display: -ms-flexbox;
   display: flex;
   position: fixed;
+  top: 0;
+  left: 0;
   background-color: rgba(219,43,57,0.5);
   -webkit-box-pack: center;
       -ms-flex-pack: center;
@@ -191,7 +193,6 @@ button {
   -webkit-transition: all .5s ease-in-out;
   -webkit-transition: all .5s ease-in-out;
   transition: all .5s ease-in-out;
-
 }
 
 .confirm-wrapper {
@@ -212,6 +213,7 @@ button {
 }
 
 .confirm-text {
+  text-align: center;
   margin-top:50px;
   -ms-flex-preferred-size: 100%;
       flex-basis: 100%;
@@ -256,6 +258,7 @@ button {
 }
 
 .confirm-delete-button {
+  text-align: center;
   border-color: #ED6A5A;
   color: #ED6A5A;
   margin: 0;
