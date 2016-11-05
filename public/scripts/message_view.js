@@ -1,29 +1,30 @@
 $(document).ready(function(){
 
-console.log('This is Jquery speaking.')
+  var scrollMessages = function(){
+    $('.message-scroller-wrapper').animate({ scrollTop: $('.message-scroller-wrapper').prop("scrollHeight")}, 1000);
+  }
 
-var $form = $(".write-message-form");
+  scrollMessages() // scroll to the bottom of the messages on page load
 
-var NoMsgsPrinted = 0;
-var counter = 0;
+  var $form = $(".write-message-form");
 
-var thread = $('[name="thread"]').val()
+  var NoMsgsPrinted = 0;
+  var counter = 0;
 
-  var socket = io(),
-      $newMessage = $('.new-message'),
-      $senderId = $('[name="senderId"]'),
-      $senderName = $('[name="senderName"]'),
-      $recipientId = $('[name="recipientId"]'),
-      $recipientName = $('[name="recipientName"]'),
-      $thread = $('[name="thread"]'),
-      $chat = $('.messages-wrapper');
+  var thread = $('[name="thread"]').val()
 
-console.log(socket);
+    var socket = io(),
+        $newMessage = $('.new-message'),
+        $senderId = $('[name="senderId"]'),
+        $senderName = $('[name="senderName"]'),
+        $recipientId = $('[name="recipientId"]'),
+        $recipientName = $('[name="recipientName"]'),
+        $thread = $('[name="thread"]'),
+        $chat = $('.messages-text-wrapper');
 
-socket.on('connect', function(){
-  socket.emit('room', thread)
-  console.log(thread)
-});
+  socket.on('connect', function(){
+    socket.emit('room', thread)
+  });
 
   $('[name="submit"]').click(function(e){
     e.preventDefault();
@@ -66,6 +67,7 @@ socket.on('connect', function(){
       // });
     };
   });
+
   socket.on('message', function(msg){
     console.log('msg')
     console.log(msg)
@@ -86,5 +88,6 @@ socket.on('connect', function(){
         </div>\
       </div>')
     }
+    scrollMessages();
   });
 });

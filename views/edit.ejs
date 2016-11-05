@@ -1,203 +1,96 @@
 <% include ../partials/header %>
-<link rel="stylesheet" type="text/css" href="/stylesheets/register.css">
+<link rel="stylesheet" type="text/css" href="/stylesheets/edit.css">
+<link rel="stylesheet" href="/stylesheets/croppie.css" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
 
 </head>
 <body>
-  <% if(currentUser){ %>
-    <li><a href="/users/<%= currentUser._id %>/edit">signed in as <%= currentUser.firstName %></a></li>
-    <li><a href="/logout">logout</a></li>
-  <% } %>
+  <div class="ui fixed inverted secondary menu navbar page">
+    <a class="item">
+      <span class="t">Word</span><span class="ml">UP</span>
+    </a>
+    <a class="item" href="/messages">
+      <span>Messages</span>
+      <% if(currentUser.updatedConversations.length > 0) { %>
+        <div class="newMessages">
+          <span id="numNewMsgs"><%= currentUser.updatedConversations.length %></span>
+        </div>
+      <% } %>
+    </a>
+    <a class="item" href="/matches">
+      <span>Matches</span>
+    </a>
+    <div class="menu-content-right">
+      <a class="search-button" href="/search">
+        <span class="search-icon"></span>
+      </a>
+      <% if(currentUser){ %>
+        <a class="item" href="/users/<%= currentUser._id %>/edit">
+          <span><%= currentUser.firstName %></span>
+        </a>
+        <a class="item" href="/logout">
+          <span>logout</span>
+        </a>
+      <% } %>
+    </div>
+  </div>
+  <div class="title-wrapper">
+    <div class="header-wrapper">
+      <h1>Edit your profile</h1>
+    </div>
+  </div>
+  <div class="main-wrapper">
+      <div class="form-wrapper">
 
-    <h1 class="ui dividing centered header">edit your profile</h1>
-      <div class="ui four column doubling stackable centered grid container">
-        <form class="ui form" action="/users/<%= user_id %>/?_method=PUT" method="post" enctype="multipart/form-data">
-          <div class="two fields">
-            <div class="field">
-              <input type="text" name="fname" placeholder="first name" value="<%= currentUser.firstName %>">
-            </div>
-            <div class="field">
-              <input type="text" name="lname" placeholder="last name" value="<%= currentUser.lastName %>">
-            </div>
-          </div>
-        <div class="field">
-          <div class="ui selection dropdown" id="age">
-            <input type="hidden" name="age">
+      <form class="form" action="/users/<%= user_id %>/?_method=PUT" method="post" enctype="multipart/form-data">
+        <span class="input input--haruki">
+          <input class="input__field input__field--haruki" type="text" name="fname" id="input-1" />
+          <label class="input__label input__label--haruki" for="input-1">
+            <span class="input__label-content input__label-content--haruki">First Name</span>
+          </label>
+        </span>
+        <span class="input input--haruki">
+          <input class="input__field input__field--haruki" type="text" name="lname" id="input-2" />
+          <label class="input__label input__label--haruki" for="input-2">
+            <span class="input__label-content input__label-content--haruki">Last Name</span>
+          </label>
+        </span>
+        <span class="input input--haruki">
+          <input class="input__field input__field--haruki" list="age" type="text" name="age" id="input-5" />
+          <label class="input__label input__label--haruki" for="input-5">
+            <span class="input__label-content input__label-content--haruki">Age</span>
+          </label>
+          <datalist id="age">
+            <option value="Younger Than 18">
+            <option value="18-25">
+            <option value="25-35">
+            <option value="35-45">
+            <option value="45-55">
+            <option value="55+">
+          </datalist>
+        </span>
+        <span class="input input--haruki">
+          <input class="input__field input__field--haruki" list="gender" type="text" name="gender" id="input-6" />
+          <label class="input__label input__label--haruki" for="input-6">
+            <span class="input__label-content input__label-content--haruki">Gender</span>
+          </label>
+          <datalist id="gender">
+            <option value="Male">
+            <option value="Female">
+            <option value="Trans">
+            <option value="Other">
+            <option value="Prefer Not To Say">
+          </datalist>
+        </span>
+        <span class="input input--haruki">
+          <div class="field">
+            <div class="ui multiple search selection dropdown" id="spokenlanguages">
+              <input type="hidden" name="spokenlanguages" id="selectedItemLists">
+            <label class="input__label input__label--haruki" for="spokenlanguages">
+              <span class="input__label-content input__label-content--haruki">Languages You Speak</span>
+            </label>
             <i class="dropdown icon"></i>
-            <div class="default text">age</div>
-            <div class="menu">
-              <div class="item" data-value="<18">younger than 18</div>
-              <div class="item" data-value="18-25">18-25</div>
-              <div class="item" data-value="25-35">25-35</div>
-              <div class="item" data-value="35-45">35-45</div>
-              <div class="item" data-value="45-55">45-55</div>
-              <div class="item" data-value="55+">55+</div>
-            </div>
-          </div>
-        </div>
-        <div class="field">
-          <div class="ui selection dropdown" id="gender">
-            <input type="hidden" name="gender">
-            <i class="dropdown icon"></i>
-            <div class="default text">gender</div>
-            <div class="menu">
-              <div class="item" data-value="male">male</div>
-              <div class="item" data-value="female">female</div>
-              <div class="item" data-value="trans">trans</div>
-              <div class="item" data-value="other">other</div>
-              <div class="item" data-value="prefer not to say">prefer not to say</div>
-            </div>
-          </div>
-        </div>
-        <div class="field">
-          <div class="ui multiple search selection dropdown" id="spokenlanguages">
-            <input type="hidden" name="spokenlanguages" id="selectedItemLists">
-            <i class="dropdown icon"></i>
-            <div class="default text">fluent language or languages</div>
-            <div class="menu">
-              <div class="item" data-value="Afrikaans">Afrikaans</div>
-              <div class="item" data-value="Akan">Akan</div>
-              <div class="item" data-value="Albanian">Albanian</div>
-              <div class="item" data-value="American Sign Language">American Sign Language</div>
-              <div class="item" data-value="Amharic">Amharic</div>
-              <div class="item" data-value="Arabic">Arabic</div>
-              <div class="item" data-value="Arabic (Egyptian)">Arabic (Egyptian)</div>
-              <div class="item" data-value="Arabic (Middle Eastern)">Arabic (Middle Eastern)</div>
-              <div class="item" data-value="Arabic (Moroccan)">Arabic (Moroccan)</div>
-              <div class="item" data-value="Aramaic">Aramaic</div>
-              <div class="item" data-value="Armenian">Armenian</div>
-              <div class="item" data-value="Assamese">Assamese</div>
-              <div class="item" data-value="Assyrian">Assyrian</div>
-              <div class="item" data-value="Aymara">Aymara</div>
-              <div class="item" data-value="Azerbaijani">Azerbaijani</div>
-              <div class="item" data-value="Bahasa (Indonesia)">Bahasa (Indonesia)</div>
-              <div class="item" data-value="Bahasa (Malaysia)">Bahasa (Malaysia)</div>
-              <div class="item" data-value="Bambara">Bambara</div>
-              <div class="item" data-value="Basque">Basque</div>
-              <div class="item" data-value="Belarusian">Belarusian</div>
-              <div class="item" data-value="Bengali">Bengali</div>
-              <div class="item" data-value="Berber">Berber</div>
-              <div class="item" data-value="Bosnian">Bosnian</div>
-              <div class="item" data-value="Breton">Breton</div>
-              <div class="item" data-value="Bulgarian">Bulgarian</div>
-              <div class="item" data-value="Burmese">Burmese</div>
-              <div class="item" data-value="Cambodian (Khmer)">Cambodian (Khmer)</div>
-              <div class="item" data-value="Catalan">Catalan</div>
-              <div class="item" data-value="Cebuano">Cebuano</div>
-              <div class="item" data-value="Chichewa (Nyanja)">Chichewa (Nyanja)</div>
-              <div class="item" data-value="Chinese (Cantonese)">Chinese (Cantonese)</div>
-              <div class="item" data-value="Chinese (Mandarin)">Chinese (Mandarin)</div>
-              <div class="item" data-value="Chinese (other)">Chinese (other)</div>
-              <div class="item" data-value="Creole">Creole</div>
-              <div class="item" data-value="Croatian">Croatian</div>
-              <div class="item" data-value="Czech">Czech</div>
-              <div class="item" data-value="Danish">Danish</div>
-              <div class="item" data-value="Dhivehi (Maldivian)">Dhivehi (Maldivian)</div>
-              <div class="item" data-value="Dutch">Dutch</div>
-              <div class="item" data-value="English">English</div>
-              <div class="item" data-value="Esperanto">Esperanto</div>
-              <div class="item" data-value="Estonian">Estonian</div>
-              <div class="item" data-value="Fijian">Fijian</div>
-              <div class="item" data-value="Filipino (Tagalog)">Filipino (Tagalog)</div>
-              <div class="item" data-value="Finnish">Finnish</div>
-              <div class="item" data-value="French">French</div>
-              <div class="item" data-value="Gaelic (Irish)">Gaelic (Irish)</div>
-              <div class="item" data-value="Gaelic (Scottish)">Gaelic (Scottish)</div>
-              <div class="item" data-value="Galician">Galician</div>
-              <div class="item" data-value="Georgian">Georgian</div>
-              <div class="item" data-value="German">German</div>
-              <div class="item" data-value="Greek">Greek</div>
-              <div class="item" data-value="Greek (Ancient)">Greek (Ancient)</div>
-              <div class="item" data-value="Greenlandic">Greenlandic</div>
-              <div class="item" data-value="Guaraní">Guaraní</div>
-              <div class="item" data-value="Gujarati">Gujarati</div>
-              <div class="item" data-value="Hawaiian">Hawaiian</div>
-              <div class="item" data-value="Hebrew">Hebrew</div>
-              <div class="item" data-value="Hindi">Hindi</div>
-              <div class="item" data-value="Hmong">Hmong</div>
-              <div class="item" data-value="Hungarian">Hungarian</div>
-              <div class="item" data-value="Icelandic">Icelandic</div>
-              <div class="item" data-value="Ido">Ido</div>
-              <div class="item" data-value="Interlingua">Interlingua</div>
-              <div class="item" data-value="International Sign Language">International Sign Language</div>
-              <div class="item" data-value="Italian">Italian</div>
-              <div class="item" data-value="Japanese">Japanese</div>
-              <div class="item" data-value="Japanese sign language">Japanese sign language</div>
-              <div class="item" data-value="Kamilaroi">Kamilaroi</div>
-              <div class="item" data-value="Kannada">Kannada</div>
-              <div class="item" data-value="Kashmiri">Kashmiri</div>
-              <div class="item" data-value="Kazakh">Kazakh</div>
-              <div class="item" data-value="Kikuyu">Kikuyu</div>
-              <div class="item" data-value="Klingon">Klingon</div>
-              <div class="item" data-value="Konkani">Konkani</div>
-              <div class="item" data-value="Korean">Korean</div>
-              <div class="item" data-value="Kurdish">Kurdish</div>
-              <div class="item" data-value="Kurmanji">Kurmanji</div>
-              <div class="item" data-value="Kyrgyz">Kyrgyz</div>
-              <div class="item" data-value="Lao">Lao</div>
-              <div class="item" data-value="Latin">Latin</div>
-              <div class="item" data-value="Latvian">Latvian</div>
-              <div class="item" data-value="Lithuanian">Lithuanian</div>
-              <div class="item" data-value="Luxembourgian">Luxembourgian</div>
-              <div class="item" data-value="Macedonian">Macedonian</div>
-              <div class="item" data-value="Malagasy">Malagasy</div>
-              <div class="item" data-value="Malayalam">Malayalam</div>
-              <div class="item" data-value="Maltese">Maltese</div>
-              <div class="item" data-value="Maori">Maori</div>
-              <div class="item" data-value="Marathi">Marathi</div>
-              <div class="item" data-value="Mongolian">Mongolian</div>
-              <div class="item" data-value="Nepali">Nepali</div>
-              <div class="item" data-value="Newari">Newari</div>
-              <div class="item" data-value="Norwegian">Norwegian</div>
-              <div class="item" data-value="Occitan">Occitan</div>
-              <div class="item" data-value="Oriya">Oriya</div>
-              <div class="item" data-value="Oromo">Oromo</div>
-              <div class="item" data-value="Papiamento">Papiamento</div>
-              <div class="item" data-value="Persian">Persian</div>
-              <div class="item" data-value="Polish">Polish</div>
-              <div class="item" data-value="Portuguese">Portuguese</div>
-              <div class="item" data-value="Punjabi">Punjabi</div>
-              <div class="item" data-value="Pushto (Pashto)">Pushto (Pashto)</div>
-              <div class="item" data-value="Quechua">Quechua</div>
-              <div class="item" data-value="Romanian">Romanian</div>
-              <div class="item" data-value="Romansch">Romansch</div>
-              <div class="item" data-value="Russian">Russian</div>
-              <div class="item" data-value="Sanskrit">Sanskrit</div>
-              <div class="item" data-value="Serbian">Serbian</div>
-              <div class="item" data-value="Shona">Shona</div>
-              <div class="item" data-value="Sindhi">Sindhi</div>
-              <div class="item" data-value="Sinhalese">Sinhalese</div>
-              <div class="item" data-value="Slovak">Slovak</div>
-              <div class="item" data-value="Slovenian">Slovenian</div>
-              <div class="item" data-value="Somali">Somali</div>
-              <div class="item" data-value="Spanish">Spanish</div>
-              <div class="item" data-value="Swahili">Swahili</div>
-              <div class="item" data-value="Swedish">Swedish</div>
-              <div class="item" data-value="Tajik">Tajik</div>
-              <div class="item" data-value="Tamil">Tamil</div>
-              <div class="item" data-value="Telugu">Telugu</div>
-              <div class="item" data-value="Tetum">Tetum</div>
-              <div class="item" data-value="Thai">Thai</div>
-              <div class="item" data-value="Tibetan">Tibetan</div>
-              <div class="item" data-value="Tongan">Tongan</div>
-              <div class="item" data-value="Tswana">Tswana</div>
-              <div class="item" data-value="Turkish">Turkish</div>
-              <div class="item" data-value="Turkmen">Turkmen</div>
-              <div class="item" data-value="Ukrainian">Ukrainian</div>
-              <div class="item" data-value="Urdu">Urdu</div>
-              <div class="item" data-value="Uyghur">Uyghur</div>
-              <div class="item" data-value="Uzbek">Uzbek</div>
-              <div class="item" data-value="Vietnamese">Vietnamese</div>
-              <div class="item" data-value="Welsh">Welsh</div>
-              <div class="item" data-value="Yiddish">Yiddish</div>
-              <div class="item" data-value="Zulu">Zulu</div>
-            </div>
-          </div>
-        </div>
-        <div class="field">
-          <div class="ui multiple search selection dropdown" id="learninglanguages">
-            <input type="hidden" name="learninglanguages">
-            <i class="dropdown icon"></i>
-            <div class="default text">language or languages you want to practice</div>
+            <div class="default text"></div>
             <div class="menu">
               <div class="item" data-value="Afrikaans">Afrikaans</div>
               <div class="item" data-value="Akan">Akan</div>
@@ -337,27 +230,182 @@
               <div class="item" data-value="Zulu">Zulu</div>
             </div>
           </div>
-        </div>
-        <div class="field">
+          </div>
+        </span>
+        <span class="input input--haruki">
+          <div class="field">
+            <div class="ui multiple search selection dropdown" id="learninglanguages">
+              <input type="hidden" name="learninglanguages" id="input-7">
+              <label class="input__label input__label--haruki" for="input-7">
+                <span class="input__label-content input__label-content--haruki">Languages You're Learning</span>
+              </label>
+              <i class="dropdown icon"></i>
+              <div class="default text"></div>
+              <div class="menu">
+                <div class="item" data-value="Afrikaans">Afrikaans</div>
+                <div class="item" data-value="Akan">Akan</div>
+                <div class="item" data-value="Albanian">Albanian</div>
+                <div class="item" data-value="American Sign Language">American Sign Language</div>
+                <div class="item" data-value="Amharic">Amharic</div>
+                <div class="item" data-value="Arabic">Arabic</div>
+                <div class="item" data-value="Arabic (Egyptian)">Arabic (Egyptian)</div>
+                <div class="item" data-value="Arabic (Middle Eastern)">Arabic (Middle Eastern)</div>
+                <div class="item" data-value="Arabic (Moroccan)">Arabic (Moroccan)</div>
+                <div class="item" data-value="Aramaic">Aramaic</div>
+                <div class="item" data-value="Armenian">Armenian</div>
+                <div class="item" data-value="Assamese">Assamese</div>
+                <div class="item" data-value="Assyrian">Assyrian</div>
+                <div class="item" data-value="Aymara">Aymara</div>
+                <div class="item" data-value="Azerbaijani">Azerbaijani</div>
+                <div class="item" data-value="Bahasa (Indonesia)">Bahasa (Indonesia)</div>
+                <div class="item" data-value="Bahasa (Malaysia)">Bahasa (Malaysia)</div>
+                <div class="item" data-value="Bambara">Bambara</div>
+                <div class="item" data-value="Basque">Basque</div>
+                <div class="item" data-value="Belarusian">Belarusian</div>
+                <div class="item" data-value="Bengali">Bengali</div>
+                <div class="item" data-value="Berber">Berber</div>
+                <div class="item" data-value="Bosnian">Bosnian</div>
+                <div class="item" data-value="Breton">Breton</div>
+                <div class="item" data-value="Bulgarian">Bulgarian</div>
+                <div class="item" data-value="Burmese">Burmese</div>
+                <div class="item" data-value="Cambodian (Khmer)">Cambodian (Khmer)</div>
+                <div class="item" data-value="Catalan">Catalan</div>
+                <div class="item" data-value="Cebuano">Cebuano</div>
+                <div class="item" data-value="Chichewa (Nyanja)">Chichewa (Nyanja)</div>
+                <div class="item" data-value="Chinese (Cantonese)">Chinese (Cantonese)</div>
+                <div class="item" data-value="Chinese (Mandarin)">Chinese (Mandarin)</div>
+                <div class="item" data-value="Chinese (other)">Chinese (other)</div>
+                <div class="item" data-value="Creole">Creole</div>
+                <div class="item" data-value="Croatian">Croatian</div>
+                <div class="item" data-value="Czech">Czech</div>
+                <div class="item" data-value="Danish">Danish</div>
+                <div class="item" data-value="Dhivehi (Maldivian)">Dhivehi (Maldivian)</div>
+                <div class="item" data-value="Dutch">Dutch</div>
+                <div class="item" data-value="English">English</div>
+                <div class="item" data-value="Esperanto">Esperanto</div>
+                <div class="item" data-value="Estonian">Estonian</div>
+                <div class="item" data-value="Fijian">Fijian</div>
+                <div class="item" data-value="Filipino (Tagalog)">Filipino (Tagalog)</div>
+                <div class="item" data-value="Finnish">Finnish</div>
+                <div class="item" data-value="French">French</div>
+                <div class="item" data-value="Gaelic (Irish)">Gaelic (Irish)</div>
+                <div class="item" data-value="Gaelic (Scottish)">Gaelic (Scottish)</div>
+                <div class="item" data-value="Galician">Galician</div>
+                <div class="item" data-value="Georgian">Georgian</div>
+                <div class="item" data-value="German">German</div>
+                <div class="item" data-value="Greek">Greek</div>
+                <div class="item" data-value="Greek (Ancient)">Greek (Ancient)</div>
+                <div class="item" data-value="Greenlandic">Greenlandic</div>
+                <div class="item" data-value="Guaraní">Guaraní</div>
+                <div class="item" data-value="Gujarati">Gujarati</div>
+                <div class="item" data-value="Hawaiian">Hawaiian</div>
+                <div class="item" data-value="Hebrew">Hebrew</div>
+                <div class="item" data-value="Hindi">Hindi</div>
+                <div class="item" data-value="Hmong">Hmong</div>
+                <div class="item" data-value="Hungarian">Hungarian</div>
+                <div class="item" data-value="Icelandic">Icelandic</div>
+                <div class="item" data-value="Ido">Ido</div>
+                <div class="item" data-value="Interlingua">Interlingua</div>
+                <div class="item" data-value="International Sign Language">International Sign Language</div>
+                <div class="item" data-value="Italian">Italian</div>
+                <div class="item" data-value="Japanese">Japanese</div>
+                <div class="item" data-value="Japanese sign language">Japanese sign language</div>
+                <div class="item" data-value="Kamilaroi">Kamilaroi</div>
+                <div class="item" data-value="Kannada">Kannada</div>
+                <div class="item" data-value="Kashmiri">Kashmiri</div>
+                <div class="item" data-value="Kazakh">Kazakh</div>
+                <div class="item" data-value="Kikuyu">Kikuyu</div>
+                <div class="item" data-value="Klingon">Klingon</div>
+                <div class="item" data-value="Konkani">Konkani</div>
+                <div class="item" data-value="Korean">Korean</div>
+                <div class="item" data-value="Kurdish">Kurdish</div>
+                <div class="item" data-value="Kurmanji">Kurmanji</div>
+                <div class="item" data-value="Kyrgyz">Kyrgyz</div>
+                <div class="item" data-value="Lao">Lao</div>
+                <div class="item" data-value="Latin">Latin</div>
+                <div class="item" data-value="Latvian">Latvian</div>
+                <div class="item" data-value="Lithuanian">Lithuanian</div>
+                <div class="item" data-value="Luxembourgian">Luxembourgian</div>
+                <div class="item" data-value="Macedonian">Macedonian</div>
+                <div class="item" data-value="Malagasy">Malagasy</div>
+                <div class="item" data-value="Malayalam">Malayalam</div>
+                <div class="item" data-value="Maltese">Maltese</div>
+                <div class="item" data-value="Maori">Maori</div>
+                <div class="item" data-value="Marathi">Marathi</div>
+                <div class="item" data-value="Mongolian">Mongolian</div>
+                <div class="item" data-value="Nepali">Nepali</div>
+                <div class="item" data-value="Newari">Newari</div>
+                <div class="item" data-value="Norwegian">Norwegian</div>
+                <div class="item" data-value="Occitan">Occitan</div>
+                <div class="item" data-value="Oriya">Oriya</div>
+                <div class="item" data-value="Oromo">Oromo</div>
+                <div class="item" data-value="Papiamento">Papiamento</div>
+                <div class="item" data-value="Persian">Persian</div>
+                <div class="item" data-value="Polish">Polish</div>
+                <div class="item" data-value="Portuguese">Portuguese</div>
+                <div class="item" data-value="Punjabi">Punjabi</div>
+                <div class="item" data-value="Pushto (Pashto)">Pushto (Pashto)</div>
+                <div class="item" data-value="Quechua">Quechua</div>
+                <div class="item" data-value="Romanian">Romanian</div>
+                <div class="item" data-value="Romansch">Romansch</div>
+                <div class="item" data-value="Russian">Russian</div>
+                <div class="item" data-value="Sanskrit">Sanskrit</div>
+                <div class="item" data-value="Serbian">Serbian</div>
+                <div class="item" data-value="Shona">Shona</div>
+                <div class="item" data-value="Sindhi">Sindhi</div>
+                <div class="item" data-value="Sinhalese">Sinhalese</div>
+                <div class="item" data-value="Slovak">Slovak</div>
+                <div class="item" data-value="Slovenian">Slovenian</div>
+                <div class="item" data-value="Somali">Somali</div>
+                <div class="item" data-value="Spanish">Spanish</div>
+                <div class="item" data-value="Swahili">Swahili</div>
+                <div class="item" data-value="Swedish">Swedish</div>
+                <div class="item" data-value="Tajik">Tajik</div>
+                <div class="item" data-value="Tamil">Tamil</div>
+                <div class="item" data-value="Telugu">Telugu</div>
+                <div class="item" data-value="Tetum">Tetum</div>
+                <div class="item" data-value="Thai">Thai</div>
+                <div class="item" data-value="Tibetan">Tibetan</div>
+                <div class="item" data-value="Tongan">Tongan</div>
+                <div class="item" data-value="Tswana">Tswana</div>
+                <div class="item" data-value="Turkish">Turkish</div>
+                <div class="item" data-value="Turkmen">Turkmen</div>
+                <div class="item" data-value="Ukrainian">Ukrainian</div>
+                <div class="item" data-value="Urdu">Urdu</div>
+                <div class="item" data-value="Uyghur">Uyghur</div>
+                <div class="item" data-value="Uzbek">Uzbek</div>
+                <div class="item" data-value="Vietnamese">Vietnamese</div>
+                <div class="item" data-value="Welsh">Welsh</div>
+                <div class="item" data-value="Yiddish">Yiddish</div>
+                <div class="item" data-value="Zulu">Zulu</div>
+              </div>
+            </div>
+          </div>
+        </span>
+        <span class="input input--haruki">
           <div class="box box__input">
             <input class="box__file" type="file" name="photos" id="file" data-multiple-caption="{count} files selected" multiple />
-            <label for="file"><strong>Choose a file</strong><span class="box__dragndrop"> or drag it here</span>.</label>
+            <label for="file"><strong>Choose Profile Pictures</strong><span class="box__dragndrop"> or drag and drop here</span>.</label>
             <button class="box__button" type="submit">Upload</button>
+            <div class="selected-images"></div>
+            <div class="box__uploading">Uploading&hellip;</div>
+            <div class="box__success">Done!</div>
+            <div class="box__error">Error! <span></span>.</div>
           </div>
-          <div class="box__uploading">Uploading&hellip;</div>
-          <div class="box__success">Done!</div>
-          <div class="box__error">Error! <span></span>.</div>
-        </div>
-        <div class="field">
-          <label for="info">personal info</label>
-          <textarea name="info" rows="8" cols="40"><%= user.info %></textarea>
-        </div>
-        <div class="two fields">
-          <div class="field">
-            <div class="ui search selection dropdown" id="country">
-              <input type="hidden" name="country">
+        </span>
+        <span class="input input--haruki">
+          <div class="textarea-wrapper">
+            <textarea name="info" placeholder="Write a Bit About Yourself" rows="8" cols="40" id="about"></textarea>
+          </div>
+        </span>
+        <span class="input input--haruki">
+            <div class="ui search selection dropdown not multi" id="country">
+              <input type="hidden" name="country" id="input-8">
+              <label class="input__label input__label--haruki" for="input-8">
+                <span class="input__label-content input__label-content--haruki">Which Country do you Live in?</span>
+              </label>
               <i class="dropdown icon"></i>
-              <div class="default text">which country do you live in?</div>
+              <div class="default text"></div>
               <div class="menu">
                 <div class="item" data-value="Afghanistan">Afghanistan</div>
                 <div class="item" data-value="Åland Islands">Åland Islands</div>
@@ -610,37 +658,70 @@
                 <div class="item" data-value="Zimbabwe">Zimbabwe</div>
               </div>
             </div>
-          </div>
-          <div class="field">
-            <input type="text" name="city" value="<%= user.city %>">
-          </div>
+        </span>
+        <span class="input input--haruki">
+          <input class="input__field input__field--haruki" type="text" name="city" id="input-9" />
+          <label class="input__label input__label--haruki" for="input-9">
+            <span class="input__label-content input__label-content--haruki">Town / City</span>
+          </label>
+        </span>
+        <span class="input input--haruki">
+            <div class="ui multiple selection dropdown" id="commethod">
+              <input type="hidden" name="commethod" id="input-10">
+              <label class="input__label input__label--haruki" for="input-10">
+                <span class="input__label-content input__label-content--haruki">How do You Like to Communicate?</span>
+              </label>
+              <i class="dropdown icon"></i>
+              <div class="default text"></div>
+              <div class="menu">
+                <div class="item" data-value="skype">Skype</div>
+                <div class="item" data-value="whatsapp">WhatsApp</div>
+                <div class="item" data-value="email">Email</div>
+                <div class="item" data-value="face to face">Face to Face</div>
+              </div>
+            </div>
+        </span>
+        <div class="button-wrapper">
+          <button class="button" type="submit" name="submit">Submit</button>
         </div>
-        <div class="field">
-          <div class="ui multiple selection dropdown" id="commethod">
-            <input type="hidden" name="commethod">
-            <i class="dropdown icon"></i>
-            <div class="default text">how do you like to communicate</div>
-            <div class="menu">
-              <div class="item" data-value="skype">skype</div>
-              <div class="item" data-value="whatsapp">whatsapp</div>
-              <div class="item" data-value="email">email</div>
-              <div class="item" data-value="face to face">face to face</div>
+      </form>
+      <div class="delete-button-wrapper">
+        <button class="delete-button" type="button" name="delete">Delete Account</button>
+      </div>
+      </div>
+      <div class="delete-confirm-wrapper">
+        <div class="confirm-wrapper">
+          <div class="confirm-text">
+            <h2>Are you sure you want to delete your account?</h2>
+            <p>
+              This cannot be undone, and you will have to re-register to use the site again.
+            </p>
+          </div>
+          <div class="checkbox-button-wrapper">
+            <div class="checkbox-wrapper">
+              <input id="delete-checkbox" type="checkbox" name="confirm-delete">
+              <p>
+                Yes, delete my account.
+              </p>
+            </div>
+            <div class="confirm-delete-button-wrapper">
+              <button class="confirm-delete-button" type="button" name="confirm-delete">Delete</button>
+            </div>
+
+          </div>
+          <div class="cancel-wrapper">
+            <div class="delete-button">
+              <h2 class="">Cancel</h2>
             </div>
           </div>
         </div>
-        <div class="field">
-          <div class="ui checkbox">
-            <input type="checkbox" name="terms">
-            <label>I accept the terms and conditions</label>
-          </div>
-        </div>
-        <button class="ui button" type="submit" name="submit">submit</button>
-      </form>
-      <div class="selected-images"></div>
-     </div>
+      </div>
+
     <script>
       var user = <%- JSON.stringify(user) %>;
     </script>
+    <script src="/scripts/croppie.min.js"></script>
     <script src="/scripts/edit.js"></script>
+    <script src="/scripts/classie.js"></script>
 
 <% include ../partials/footer %>

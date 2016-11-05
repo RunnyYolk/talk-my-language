@@ -9,8 +9,28 @@ $(document).ready(function(){
       forceSelection: false
     });
 
-    var email = sessionStorage.getItem('email');
-    document.querySelector('input[name="username"]').value = email
+    console.log(sessionStorage)
+    if(sessionStorage.email){
+      var email = sessionStorage.email;
+      $('input[name="username"]').val(email);
+      $('input[name="username"]').parent().addClass("input--filled")
+    }
+
+    $('.ui.multiple.selection.dropdown').on('click', function(){
+      $(this).has('a').addClass("input--filled");
+    })
+
+    $('.ui.multiple.selection.dropdown').on('keypress', function(){
+      $(this).addClass("input--filled");
+    })
+
+    $('.not.multi').on('click', function(){
+      $(this).addClass("input--filled");
+    })
+
+    $('.not.multi').on('keypress', function(){
+      $(this).addClass("input--filled");
+    })
 
     var fileList;
 
@@ -19,9 +39,7 @@ $(document).ready(function(){
       return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
     }();
 
-    console.log('isAdvancedUpload')
-    console.log(isAdvancedUpload)
-
+    var $box = $('.box')
     var $form = $('.ui .form');
     var $inputBox = $('.box');
 
@@ -33,18 +51,18 @@ $(document).ready(function(){
 
     if (isAdvancedUpload) {
       var droppedFiles = false;
-      $form.addClass('has-advanced-upload');
-      $form.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+      $box.addClass('has-advanced-upload');
+      $box.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
         e.preventDefault();
         e.stopPropagation();
       });
-      $form.on('dragover dragenter', function() {
-        $form.addClass('is-dragover');
+      $box.on('dragover dragenter', function() {
+        $box.addClass('is-dragover');
       });
-      $form.on('dragleave dragend drop', function() {
-        $form.removeClass('is-dragover');
+      $box.on('dragleave dragend drop', function() {
+        $box.removeClass('is-dragover');
       });
-      $form.on('drop', function(e) {
+      $box.on('drop', function(e) {
         droppedFiles = e.originalEvent.dataTransfer.files;
         var $imgDiv = $('.selected-images');
         $.each(droppedFiles, function(index, file) {

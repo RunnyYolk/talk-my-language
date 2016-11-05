@@ -4,28 +4,38 @@
 
 </head>
 <body>
-    <div class="ui fixed inverted secondary menu navbar page">
-      <a class="item">
-        <span class="t">T</span><span class="ml">ML</span>
-      </a>
-      <a class="item" href="/messages">
-        <span>Messages</span>
-      </a>
-      <a class="item" href="/matches">
-        <span>Matches</span>
+  <div class="ui fixed inverted secondary menu navbar page">
+    <a class="item">
+      <span class="t">Word</span><span class="ml">UP</span>
+    </a>
+    <a class="item" href="/messages">
+      <span>Messages</span>
+      <% if(currentUser.updatedConversations.length > 0) { %>
+        <div class="newMessages">
+          <span id="numNewMsgs"><%= currentUser.updatedConversations.length %></span>
+        </div>
+      <% } %>
+    </a>
+    <a class="item" href="/matches">
+      <span>Matches</span>
+    </a>
+    <div class="menu-content-right">
+      <a class="search-button" href="/search">
+        <span class="search-icon"></span>
       </a>
       <% if(currentUser){ %>
-        <a class="item" id="userName" href="/users/<%= currentUser._id %>/edit">
+        <a class="item" href="/users/<%= currentUser._id %>/edit">
           <span><%= currentUser.firstName %></span>
         </a>
-        <a class="item" id="logout" href="/logout">
+        <a class="item" href="/logout">
           <span>logout</span>
         </a>
       <% } %>
     </div>
+  </div>
 
   <div class="ui grid container">
-    <div class="ten wide column">
+    <div class="ten wide column" id="profile-container">
       <div class="profile-container">
         <div class="title-container">
           <h1><%= user.firstName %> <%=user.lastName%></h1>
@@ -74,6 +84,7 @@
           </div>
         </div>
         <div class="info">
+          <h4>About <%= user.firstName %></h4>
           <p><%= user.info %></p>
         </div>
       </div>
@@ -82,11 +93,11 @@
           <div class="field">
             <div class="textarea-titles-wrapper">
               <h4>Write Your Message to <%= user.firstName %></h4>
-              <p class="cancel-message">
-                Cancel Message
-              </p>
             </div>
             <textarea class="message-content" name="msgCont" rows="8" cols="40"></textarea>
+            <p class="cancel-message">
+              Cancel Message
+            </p>
           </div>
           <input type="hidden" name="senderId" value="<%= currentUser._id %>">
           <input type="hidden" name="senderName" value="<%= currentUser.firstName %>">
@@ -95,7 +106,7 @@
         </form>
       </div>
     </div>
-    <div class="six wide column">
+    <div class="six wide column"  id="image-container">
       <div class="image-container">
         <div class="ui grid">
           <div class="one column row">
@@ -115,9 +126,11 @@
         </div>
       </div>
     </div>
-    <div class="button-wrapper">
-      <button id="message" type="button" name="message"><p class="show-msg">Send <%= user.firstName %> a Message</p><p class="send-msg">Send Message!</p></button>
-      <p id="block">Block <%= user.firstName %></p>
+    <div class="sixteen wide column">
+      <div class="button-wrapper">
+        <button id="message" type="button" name="message"><p class="show-msg">Send <%= user.firstName %> a Message</p><p class="send-msg">Send Message!</p></button>
+        <p id="block">Block <%= user.firstName %></p>
+      </div>
     </div>
   </div>
   <div class="block-form">

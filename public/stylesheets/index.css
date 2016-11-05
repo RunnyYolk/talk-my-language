@@ -1,18 +1,32 @@
-html, body {
-  margin: 0;
-}
-
 body {
+  background:
+    -webkit-linear-gradient(
+      rgba(055,217,238,0.7),
+      rgba(055,217,238,0.7)
+      ),
+    url('/stylesheets/front.jpg') no-repeat center top ;
   background:
     linear-gradient(
       rgba(055,217,238,0.7),
       rgba(055,217,238,0.7)
       ),
     url('/stylesheets/front.jpg') no-repeat center top ;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
     background-size: cover;
+}
+
+.main-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
 }
 
 h1 {
@@ -21,6 +35,12 @@ h1 {
   color: white;
   font-size: 5em;
   top: 8.5vh;
+}
+
+p {
+  max-width: 80vw;
+  text-align: center;
+  margin: 0 auto;
 }
 
 .talk {
@@ -50,15 +70,22 @@ h1 {
 }
 
 .login-wrapper {
-  /*position: absolute;*/
-  /*width: 100vw;*/
-  margin: 0 auto;
-  height: 100px;
-  transform: translateY(48vh);
-  /*bottom: 13vh;*/
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin-bottom: 5vw;
 }
 
 .login-form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   position: relative;
   margin: auto;
   width: 53.5vw;
@@ -92,8 +119,7 @@ h1 {
   background: none;
   line-height: 5vh;
   -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none;   /* Chrome/Safari/Opera */
-  -khtml-user-select: none;    /* Konqueror */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */    /* Konqueror */
   -moz-user-select: none;      /* Firefox */
   -ms-user-select: none;       /* Internet Explorer/Edge */
   user-select: none;           /* Non-prefixed version, currently
@@ -111,8 +137,7 @@ h1 {
   -webkit-transition: all .4s;
   transition: all .4s;
   -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none;   /* Chrome/Safari/Opera */
-  -khtml-user-select: none;    /* Konqueror */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */    /* Konqueror */
   -moz-user-select: none;      /* Firefox */
   -ms-user-select: none;       /* Internet Explorer/Edge */
   user-select: none;           /* Non-prefixed version, currently
@@ -167,9 +192,15 @@ h1 {
   float: left;
   position: relative;
   overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   width: 130px;
   height: 50px;
   padding: 0;
@@ -181,6 +212,8 @@ h1 {
 }
 
 .signup-text {
+  left: 0;
+  right: 0;
   font-family: "HelveticaNeue-Ultra-Light", "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 100;
   font-size: 2.6em;
@@ -190,8 +223,7 @@ h1 {
   -webkit-transition: all .4s;
   transition: all .4s;
   -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none;   /* Chrome/Safari/Opera */
-  -khtml-user-select: none;    /* Konqueror */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */    /* Konqueror */
   -moz-user-select: none;      /* Firefox */
   -ms-user-select: none;       /* Internet Explorer/Edge */
   user-select: none;           /* Non-prefixed version, currently
@@ -217,8 +249,7 @@ h1 {
   -webkit-transition: all .4s;
   transition: all .4s;
   -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none;   /* Chrome/Safari/Opera */
-  -khtml-user-select: none;    /* Konqueror */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */    /* Konqueror */
   -moz-user-select: none;      /* Firefox */
   -ms-user-select: none;       /* Internet Explorer/Edge */
   user-select: none;           /* Non-prefixed version, currently
@@ -232,22 +263,26 @@ h1 {
   transition: all .4s;
 }
 
-.center-clicker {
-  display: flex;
-  width: 100vw;
-  height: 50px;
-  bottom: 8vh;
-  position: absolute;
+.clicker-wrapper {
+  -ms-flex-preferred-size: 100%;
+      flex-basis: 100%;
 }
 
 .clicker {
+  -webkit-box-flex: 0;
+      -ms-flex-positive: 0;
+          flex-grow: 0;
   position: relative;
   overflow-x: hidden;
   width: 100px;
   margin: auto;
   margin-top: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   height: 50px;
   background: none;
 }
@@ -259,20 +294,22 @@ h1 {
 .text-container {
   text-align: center;
   height: 100%;
-  width: 80px;
+  width: 150px;
 }
 
 .login-text {
   font-family: "HelveticaNeue-Ultra-Light", "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  left: 0;
+  right: 0;
   white-space: nowrap;
+  text-align: right;
   font-weight: 100;
   font-size: 2.6em;
   line-height: normal;
   color: white;
   top: 10px;
   -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none;   /* Chrome/Safari/Opera */
-  -khtml-user-select: none;    /* Konqueror */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */    /* Konqueror */
   -moz-user-select: none;      /* Firefox */
   -ms-user-select: none;       /* Internet Explorer/Edge */
   user-select: none;           /* Non-prefixed version, currently
@@ -287,8 +324,7 @@ h1 {
   line-height: normal;
   top: 10px;
   -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none;   /* Chrome/Safari/Opera */
-  -khtml-user-select: none;    /* Konqueror */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */    /* Konqueror */
   -moz-user-select: none;      /* Firefox */
   -ms-user-select: none;       /* Internet Explorer/Edge */
   user-select: none;           /* Non-prefixed version, currently
@@ -318,6 +354,7 @@ h1 {
 }
 
 .cancel-container {
+  width:110px;
   height: 100%;
   position: absolute;
 }
@@ -326,7 +363,7 @@ h1 {
   position: relative;
   overflow: hidden;
   height: 100%;
-  width: 100px;
+  width: 150px;
   left: 100px;
   -webkit-transition: all .4s;
   transition: all .4s;
@@ -352,13 +389,14 @@ select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
   -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none;   /* Chrome/Safari/Opera */
-  -khtml-user-select: none;    /* Konqueror */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */    /* Konqueror */
   -moz-user-select: none;      /* Firefox */
   -ms-user-select: none;       /* Internet Explorer/Edge */
   user-select: none;           /* Non-prefixed version, currently
                                   not supported by any browser */
   -webkit-text-fill-color: white ;
   -webkit-box-shadow: 0 0 0px 1000px #FFCF6B inset;
+  -webkit-transition:
+    background-color 5000s ease-in-out 0s;
   transition: background-color 5000s ease-in-out 0s;
 }

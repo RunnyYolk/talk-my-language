@@ -1,10 +1,14 @@
 $(document).ready(function(){
   var login = false;
   $('.signup-btn').on("click", function(){
+    let email = document.querySelector('input[name="username"]').value
+    console.log('email')
+    console.log(email)
     if (!login) {
-      let email = document.querySelector('input[name="username"]').value
-      sessionStorage.clear();
-      sessionStorage.setItem('email', email);
+      if(email){
+        sessionStorage.clear();
+        sessionStorage.setItem('email', email);
+      }
       window.location.href = '/signup';
     } else {
       $('.login-form').submit();

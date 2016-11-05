@@ -5,7 +5,12 @@ $(document).ready(function(){
   jQuery.fn.exists = function(){return this.length>0;}
 
   $(window).scroll(function(){
-    if($(window).scrollTop() >= ($(document).height() - $(window).height())){
+    var newpacity = 1 - $(this).scrollTop() / 1000
+      if(newpacity >= 0.5) {
+      $('.navbar').css('opacity', newpacity);
+    }
+
+    if($(this).scrollTop() >= ($(document).height() - $(this).height())){
       let viewedProfiles =  $('input[name="viewedProfiles"]').value;
       // if($('input[name="query"]').exists()){
       //   let query = $('input[name="query"]').value;
@@ -49,10 +54,10 @@ $(document).ready(function(){
                     <h4>'+ user.city +', '+ user.country +'</h4>\
                     <div class="languages">\
                       <div class="speaks-container">\
-                        <h5>speaks</h5><p>'+ spokenLangs +'</p>\
+                        <h5>speaks</h5>'+ spokenLangs +'\
                       </div>\
                       <div class="learning-container">\
-                        <h5>learning</h5><p>'+ learningLangs +'</p>\
+                        <h5>learning</h5>'+ learningLangs +'\
                       </div>\
                     </div>\
                   </div>\

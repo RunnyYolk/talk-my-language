@@ -125,15 +125,25 @@ function saveMessage(message, thread){
     if(err){
       console.log("error creating message " + err);
     } else {
-      console.log('newMessage')
-      console.log(newMessage)
       Conversation.findById(thread).exec(function(err, conv){
         if(err){
-          console.log('Error fetching conversation ' + err);
+          console.log('Error fetching conversation - app.js 132 ' + err);
         } else {
           conv.updated = Date.now();
           conv.messages.push(newMessage);
           conv.save();
+          console.log("convo saved line 136. Check new message pushed, new message for user and Date.now = " + Date.now());
+          console.log(conv)
+          User.findByIdAndUpdate(message.recipient.id, {
+            $inc: {numberOfNewMessages: 1}
+          }, function(err, updatedRecipient){
+            if(err){
+              console.log('Error updating recipients number of new messages ' + err)
+            } else {
+              console.log('updatedRecipient')
+              console.log(updatedRecipient)
+            }
+          });
         }
       });
     }
@@ -143,7 +153,7 @@ function saveMessage(message, thread){
 io.on('connection', function(socket){
   socket.on('room', function(room){
     socket.join(room);
-    console.log("someone's joinged room " + room);
+    console.log("someone's joined room " + room);
   })
   connections.push(socket);
   console.log('Connections: %s sockets connected', connections.length);
@@ -157,9 +167,6 @@ io.on('connection', function(socket){
   // New message
   socket.on('new message', function(newMsg, thread){
     saveMessage(newMsg, thread);
-    console.log(newMsg);
-    console.log('thread');
-    console.log(thread);
     io.to(thread).emit('message', {msg: newMsg.messageContent, senderId: newMsg.sender.id});
   });
 });
@@ -189,8 +196,13 @@ app.post('/signup', function(req, res){
     var learnLangs = req.body.learninglanguages.split(',');
     var comms = req.body.commethod.split(',');
     var photos = []
+    console.log("=================================req=========================")
+    console.log("=================================req=========================")
+    console.log(req)
+    console.log("=================================req=========================")
+    console.log("=================================req=========================")
     req.files.forEach(function(file, i){
-      photos.push(req.files[i].path.replace('public/', '../'));
+      photos.push(req.files[i].path.replace('public/', '/'));
     });
     var newUser = new User(
       {
@@ -231,6 +243,7 @@ app.post('/signup', function(req, res){
 app.get('/users/:_id/edit', function(req, res){
   User.findById(req.params._id, function(err, foundUser){
     if(err){
+      req.flash('error', "There was an error loading your profile.")
       res.redirect("back");
     } else {
       res.render("edit", {user_id: req.params._id, user: foundUser});
@@ -240,37 +253,44 @@ app.get('/users/:_id/edit', function(req, res){
 
 // PUT edits
 app.put('/users/:_id', function(req, res){
-  // var spokenLangs = req.body.spokenlanguages.split(',');
-  // var learnLangs = req.body.learninglanguages.split(',');
-  // var comms = req.body.commethod.split(',');
-  var photos = []
-  req.files.forEach(function(file, i){
-    photos.push(req.files[i].path.replace('public/', '../'));
-  });
-  var updatedUser = new User(
-    {
-      username: req.body.username,
-      firstName: req.body.fname,
-      lastName: req.body.lname,
-      age: req.body.age,
-      gender: req.body.gender,
-      spokenLanguages: spokenLangs,
-      learningLanguages: learnLangs,
-      info: req.body.info,
-      country: req.body.country,
-      city: req.body.city,
-      comMethod: comms,
-      photos: photos,
-      lastLogin: Date.now()
+  upload(req, res, function (err){
+    if (err) {
+      console.log('error');
+      console.log(err)
+      return;
     }
-  );
-  User.findByIdAndUpdate(req.params._id, updatedUser, function(err, user){
-    if(err){
-      console.log('error updating user');
-      console.log(err);
-    } else {
-      res.redirect('/matches');
-    }
+    var spokenLangs = req.body.spokenlanguages.split(',');
+    var learnLangs = req.body.learninglanguages.split(',');
+    var comms = req.body.commethod.split(',');
+    var photos = []
+    console.log('req')
+    console.log(req)
+    req.files.forEach(function(file, i){
+      photos.push(req.files[i].path.replace('public/', '/'));
+    });
+    var updatedUser =
+      {
+        firstName: req.body.fname,
+        lastName: req.body.lname,
+        age: req.body.age,
+        gender: req.body.gender,
+        spokenLanguages: spokenLangs,
+        learningLanguages: learnLangs,
+        info: req.body.info,
+        country: req.body.country,
+        city: req.body.city,
+        comMethod: comms,
+        photos: photos,
+      }
+
+    User.findByIdAndUpdate(req.params._id, updatedUser, function(err, user){
+      if(err){
+        console.log('error updating user');
+        console.log(err);
+      } else {
+        res.redirect('/matches');
+      }
+    });
   });
 });
 
@@ -317,6 +337,22 @@ app.get('/logout', function(req, res){
     req.logout();
     res.redirect("/");
 });
+
+// Delete User
+
+app.get('/deleteUser', function(req, res){
+  User.remove({_id: req.user._id}, function(err){
+    if(err){
+      console.log('Something went wrong');
+      console.log(err)
+      req.flash('error', 'There was an error deleting your account. Please contact WordUP to have your account deleted.')
+      res.redirect('/matches');
+    } else {
+      req.flash('success', 'Profile deleted. Bye... :(')
+      res.redirect('/')
+    }
+  })
+})
 
 //Matched and Profiles
 
@@ -466,7 +502,7 @@ app.post('/messages', isLoggedIn, function(req, res){
                 }
               },
               updated : Date.now(),
-              messages : [] // The message _id is pushed in later.
+              messages : [], // The message _id is pushed in later.
             }
             Conversation.create(conv, function(err, newConvo){
               if(err){
@@ -474,11 +510,31 @@ app.post('/messages', isLoggedIn, function(req, res){
               } else {
                 newConvo.messages.push(newMessage);
                 newConvo.save();
+                User.findByIdAndUpdate(req.body.recipientId, {
+                  $addToSet: {updatedConversations: newConvo.id}
+                }, function(err, updatedRecipient){
+                  if(err){
+                    console.log('Error updating recipients number of new messages ' + err)
+                  } else {
+                  }
+                });
               }
-            })
+            });
           } else {
             convo.messages.push(newMessage);
             convo.save();
+            console.log("New conversation started. Check message pushed and new message for user")
+            console.log(convo)
+            User.findByIdAndUpdate(req.body.recipientId, {
+              $addToSet: {updatedConversations: convo.id}
+            }, function(err, updatedRecipient){
+              if(err){
+                console.log('Error updating recipients number of new messages ' + err)
+              } else {
+                console.log('updatedRecipient')
+                console.log(updatedRecipient)
+              }
+            });
           }
         }
       });
@@ -490,10 +546,6 @@ app.post('/messages', isLoggedIn, function(req, res){
 
 // Send a message from existing thread
 app.post('/messages/:_id', isLoggedIn, function(req, res){
-  console.log("=================================================")
-  console.log('req.body');
-  console.log(req.body);
-  console.log("=================================================")
   var message = {
     sender : {
       "id" : req.body.senderId,
@@ -511,19 +563,24 @@ app.post('/messages/:_id', isLoggedIn, function(req, res){
       console.log("error creating message " + err);
     } else {
       Conversation.findById(req.params._id).exec(function(err, conv){
-        console.log('========================================================')
-        console.log('message');
-        console.log(message);
         if(err){
           console.log('Error fetching conversation ' + err);
         } else {
-          console.log('========================================================')
-          console.log('newMessage');
-          console.log(newMessage);
           conv.updated = Date.now();
-          conv.save();
           conv.messages.push(newMessage);
           conv.save();
+          console.log("Message sent form existing thread line 548. Check newMessageForUer, message pushed and Date.now = " + Date.now());
+          console.log(convo)
+          User.findByIdAndUpdate(req.body.recipientId, {
+            $addToSet: {updatedConversations: conv.id}
+          }, function(err, updatedRecipient){
+            if(err){
+              console.log('Error updating recipients number of new messages ' + err)
+            } else {
+              console.log('updatedRecipient')
+              console.log(updatedRecipient)
+            }
+          });
         }
       });
       res.redirect('back');
@@ -564,10 +621,16 @@ app.get('/messages', isLoggedIn, function(req, res){
         }
         ids.forEach(function(id, i){
           User.findById(id, function(err, foundUser){
-            var k = id
-            cnv.profilePic = foundUser.photos[0]
-            // profilePics[k] = v
+            if(err){
+              console.log('err')
+              console.log(err)
+            } else if(foundUser){
+              var k = id
+              cnv.profilePic = foundUser.photos[0]
+            }
             if(i == (ids.length - 1)){
+              console.log('convos!!!!!!!')
+              console.log(convos)
               res.render('messages', {convos: convos});
             }
           });
@@ -593,7 +656,14 @@ app.get('/messages/:_id', checkConversationOwership, function(req, res){
             messages.push(msg);
           }
           if(conv.messages.length == messages.length) {
-            // connectSocket(req.params._id)
+            User.findByIdAndUpdate(req.user.id, {
+              $pull : { updatedConversations : req.params._id }
+            }, function(err, updatedUser){
+              if(err){
+                console.log('error pulling convo from user')
+                console.log(err)
+              }
+            });
             res.render('message_view', {thread: thread, messages: messages});
           }
         })

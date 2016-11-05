@@ -6,10 +6,15 @@
 <body>
   <div class="ui fixed inverted secondary menu navbar page">
     <a class="item">
-      <span class="t">T</span><span class="ml">ML</span>
+      <span class="t">Word</span><span class="ml">UP</span>
     </a>
     <a class="item" href="/messages">
       <span>Messages</span>
+      <% if(currentUser.updatedConversations.length > 0) { %>
+        <div class="newMessages">
+          <span id="numNewMsgs"><%= currentUser.updatedConversations.length %></span>
+        </div>
+      <% } %>
     </a>
     <a class="item" href="/matches">
       <span>Matches</span>

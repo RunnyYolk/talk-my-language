@@ -4,25 +4,7 @@
 
 </head>
 <body>
-  <% if(currentUser){ %>
-    <div class="ui fixed inverted secondary menu navbar page">
-      <a class="item">
-        <span class="t">T</span><span class="ml">ML</span>
-      </a>
-      <a class="item" href="/messages">
-        <span>Messages</span>
-      </a>
-      <a class="item" href="/matches">
-        <span>Matches</span>
-      </a>
-        <a class="item" href="/users/<%= currentUser._id %>/edit">
-          <span><%= currentUser.firstName %></span>
-        </a>
-        <a class="item" href="/logout">
-          <span>logout</span>
-        </a>
-    </div>
-  <% } %>
+
 
   <div class="ui container">
     <% if(error && error.length > 0){ %>
@@ -36,11 +18,13 @@
       </div>
     <% } %>
   </div>
-
-  <h1><span class="talk">TALK</span> <span class="ml">My langugage</span></h1>
-  <p class="tagline">
-    practice your second language with native speakers
-  </p>
+  <div class="main-wrapper">
+    <div class="title-wrapper">
+      <h1><span class="talk">Word</span> <span class="ml">UP</span></h1>
+      <p class="tagline">
+        practice your second language with native speakers
+      </p>
+    </div>
     <div class="login-wrapper">
       <form class="login-form" action="/login" method="post">
         <div class="faux-textinput">
@@ -51,21 +35,24 @@
         </div>
         <button type="button" class="signup-btn" tabindex="0"><span class="signup-text">sign up!</span><span class="login">log in!</span></button>
       </form>
-      <div class="clicker">
-        <div class="text-container">
-          <div class="cancel-container">
-            <div class="cancel-text-container">
-              <span class="cancel-text">cancel</span>
+      <div class="clicker-wrapper">
+        <div class="clicker">
+          <div class="text-container">
+            <div class="cancel-container">
+              <div class="cancel-text-container">
+                <span class="cancel-text">cancel</span>
+              </div>
             </div>
-          </div>
-          <div class="login-container">
-            <div class="login-text-container active">
-              <span class="login-text">log in</span>
+            <div class="login-container">
+              <div class="login-text-container active">
+                <span class="login-text">log in</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
 <script type="text/javascript" src="/scripts/index.js"></script>
 <% include ../partials/footer %>
