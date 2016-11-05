@@ -34,6 +34,12 @@
     }
   })
 
+  $('.input--haruki').each(function(){
+    if(!$(this).hasClass()){
+      $(this).addClass('input--filled');
+    }
+  });
+
   var fileList;
 
   var isAdvancedUpload = function() {
