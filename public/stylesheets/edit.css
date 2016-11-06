@@ -265,6 +265,10 @@ button {
 }
 
 .cancel-wrapper {
+  justify-content: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display:flex;
   -ms-flex-preferred-size: 100%;
       flex-basis: 100%;
 }

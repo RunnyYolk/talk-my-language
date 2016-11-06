@@ -52,9 +52,9 @@ function isLoggedIn(req, res, next){
 
 //connect mongoDB
 // ========== For Local =============
-// mongoose.connect("mongodb://localhost/tml");
+mongoose.connect("mongodb://localhost/tml");
 // ========== For Heroku ============
-mongoose.connect("mongodb://nick:1234@ds053176.mlab.com:53176/talkmylanguage");
+// mongoose.connect("mongodb://nick:1234@ds053176.mlab.com:53176/talkmylanguage");
 mongoose.Promise = Promise;
 
 
@@ -135,10 +135,10 @@ function saveMessage(message, thread){
           conv.updated = Date.now();
           conv.messages.push(newMessage);
           conv.save();
-          console.log("convo saved line 136. Check new message pushed, new message for user and Date.now = " + Date.now());
+          console.log("convo saved line 138. Check new message pushed, new message for user and Date.now = " + Date.now());
           console.log(conv)
           User.findByIdAndUpdate(message.recipient.id, {
-            $inc: {numberOfNewMessages: 1}
+            $addToSet: {updatedConversations: conv.id}
           }, function(err, updatedRecipient){
             if(err){
               console.log('Error updating recipients number of new messages ' + err)
@@ -266,7 +266,11 @@ app.put('/users/:_id', function(req, res){
     var learnLangs = req.body.learninglanguages.split(',');
     var comms = req.body.commethod.split(',');
     var photos = []
-    console.log('req')
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
     console.log(req)
     req.files.forEach(function(file, i){
       photos.push(req.files[i].path.replace('public/', '/'));
@@ -517,8 +521,7 @@ app.post('/messages', isLoggedIn, function(req, res){
                   $addToSet: {updatedConversations: newConvo.id}
                 }, function(err, updatedRecipient){
                   if(err){
-                    console.log('Error updating recipients number of new messages ' + err)
-                  } else {
+                    console.log("Error updating recipient's number of new messages " + err)
                   }
                 });
               }
@@ -676,8 +679,8 @@ app.get('/messages/:_id', checkConversationOwership, function(req, res){
 })
 
 // ======== For Heroku ========
-server.listen(process.env.PORT || 8080 , process.env.IP, function(){
+// server.listen(process.env.PORT || 8080 , process.env.IP, function(){
 // ======== For Local =========
-// server.listen(3000, process.env.IP, function(){
+server.listen(3000, process.env.IP, function(){
   console.log('Fire it UP!');
 });

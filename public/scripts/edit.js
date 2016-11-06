@@ -59,7 +59,7 @@
   };
 
   if (isAdvancedUpload) {
-    var droppedFiles = new Array();
+    var droppedFiles = [];
     $box.addClass('has-advanced-upload');
     $box.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
       e.preventDefault();
@@ -87,7 +87,7 @@
         img.src = window.URL.createObjectURL(file);
         $imgDiv.append('<div class="shown-image"><img height="100" src=' + img.src + ' id="' + file.name + '"><i class="delete icon img-del" ></i></div>');
         // $(".shown-image").prepend(img);
-        showFiles(droppedFiles);
+        // showFiles(droppedFiles);
       });
       var $imgDelIcons = $(".img-del")
 
@@ -122,11 +122,14 @@
     $form.addClass('is-uploading').removeClass('is-error');
 
     if (isAdvancedUpload) {
+      console.log("Prevent Default!")
       e.preventDefault();
 
       var ajaxData = new FormData($form.get(0));
 
       if (droppedFiles) {
+        console.log('droppedFiles before appending to ajaxData')
+        console.log(droppedFiles)
         $.each(droppedFiles, function(i, file) {
           ajaxData.append($input.attr('name'), file);
         });
@@ -141,7 +144,7 @@
         data: ajaxData,
         // dataType: 'json',
         cache: false,
-        contentType: false,
+        contentType: 'application/json',
         processData: false,
         complete: function() {
           $form.removeClass('is-uploading');
@@ -179,9 +182,9 @@
     };
   });
 
-  $input.on('change', function(e) {
-    showFiles(e.target.files);
-  });
+  // $input.on('change', function(e) {
+  //   showFiles(e.target.files);
+  // });
 
   // Form validation
   //
