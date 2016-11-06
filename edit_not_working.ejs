@@ -42,7 +42,6 @@
   <div class="main-wrapper">
     <div class="form-wrapper">
 
-    <div class="ui four column doubling stackable centered grid container">
       <form class="form" action="/users/<%= user_id %>/?_method=PUT" method="post" enctype="multipart/form-data">
         <span class="input input--haruki">
           <input class="input__field input__field--haruki" type="text" name="fname" id="input-1" />
@@ -88,7 +87,7 @@
             <div class="ui multiple search selection dropdown" id="spokenlanguages">
               <input type="hidden" name="spokenlanguages" id="selectedItemLists">
             <label class="input__label input__label--haruki" for="spokenlanguages">
-              <span class="input__label-content input__label-content--haruki">Fluent Language or Languages</span>
+              <span class="input__label-content input__label-content--haruki">Languages You Speak</span>
             </label>
             <i class="dropdown icon"></i>
             <div class="default text"></div>
@@ -690,7 +689,6 @@
         <button class="delete-button" type="button" name="delete">Delete Account</button>
       </div>
       </div>
-    </div>
       <div class="delete-confirm-wrapper">
         <div class="confirm-wrapper">
           <div class="confirm-text">

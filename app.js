@@ -52,9 +52,9 @@ function isLoggedIn(req, res, next){
 
 //connect mongoDB
 // ========== For Local =============
-mongoose.connect("mongodb://localhost/tml");
+// mongoose.connect("mongodb://localhost/tml");
 // ========== For Heroku ============
-// mongoose.connect("mongodb://nick:1234@ds053176.mlab.com:53176/talkmylanguage");
+mongoose.connect("mongodb://nick:1234@ds053176.mlab.com:53176/talkmylanguage");
 mongoose.Promise = Promise;
 
 
@@ -679,8 +679,8 @@ app.get('/messages/:_id', checkConversationOwership, function(req, res){
 })
 
 // ======== For Heroku ========
-// server.listen(process.env.PORT || 8080 , process.env.IP, function(){
+server.listen(process.env.PORT || 8080 , process.env.IP, function(){
 // ======== For Local =========
-server.listen(3000, process.env.IP, function(){
+// server.listen(3000, process.env.IP, function(){
   console.log('Fire it UP!');
 });

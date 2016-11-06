@@ -144,7 +144,7 @@
         data: ajaxData,
         // dataType: 'json',
         cache: false,
-        contentType: 'application/json',
+        contentType: false,
         processData: false,
         complete: function() {
           $form.removeClass('is-uploading');
