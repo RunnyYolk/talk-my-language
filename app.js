@@ -25,7 +25,9 @@ var bodyParser     = require("body-parser"),
     app            = express(),
     http           = require('http'),
     server         = http.createServer(app),
-    io             = require('socket.io').listen(server);
+    io             = require('socket.io').listen(server),
+    session        = require('express-session'),
+    MemoryStore    = require('session-memory-store')(session);
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb){
@@ -50,9 +52,9 @@ function isLoggedIn(req, res, next){
 
 //connect mongoDB
 // ========== For Local =============
-mongoose.connect("mongodb://localhost/tml");
+// mongoose.connect("mongodb://localhost/tml");
 // ========== For Heroku ============
-// mongoose.connect("mongodb://nick:1234@ds053176.mlab.com:53176/talkmylanguage");
+mongoose.connect("mongodb://nick:1234@ds053176.mlab.com:53176/talkmylanguage");
 mongoose.Promise = Promise;
 
 
@@ -68,6 +70,7 @@ app.use('/images', express.static(__dirname + '/writable'));
 // Passport Configuration
 app.use(require('express-session')({
   secret: 'Runny Yolk is 100% awesome',
+  store: new MemoryStore(),
   resave: false,
   saveUninitialized: false
 }));
@@ -673,8 +676,8 @@ app.get('/messages/:_id', checkConversationOwership, function(req, res){
 })
 
 // ======== For Heroku ========
-// server.listen(process.env.PORT || 8080 , process.env.IP, function(){
+server.listen(process.env.PORT || 8080 , process.env.IP, function(){
 // ======== For Local =========
-server.listen(3000, process.env.IP, function(){
+// server.listen(3000, process.env.IP, function(){
   console.log('Fire it UP!');
 });
