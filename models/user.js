@@ -14,10 +14,10 @@ var UserSchema = new mongoose.Schema({
   info: String,
   country: String,
   city: String,
-  comMethod: Array,
   lastLogin: Number,
   blockedUsers: String,
-  updatedConversations: Array
+  updatedConversations: Array,
+  profileComplete: Boolean
 });
 
 UserSchema.plugin(passportLocalMongoose);

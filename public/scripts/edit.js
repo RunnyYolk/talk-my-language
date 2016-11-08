@@ -22,8 +22,6 @@
 
   $('#input-9').val(user.city);
 
-  $('#commethod').dropdown('set selected', user.comMethod);
-
   $('.delete-button').click(function(){
     $('.delete-confirm-wrapper').toggleClass('open');
   });
@@ -278,15 +276,6 @@
   //           {
   //           type: 'empty',
   //           prompt: 'please enter the town or city you live in'
-  //           }
-  //         ]
-  //       },
-  //       commethod : {
-  //         identifier: 'commethod',
-  //         rules: [
-  //           {
-  //           type: 'minCount[1]',
-  //           prompt: 'please choose at least one method of communicating with other langugage learners'
   //           }
   //         ]
   //       },

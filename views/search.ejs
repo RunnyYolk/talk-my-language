@@ -24,7 +24,7 @@
         <span class="search-icon"></span>
       </a>
       <% if(currentUser){ %>
-        <a class="item" href="/users/<%= currentUser._id %>/edit">
+        <a class="item" href="/users/<%= currentUser._id %>/view">
           <span><%= currentUser.firstName %></span>
         </a>
         <a class="item" href="/logout">
@@ -46,7 +46,7 @@
         <div class="ui multiple search selection dropdown">
           <input type="hidden" name="spokenlanguages" id="selectedItemLists">
           <i class="dropdown icon"></i>
-          <div class="default text">fluent language or languages</div>
+          <div class="default text">They speak</div>
           <div class="menu">
             <div class="item" data-value="Afrikaans">Afrikaans</div>
             <div class="item" data-value="Akan">Akan</div>
@@ -191,7 +191,7 @@
         <div class="ui multiple search selection dropdown">
           <input type="hidden" id="learnLangs" name="learninglanguages">
           <i class="dropdown icon"></i>
-          <div class="default text">language or languages you want to practice</div>
+          <div class="default text">They're learning</div>
           <div class="menu">
             <div class="item" data-value="Afrikaans">Afrikaans</div>
             <div class="item" data-value="Akan">Akan</div>
@@ -587,19 +587,6 @@
             <div class="item" data-value="Yemen">Yemen</div>
             <div class="item" data-value="Zambia">Zambia</div>
             <div class="item" data-value="Zimbabwe">Zimbabwe</div>
-          </div>
-        </div>
-      </div>
-      <div class="field">
-        <div class="ui multiple selection dropdown">
-          <input type="hidden" name="commethod">
-          <i class="dropdown icon"></i>
-          <div class="default text">how do you like to communicate</div>
-          <div class="menu">
-            <div class="item" data-value="skype">skype</div>
-            <div class="item" data-value="whatsapp">whatsapp</div>
-            <div class="item" data-value="email">email</div>
-            <div class="item" data-value="face to face">face to face</div>
           </div>
         </div>
       </div>

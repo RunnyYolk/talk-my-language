@@ -1,0 +1,111 @@
+<% include ../partials/header %>
+<link rel="stylesheet" type="text/css" href="/stylesheets/viewOwn.css">
+<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
+
+</head>
+<body>
+  <div class="ui fixed inverted secondary menu navbar page">
+    <a class="item">
+      <span class="t">Word</span><span class="ml">UP</span>
+    </a>
+    <a class="item" href="/messages">
+      <span>Messages</span>
+      <% if(currentUser.updatedConversations.length > 0) { %>
+        <div class="newMessages">
+          <span id="numNewMsgs"><%= currentUser.updatedConversations.length %></span>
+        </div>
+      <% } %>
+    </a>
+    <a class="item" href="/matches">
+      <span>Matches</span>
+    </a>
+    <div class="menu-content-right">
+      <a class="search-button" href="/search">
+        <span class="search-icon"></span>
+      </a>
+      <% if(currentUser){ %>
+        <a class="item" href="/users/<%= currentUser._id %>/view">
+          <span><%= currentUser.firstName %></span>
+        </a>
+        <a class="item" href="/logout">
+          <span>logout</span>
+        </a>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="ui grid container">
+    <div class="ten wide column" id="profile-container">
+      <div class="profile-container">
+        <div class="title-container">
+          <h1><%= user.firstName %> <%=user.lastName%></h1>
+          <h2><%= user.city %>, <%= user.country %></h2>
+        </div>
+        <div class="languages-wrapper">
+          <div class="speaks-wrapper">
+            <h4>Speaks</h4>
+            <div class="spoken-languages">
+              <ul>
+                <% user.spokenLanguages.forEach(function(lang, i){ %>
+                  <li><%= lang %></li>
+                <% }); %>
+              </ul>
+            </div>
+          </div>
+          <div class="learning-wrapper">
+            <h4>Learning</h4>
+            <div class="learning-languages">
+              <ul>
+                <% user.learningLanguages.forEach(function(lang, i){ %>
+                  <li><%= lang %></li>
+                <% }); %>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="age-gender-wrapper">
+          <div class="age-wrapper">
+            <h4>Age</h4>
+            <h5><%= user.age %></h5>
+          </div>
+          <div class="gender-wrapper">
+            <h4>Gender</h4>
+            <h5><%= user.gender %></h5>
+          </div>
+        </div>
+        <div class="info">
+          <h4>About <%= user.firstName %></h4>
+          <p><%= user.info %></p>
+        </div>
+      </div>
+    </div>
+    <div class="six wide column"  id="image-container">
+      <div class="image-container">
+        <div class="ui grid">
+          <div class="one column row">
+            <div class="column">
+              <img class="ui large image" src="<%= user.photos[0] %>" alt="" data-num="<%= 0 %>" />
+            </div>
+          </div>
+          <div class="four column row">
+            <% user.photos.forEach(function(img, i){ %>
+              <% if(i > 0) { %>
+                <div class="column">
+                  <img class="ui wireframe image" src="<%= img %>" alt="" data-num="<%= i %>" />
+                </div>
+              <% } %>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sixteen wide column">
+      <div class="button-wrapper">
+        <a href="/users/<%= currentUser._id %>/edit"><button id="edit" type="button" name="message">Edit your profile</button></a>
+      </div>
+    </div>
+  </div>
+
+<script type="text/javascript" src="/scripts/viewOwn.js"></script>
+
+<% include ../partials/footer %>

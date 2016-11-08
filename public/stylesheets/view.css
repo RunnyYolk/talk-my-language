@@ -181,33 +181,6 @@ h5 span {
   font-weight: 400;
 }
 
-.com-method-wrapper {
-  text-align: left;
-  float: left;
-  display: inline-block;
-  overflow: auto;
-}
-
-.com-method {
-  float: left;
-}
-
-.com-method ul {
-  display: -webkit-box;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
-}
-
-.com-method li {
-  display: inline-block;
-  text-align: left;
-  font-size: 1.2em;
-  color: #9da0a7;
-}
-
 li:after {
   content: ", ";
 }

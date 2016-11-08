@@ -42,19 +42,11 @@ var storage = multer.diskStorage({
 
 var upload = multer({storage: storage}).any('photos');
 
-// Middleware to check if the user is logged in
-function isLoggedIn(req, res, next){
-  if(req.isAuthenticated()){
-    return next();
-  }
-  res.redirect('/login');
-}
-
 //connect mongoDB
 // ========== For Local =============
-// mongoose.connect("mongodb://localhost/tml");
+mongoose.connect("mongodb://localhost/tml");
 // ========== For Heroku ============
-mongoose.connect("mongodb://nick:1234@ds053176.mlab.com:53176/talkmylanguage");
+// mongoose.connect("mongodb://nick:1234@ds053176.mlab.com:53176/talkmylanguage");
 mongoose.Promise = Promise;
 
 
@@ -81,6 +73,9 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use(function(req, res, next){          //Pass these to every route
+  if(!req.user.profileComplete) {
+    req.flash('error', 'Please complete your profile')
+  }
   res.locals.currentUser = req.user;
   res.locals.error = req.flash("error");
   res.locals.success = req.flash("success");
@@ -103,6 +98,7 @@ function checkConversationOwership (req, res, next) {
     if(req.isAuthenticated()){
             Conversation.findById(req.params._id, function(err, foundConversation){
                 if(err){
+                    req.flash('error', 'Error checking ownership of this conversation')
                     res.redirect("back");
                 } else {
                     // does user own the conversation?
@@ -188,39 +184,11 @@ app.get('/signup', function(req, res){
 
 //New user creation
 app.post('/signup', function(req, res){
-  upload(req, res, function (err){
-    if (err) {
-      console.log('error');
-      console.log(err)
-      return;
-    }
     //variables for new user
-    var spokenLangs = req.body.spokenlanguages.split(',');
-    var learnLangs = req.body.learninglanguages.split(',');
-    var comms = req.body.commethod.split(',');
-    var photos = []
-    console.log("=================================req=========================")
-    console.log("=================================req=========================")
-    console.log(req)
-    console.log("=================================req=========================")
-    console.log("=================================req=========================")
-    req.files.forEach(function(file, i){
-      photos.push(req.files[i].path.replace('public/', '/'));
-    });
     var newUser = new User(
       {
         username: req.body.username,
-        firstName: req.body.fname,
-        lastName: req.body.lname,
-        age: req.body.age,
-        gender: req.body.gender,
-        spokenLanguages: spokenLangs,
-        learningLanguages: learnLangs,
-        info: req.body.info,
-        country: req.body.country,
-        city: req.body.city,
-        comMethod: comms,
-        photos: photos,
+        profileComplete: false;
         lastLogin: Date.now()
       }
     );
@@ -264,7 +232,6 @@ app.put('/users/:_id', function(req, res){
     }
     var spokenLangs = req.body.spokenlanguages.split(',');
     var learnLangs = req.body.learninglanguages.split(',');
-    var comms = req.body.commethod.split(',');
     var photos = []
     console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
     console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
@@ -286,7 +253,6 @@ app.put('/users/:_id', function(req, res){
         info: req.body.info,
         country: req.body.country,
         city: req.body.city,
-        comMethod: comms,
         photos: photos,
       }
 
@@ -433,9 +399,6 @@ app.post('/search', isLoggedIn, function(req,res){
   if((req.body.country).length > 0){
     req.session.query["$and"].push({ country: {$in: req.body.country.split(",") }});
   }
-  if((req.body.commethod).length > 0){
-    req.session.query["$and"].push({ comMethod: {$in: req.body.commethod.split(",") }});
-  }
   var query = User.find(req.session.query).sort({"lastLogin":-1}).limit(6);
   query.exec(function(err, foundUsers){
     if(err){
@@ -457,8 +420,10 @@ app.get('/users/:_id/view', isLoggedIn, function(req, res){
   User.findById(req.params._id, function(err, foundUser){
     if(err){
       res.redirect("back");
+    } else if(req.user._id == req.params._id) {
+      res.render('viewOwn', {user: foundUser});
     } else {
-      res.render('view', {user: foundUser});
+      res.render('view', {user: foundUser})
     }
   });
 });
@@ -679,8 +644,8 @@ app.get('/messages/:_id', checkConversationOwership, function(req, res){
 })
 
 // ======== For Heroku ========
-server.listen(process.env.PORT || 8080 , process.env.IP, function(){
+// server.listen(process.env.PORT || 80 , process.env.IP, function(){
 // ======== For Local =========
-// server.listen(3000, process.env.IP, function(){
+server.listen(3000, process.env.IP, function(){
   console.log('Fire it UP!');
 });

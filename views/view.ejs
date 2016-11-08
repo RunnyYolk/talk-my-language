@@ -24,7 +24,7 @@
         <span class="search-icon"></span>
       </a>
       <% if(currentUser){ %>
-        <a class="item" href="/users/<%= currentUser._id %>/edit">
+        <a class="item" href="/users/<%= currentUser._id %>/view">
           <span><%= currentUser.firstName %></span>
         </a>
         <a class="item" href="/logout">
@@ -71,16 +71,6 @@
           <div class="gender-wrapper">
             <h4>Gender</h4>
             <h5><%= user.gender %></h5>
-          </div>
-        </div>
-        <div class="com-method-wrapper">
-          <h4>Communication Methods</h4>
-          <div class="com-method">
-            <ul>
-              <% user.comMethod.forEach(function(com, i){ %>
-                <li><%= com %></li>
-              <% }); %>
-            </ul>
           </div>
         </div>
         <div class="info">

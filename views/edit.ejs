@@ -25,7 +25,7 @@
         <span class="search-icon"></span>
       </a>
       <% if(currentUser){ %>
-        <a class="item" href="/users/<%= currentUser._id %>/edit">
+        <a class="item" href="/users/<%= currentUser._id %>/view">
           <span><%= currentUser.firstName %></span>
         </a>
         <a class="item" href="/logout">
@@ -665,22 +665,6 @@
           <label class="input__label input__label--haruki" for="input-9">
             <span class="input__label-content input__label-content--haruki">Town / City</span>
           </label>
-        </span>
-        <span class="input input--haruki">
-            <div class="ui multiple selection dropdown" id="commethod">
-              <input type="hidden" name="commethod" id="input-10">
-              <label class="input__label input__label--haruki" for="input-10">
-                <span class="input__label-content input__label-content--haruki">How do You Like to Communicate?</span>
-              </label>
-              <i class="dropdown icon"></i>
-              <div class="default text"></div>
-              <div class="menu">
-                <div class="item" data-value="skype">Skype</div>
-                <div class="item" data-value="whatsapp">WhatsApp</div>
-                <div class="item" data-value="email">Email</div>
-                <div class="item" data-value="face to face">Face to Face</div>
-              </div>
-            </div>
         </span>
         <div class="button-wrapper">
           <button class="button" type="submit" name="submit">Submit</button>

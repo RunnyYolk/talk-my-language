@@ -238,15 +238,6 @@ $(document).ready(function(){
 //           }
 //         ]
 //       },
-//       commethod : {
-//         identifier: 'commethod',
-//         rules: [
-//           {
-//           type: 'minCount[1]',
-//           prompt: 'please choose at least one method of communicating with other langugage learners'
-//           }
-//         ]
-//       },
 //
 //       terms    : {
 //         identifier: 'terms',
