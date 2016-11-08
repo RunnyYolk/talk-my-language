@@ -4,6 +4,10 @@ $(document).ready(function(){
   // )
   jQuery.fn.exists = function(){return this.length>0;}
 
+  $(".profileIncomplete").click(function(){
+    console.log('Nope!');
+  });
+
   $(window).scroll(function(){
     var newpacity = 1 - $(this).scrollTop() / 1000
       if(newpacity >= 0.5) {

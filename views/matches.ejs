@@ -49,7 +49,7 @@
 
     <% users.forEach(function(user, i){ %>
 
-      <a class="ui fluid card <%= color[n] %>" href="/users/<%= user._id %>/view" data-num="<%= i %>">
+        <a class="ui fluid card <%= color[n] %>" href="/users/<%= user._id %>/view" data-num="<%= i %>">
           <div class="image-wrapper">
             <img src="<%= user.photos[0] %>"/>
           </div>

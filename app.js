@@ -73,14 +73,14 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use(function(req, res, next){          //Pass these to every route
-  if(!req.user.profileComplete) {
+  if(req.user && !req.user.profileComplete) {
     req.flash('error', 'Please complete your profile')
   }
   res.locals.currentUser = req.user;
   res.locals.error = req.flash("error");
   res.locals.success = req.flash("success");
   next();
-})
+});
 
 // Middleware to check if the user is logged in
 function isLoggedIn(req, res, next){
@@ -184,11 +184,17 @@ app.get('/signup', function(req, res){
 
 //New user creation
 app.post('/signup', function(req, res){
+  upload(req, res, function (err){
+    if (err) {
+      console.log('error');
+      console.log(err)
+      return;
+    }
     //variables for new user
     var newUser = new User(
       {
         username: req.body.username,
-        profileComplete: false;
+        profileComplete: false,
         lastLogin: Date.now()
       }
     );
@@ -229,16 +235,13 @@ app.put('/users/:_id', function(req, res){
       console.log('error');
       console.log(err)
       return;
-    }
+    };
+    req.user.photos.forEach(function(photo){
+      fs.unlink("./public" + photo);
+    });
     var spokenLangs = req.body.spokenlanguages.split(',');
     var learnLangs = req.body.learninglanguages.split(',');
     var photos = []
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    console.log(req)
     req.files.forEach(function(file, i){
       photos.push(req.files[i].path.replace('public/', '/'));
     });
@@ -255,6 +258,23 @@ app.put('/users/:_id', function(req, res){
         city: req.body.city,
         photos: photos,
       }
+
+    if (
+      updatedUser.firstName.length > 0 &&
+      updatedUser.lastName.length > 0 &&
+      updatedUser.age.length > 0 &&
+      updatedUser.gender.length > 0 &&
+      updatedUser.spokenLanguages.length > 0 &&
+      updatedUser.learningLanguages.length > 0 &&
+      updatedUser.info.length > 0 &&
+      updatedUser.country.length > 0 &&
+      updatedUser.city.length > 0 &&
+      updatedUser.photos.length > 0
+    ) {
+      updatedUser.profileComplete = true
+    } else {
+      updatedUser.profileComplete = false
+    }
 
     User.findByIdAndUpdate(req.params._id, updatedUser, function(err, user){
       if(err){
@@ -336,11 +356,19 @@ app.get('/matches', isLoggedIn, function(req, res){
     req.session.query = {$and:
       [
         {learningLanguages: {$in: req.user.spokenLanguages}},
-        {_id: {$nin: req.user.blockedUsers.split(",")}}
+        {_id: {$nin: [req.user.blockedUsers.split(","), req.user._id]}}
       ]
-      }
-  } else {
-    req.session.query = {learningLanguages: {$in: req.user.spokenLanguages}}
+    }
+  } else if(req.user.profileComplete) { // if user has spoken languages on their profile
+    req.session.query = {$and:
+      [
+        {learningLanguages: {$in: req.user.spokenLanguages}},
+        {spokenLanguages: {$in: req.user.learningLanguages}},
+        {_id: {$nin: req.user._id}}
+      ]
+    }
+  } else { //if user profile is not complete...
+    req.session.query = {}
   }
   var q = User.find(req.session.query).sort({"lastLogin":-1}).limit(6)
   q.exec(function(err, foundUsers){
@@ -419,6 +447,7 @@ app.post('/search', isLoggedIn, function(req,res){
 app.get('/users/:_id/view', isLoggedIn, function(req, res){
   User.findById(req.params._id, function(err, foundUser){
     if(err){
+      req.flash("error", "Sorry, there was an error finding that user")
       res.redirect("back");
     } else if(req.user._id == req.params._id) {
       res.render('viewOwn', {user: foundUser});
@@ -430,6 +459,9 @@ app.get('/users/:_id/view', isLoggedIn, function(req, res){
 
 // Send a new message to another user
 app.post('/messages', isLoggedIn, function(req, res){
+  if(!req.user.profileComplete){
+    req.flash("error", "Please complete your profile before sending messages to other users");
+  }
   var message = { // Create an object with the message data
     sender : {
       "id" : req.body.senderId,

@@ -1,3 +1,5 @@
+"use strict";
+
 (function(){
 
   $('.ui.dropdown').dropdown({
@@ -52,7 +54,46 @@
   var $input = $form.find('input[type="file"]'),
     $label = $('[for="file"]');
 
-  showFiles = function(files) {
+  $(document).on('click', ".img-del", function(){
+    let that = this;
+    $.each(loadedFiles, function(i, file){
+      console.log('file')
+      console.log(file)
+      if(file.name == $(that).siblings()[0].id){
+        // let fileId = "#" + JSON.stringify(file.name)
+        loadedFiles.splice(i, 1);
+        $($(that).parent()).remove();
+        return;
+      }
+    })
+  });
+
+
+    var loadedFiles = []
+    $(user.photos).each(function(i, photo){
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", photo);
+      xhr.responseType = "blob";
+      xhr.onload = response;
+      xhr.send();
+    });
+
+    function response (e) {
+      var file = new File([this.response], e.target.responseURL)
+      loadedFiles.push(file)
+      var $imgDiv = $('.selected-images');
+      var img = document.createElement('img');
+      img.onload = function() {
+        window.URL.revokeObjectURL($.src);
+      };
+      img.height = 100;
+      img.src = window.URL.createObjectURL(this.response);
+      $imgDiv.append('<div class="shown-image"><img height="100" src=' + img.src + ' id="' + file.name + '"><i class="delete icon img-del" ></i></div>');
+    }
+
+
+
+  var showFiles = function(files) {
     $label.text(files.length > 1 ? ($input.attr('data-multiple-caption') || '').replace('{count}', files.length) : files[0].name);
   };
 
@@ -74,7 +115,11 @@
       // $(e.originalEvent.dataTransfer.files).each(function(i, file){
       //   droppedFiles.push(file)
       // });
-      droppedFiles = e.originalEvent.dataTransfer.files;
+      $(e.originalEvent.dataTransfer.files).each(function(i, file){
+        droppedFiles.push(file)
+      })
+      console.log('droppedFiles after drop')
+      console.log(droppedFiles)
       var $imgDiv = $('.selected-images');
       $.each(droppedFiles, function(index, file) {
         var img = document.createElement('img');
@@ -88,27 +133,18 @@
         // showFiles(droppedFiles);
       });
       var $imgDelIcons = $(".img-del")
-
       $imgDelIcons.on('click', function(){
         let that = this;
         $.each(droppedFiles, function(i, file){
           if(file.name == $(that).siblings()[0].id){
-            console.log('droppedFiles before splice')
-            console.log(droppedFiles)
-            console.log('found it at ' + i)
             let fileId = "#" + JSON.stringify(file.name)
-            console.log('fileId')
-            console.log(fileId)
-            console.log('filename')
-            console.log(file.name)
-            droppedFiles.splice(i, 1);
-            console.log('droppedFiles after splice')
-            console.log(droppedFiles)
+            $(droppedFiles).splice(i, 1);
             $($(that).parent()).remove();
             return;
           }
         })
       });
+
     });
   }
 
@@ -120,15 +156,18 @@
     $form.addClass('is-uploading').removeClass('is-error');
 
     if (isAdvancedUpload) {
-      console.log("Prevent Default!")
       e.preventDefault();
 
       var ajaxData = new FormData($form.get(0));
 
       if (droppedFiles) {
-        console.log('droppedFiles before appending to ajaxData')
-        console.log(droppedFiles)
         $.each(droppedFiles, function(i, file) {
+          ajaxData.append($input.attr('name'), file);
+        });
+      }
+
+      if (loadedFiles) {
+        $.each(loadedFiles, function(i, file) {
           ajaxData.append($input.attr('name'), file);
         });
       }
