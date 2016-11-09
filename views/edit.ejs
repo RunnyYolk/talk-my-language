@@ -5,6 +5,20 @@
 
 </head>
 <body>
+
+  <div class="ui container">
+    <% if(error && error.length > 0){ %>
+      <div class="ui red message" rolde="alert">
+        <%= error %>
+      </div>
+    <% } %>
+    <% if(success && success.length > 0){ %>
+      <div class="ui green message" rolde="alert">
+        <%= success %>
+      </div>
+    <% } %>
+  </div>
+
   <div class="ui fixed inverted secondary menu navbar page">
     <a class="item">
       <span class="t">Word</span><span class="ml">UP</span>

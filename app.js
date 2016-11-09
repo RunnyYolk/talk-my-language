@@ -27,7 +27,14 @@ var bodyParser     = require("body-parser"),
     server         = http.createServer(app),
     io             = require('socket.io').listen(server),
     session        = require('express-session'),
+    nodemailer     = require('nodemailer'),
+    nev            = require('email-verification')(mongoose),
+    bcrypt         = require('bcrypt'),
     MemoryStore    = require('session-memory-store')(session);
+
+const saltRounds = 10;
+const myPlaintextPassword = 'word up dogue';
+const someOtherPlaintextPassword = 'well hello there';
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb){
@@ -39,6 +46,9 @@ var storage = multer.diskStorage({
     });
   }
 });
+
+// create reusable transporter object using the default SMTP transport
+var transporter = nodemailer.createTransport(process.env.SMTPS);
 
 var upload = multer({storage: storage}).any('photos');
 
@@ -82,6 +92,61 @@ app.use(function(req, res, next){          //Pass these to every route
   next();
 });
 
+// async version of hashing function
+var hashPassword = function(password, tempUserData, insertTempUser, callback) {
+  bcrypt.genSalt(8, function(err, salt) {
+    bcrypt.hash(password, salt, function(err, hash) {
+      return insertTempUser(hash, tempUserData, callback);
+    });
+  });
+};
+
+nev.configure({
+    verificationURL: 'localhost:3000/email-verification/${URL}',
+    expirationTimout: 600, // 10 minutes
+    persistentUserModel: User,
+    emailFieldName: 'username',
+    passwordFieldName: 'password',
+    tempUserCollection: 'myawesomewebsite_tempusers',
+
+    transportOptions: {
+        service: 'Gmail',
+        auth: {
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD
+        }
+    },
+
+    hashingFunction: hashPassword,
+    passwordFieldName: 'password',
+
+    verifyMailOptions: {
+        from: 'Do Not Reply <nickturenr57@gmail.com>',
+        subject: 'Please confirm account',
+        html: 'Click the following link to confirm your account:</p><p>${URL}</p>',
+        text: 'Please confirm your account by clicking the following link: ${URL}'
+    }
+}, function(error, options){
+  if(error){
+    console.log('error configuring nev')
+    console.log(error)
+    return;
+  }
+
+  console.log('nev configured: ' + (typeof options === 'object'));
+
+});
+
+// generating the model, pass the User model defined earlier
+nev.generateTempUserModel(User, function(error, tempUserModel){
+  if(error){
+    console.log('error generating temp user model');
+    console.log(error);
+    return;
+  }
+  console.log('generated temp user model: ' + (typeof tempUserModel === 'function'));
+});
+
 // Middleware to check if the user is logged in
 function isLoggedIn(req, res, next){
   if(req.isAuthenticated()){
@@ -90,7 +155,6 @@ function isLoggedIn(req, res, next){
   req.flash("error", "Please Log In or Sign Up");
   res.redirect('/');
 }
-
 
 // Middleware to check ownership of a conversation
 
@@ -184,34 +248,87 @@ app.get('/signup', function(req, res){
 
 //New user creation
 app.post('/signup', function(req, res){
-  upload(req, res, function (err){
-    if (err) {
-      console.log('error');
-      console.log(err)
-      return;
+  //variables for new user
+  var newUser = new User(
+    {
+      username: req.body.username,
+      password: req.body.password,
+      profileComplete: false,
+      lastLogin: Date.now()
     }
-    //variables for new user
-    var newUser = new User(
-      {
-        username: req.body.username,
-        profileComplete: false,
-        lastLogin: Date.now()
-      }
-    );
-    console.log('newUser')
-    console.log(newUser)
-    User.register(newUser, req.body.password, function(err, user){
-      if(err){
-        console.log('error registering user');
-        console.log(err);
-        return res.send('oops');
-      }
-      passport.authenticate('local')(req, res, function(){
-        res.redirect('/matches');
+  );
+
+  nev.createTempUser(newUser, function(err, existingPersistentUser, newTempUser){
+    if (err) {
+      return res.status(404).send('Oops, there was an error registering you. Please contact wordUP for assistance');
+    }
+
+    // user already exists in persistent collection
+    if(existingPersistentUser) {
+      console.log(existingPersistentUser)
+      return res.json({
+        msg: "You already have an account. Please login."
       });
-    });
+    }
+
+    // new temp user created
+    if(newTempUser) {
+      var URL = newTempUser[nev.options.URLFieldName];
+      nev.sendVerificationEmail(req.body.username, URL, function(err, info){
+        if(err) {
+          return res.status(404).send('We tried to send you a verification email, but it failed...');
+        }
+        res.json({
+          msg: "An email has been sent to you. Please check it to verify your account. (Check spam if you can't see it!)",
+          info: info
+        });
+      });
+
+    // user already exists in temp collection
+    } else {
+      res.json({
+        msg: "You've already signed up! Please check your email to verify your account. (Check your spam if you can't see it!)"
+      });
+    }
   });
 });
+
+// user accesses the link in the email
+app.get('/email-verification/:URL', function(req, res){
+  var url = req.params.URL;
+
+  nev.confirmTempUser(url, function(err, user){
+    console.log('user')
+    console.log(user)
+    if(user) {
+      nev.sendConfirmationEmail('nickturner57@gmail.com', function(err, info){
+        if(err){
+          return res.status(404).send("We tried to send you a confirmation email, but it failed");
+        }
+        res.json({
+          msg: 'Account confirmed',
+          info: info
+        });
+      });
+    } else {
+      return res.status(404).send("Confirming your account failed...")
+    }
+  });
+});
+
+
+
+//   User.register(newUser, req.body.password, function(err, user){
+//     if(err){
+//       req.flash("error", "There was an error creating your account. Please try again or contact WordUP if you keep having problems")
+//       res.redirect('/')
+//     }
+//     passport.authenticate('local')(req, res, function(){
+//       req.flash("success", "Your account has been successfully created, and a confirmation email sent to you. If you don't see the email, check your spam!")
+//       res.redirect('/matches');
+//     });
+//   });
+// });
 
 // User edit (edit profile)
 
@@ -237,7 +354,13 @@ app.put('/users/:_id', function(req, res){
       return;
     };
     req.user.photos.forEach(function(photo){
-      fs.unlink("./public" + photo);
+      fs.unlink("./public" + photo, function(err, file){
+        if(err){
+          console.log('Error deleting file');
+          console.log(err)
+          next;
+        }
+      });
     });
     var spokenLangs = req.body.spokenlanguages.split(',');
     var learnLangs = req.body.learninglanguages.split(',');
@@ -459,92 +582,95 @@ app.get('/users/:_id/view', isLoggedIn, function(req, res){
 
 // Send a new message to another user
 app.post('/messages', isLoggedIn, function(req, res){
-  if(!req.user.profileComplete){
-    req.flash("error", "Please complete your profile before sending messages to other users");
-  }
-  var message = { // Create an object with the message data
-    sender : {
-      "id" : req.body.senderId,
-      "username" : req.body.senderName
-    },
-    recipient : {
-      "id" : req.body.recipientId,
-      "username" : req.body.recipientName
-    },
-    messageContent: req.body.msgCont,
-    timeSent: Date.now()
-  };
-  Message.create(message, function(err, newMessage){ // Add the message to MongoDB
-    if(err){
-      console.log('Error Creating Message ' + err)
-    } else {
-      // Query DB for conversations with both sender and recipient at participants
-      Conversation.findOne(
-        {$and : [
-        {$or : [
-          {"participants.user1.id" : req.body.senderId},
-          {"participants.user1.id" : req.body.recipientId}
-        ]},
-        {$or : [
-          {"participants.user2.id" : req.body.senderId},
-          {"participants.user2.id" : req.body.recipientId}
-        ]},
-      ]}, function(err, convo){
-        if(err){
-          console.log('Error finding convo ' + err);
-        } else {
-          if(convo == null){
-            var conv = {
-              participants : {
-                user1 : {
-                  id : req.body.senderId,
-                  username : req.body.senderName
-                },
-                user2 : {
-                  id : req.body.recipientId,
-                  username : req.body.recipientName
-                }
-              },
-              updated : Date.now(),
-              messages : [], // The message _id is pushed in later.
-            }
-            Conversation.create(conv, function(err, newConvo){
-              if(err){
-                console.log('Error creating new convo ' + err);
-              } else {
-                newConvo.messages.push(newMessage);
-                newConvo.save();
-                User.findByIdAndUpdate(req.body.recipientId, {
-                  $addToSet: {updatedConversations: newConvo.id}
-                }, function(err, updatedRecipient){
-                  if(err){
-                    console.log("Error updating recipient's number of new messages " + err)
-                  }
-                });
-              }
-            });
+  console.log(req.user)
+  if(req.user.profileComplete){
+    var message = { // Create an object with the message data
+      sender : {
+        "id" : req.body.senderId,
+        "username" : req.body.senderName
+      },
+      recipient : {
+        "id" : req.body.recipientId,
+        "username" : req.body.recipientName
+      },
+      messageContent: req.body.msgCont,
+      timeSent: Date.now()
+    };
+    Message.create(message, function(err, newMessage){ // Add the message to MongoDB
+      if(err){
+        console.log('Error Creating Message ' + err)
+      } else {
+        // Query DB for conversations with both sender and recipient at participants
+        Conversation.findOne(
+          {$and : [
+          {$or : [
+            {"participants.user1.id" : req.body.senderId},
+            {"participants.user1.id" : req.body.recipientId}
+          ]},
+          {$or : [
+            {"participants.user2.id" : req.body.senderId},
+            {"participants.user2.id" : req.body.recipientId}
+          ]},
+        ]}, function(err, convo){
+          if(err){
+            console.log('Error finding convo ' + err);
           } else {
-            convo.messages.push(newMessage);
-            convo.save();
-            console.log("New conversation started. Check message pushed and new message for user")
-            console.log(convo)
-            User.findByIdAndUpdate(req.body.recipientId, {
-              $addToSet: {updatedConversations: convo.id}
-            }, function(err, updatedRecipient){
-              if(err){
-                console.log('Error updating recipients number of new messages ' + err)
-              } else {
-                console.log('updatedRecipient')
-                console.log(updatedRecipient)
+            if(convo == null){
+              var conv = {
+                participants : {
+                  user1 : {
+                    id : req.body.senderId,
+                    username : req.body.senderName
+                  },
+                  user2 : {
+                    id : req.body.recipientId,
+                    username : req.body.recipientName
+                  }
+                },
+                updated : Date.now(),
+                messages : [], // The message _id is pushed in later.
               }
-            });
+              Conversation.create(conv, function(err, newConvo){
+                if(err){
+                  console.log('Error creating new convo ' + err);
+                } else {
+                  newConvo.messages.push(newMessage);
+                  newConvo.save();
+                  User.findByIdAndUpdate(req.body.recipientId, {
+                    $addToSet: {updatedConversations: newConvo.id}
+                  }, function(err, updatedRecipient){
+                    if(err){
+                      console.log("Error updating recipient's number of new messages " + err)
+                    }
+                  });
+                }
+              });
+            } else {
+              convo.messages.push(newMessage);
+              convo.save();
+              console.log("New conversation started. Check message pushed and new message for user")
+              console.log(convo)
+              User.findByIdAndUpdate(req.body.recipientId, {
+                $addToSet: {updatedConversations: convo.id}
+              }, function(err, updatedRecipient){
+                if(err){
+                  console.log('Error updating recipients number of new messages ' + err)
+                } else {
+                  console.log('updatedRecipient')
+                  console.log(updatedRecipient)
+                }
+              });
+            }
           }
-        }
-      });
-    }
-  });
-  req.flash("success", "You Send a Message!")
-  res.redirect('/matches');
+        });
+      }
+    });
+    req.flash("success", "You sent a message!")
+    res.redirect('/matches');
+  } else {
+    req.flash("error", "Please complete your profile before sending messages to other users");
+    res.redirect('/matches');
+  }
 });
 
 // Send a message from existing thread
