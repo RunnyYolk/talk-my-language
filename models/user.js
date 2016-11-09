@@ -17,7 +17,9 @@ var UserSchema = new mongoose.Schema({
   lastLogin: Number,
   blockedUsers: String,
   updatedConversations: Array,
-  profileComplete: Boolean
+  profileComplete: Boolean,
+  emailConfirmed: Boolean,
+  emailConfirmURL: String
 });
 
 UserSchema.plugin(passportLocalMongoose);

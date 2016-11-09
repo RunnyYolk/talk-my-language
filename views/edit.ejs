@@ -40,7 +40,7 @@
       </a>
       <% if(currentUser){ %>
         <a class="item" href="/users/<%= currentUser._id %>/view">
-          <span><%= currentUser.firstName %></span>
+          <span><%= currentUser.firstName || "Complete Profile" %></span>
         </a>
         <a class="item" href="/logout">
           <span>logout</span>

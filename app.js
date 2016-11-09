@@ -28,8 +28,7 @@ var bodyParser     = require("body-parser"),
     io             = require('socket.io').listen(server),
     session        = require('express-session'),
     nodemailer     = require('nodemailer'),
-    nev            = require('email-verification')(mongoose),
-    bcrypt         = require('bcrypt'),
+    randomstring   = require('randomstring'),
     MemoryStore    = require('session-memory-store')(session);
 
 const saltRounds = 10;
@@ -47,7 +46,7 @@ var storage = multer.diskStorage({
   }
 });
 
-// create reusable transporter object using the default SMTP transport
+// // create reusable transporter object using the default SMTP transport
 var transporter = nodemailer.createTransport(process.env.SMTPS);
 
 var upload = multer({storage: storage}).any('photos');
@@ -92,63 +91,12 @@ app.use(function(req, res, next){          //Pass these to every route
   next();
 });
 
-// async version of hashing function
-var hashPassword = function(password, tempUserData, insertTempUser, callback) {
-  bcrypt.genSalt(8, function(err, salt) {
-    bcrypt.hash(password, salt, function(err, hash) {
-      return insertTempUser(hash, tempUserData, callback);
-    });
-  });
-};
-
-nev.configure({
-    verificationURL: 'localhost:3000/email-verification/${URL}',
-    expirationTimout: 600, // 10 minutes
-    persistentUserModel: User,
-    emailFieldName: 'username',
-    passwordFieldName: 'password',
-    tempUserCollection: 'myawesomewebsite_tempusers',
-
-    transportOptions: {
-        service: 'Gmail',
-        auth: {
-            user: process.env.EMAIL,
-            pass: process.env.PASSWORD
-        }
-    },
-
-    hashingFunction: hashPassword,
-    passwordFieldName: 'password',
-
-    verifyMailOptions: {
-        from: 'Do Not Reply <nickturenr57@gmail.com>',
-        subject: 'Please confirm account',
-        html: 'Click the following link to confirm your account:</p><p>${URL}</p>',
-        text: 'Please confirm your account by clicking the following link: ${URL}'
-    }
-}, function(error, options){
-  if(error){
-    console.log('error configuring nev')
-    console.log(error)
-    return;
-  }
-
-  console.log('nev configured: ' + (typeof options === 'object'));
-
-});
-
-// generating the model, pass the User model defined earlier
-nev.generateTempUserModel(User, function(error, tempUserModel){
-  if(error){
-    console.log('error generating temp user model');
-    console.log(error);
-    return;
-  }
-  console.log('generated temp user model: ' + (typeof tempUserModel === 'function'));
-});
-
 // Middleware to check if the user is logged in
 function isLoggedIn(req, res, next){
+  if(!req.user.emailConfirmed){
+    req.flash("error", "You need to confirm your email address before you can access the site");
+    res.redirect('/confirmEmail');
+  }
   if(req.isAuthenticated()){
     return next();
   }
@@ -178,6 +126,10 @@ function checkConversationOwership (req, res, next) {
         req.flash("error", "You need to be logged in to do that")
         res.redirect("back");
     }
+}
+
+function checkUserOwnership(req, res, next){
+  //Write some logic here to check if a user owns an account (for editing and deleting)
 }
 
 var connections = [];
@@ -241,100 +193,69 @@ app.get('/', function(req, res){
   res.render('index');
 });
 
-//Sign up page
-app.get('/signup', function(req, res){
-  res.render('register');
-});
-
 //New user creation
 app.post('/signup', function(req, res){
   //variables for new user
   var newUser = new User(
     {
       username: req.body.username,
-      password: req.body.password,
       profileComplete: false,
-      lastLogin: Date.now()
+      emailConfirmed: false,
+      lastLogin: Date.now(),
+      emailConfirmURL: randomstring.generate()
     }
   );
 
-  nev.createTempUser(newUser, function(err, existingPersistentUser, newTempUser){
-    if (err) {
-      return res.status(404).send('Oops, there was an error registering you. Please contact wordUP for assistance');
-    }
-
-    // user already exists in persistent collection
-    if(existingPersistentUser) {
-      console.log(existingPersistentUser)
-      return res.json({
-        msg: "You already have an account. Please login."
-      });
-    }
-
-    // new temp user created
-    if(newTempUser) {
-      var URL = newTempUser[nev.options.URLFieldName];
-      nev.sendVerificationEmail(req.body.username, URL, function(err, info){
-        if(err) {
-          return res.status(404).send('We tried to send you a verification email, but it failed...');
-        }
-        res.json({
-          msg: "An email has been sent to you. Please check it to verify your account. (Check spam if you can't see it!)",
-          info: info
-        });
-      });
-
-    // user already exists in temp collection
+  User.register(newUser, req.body.password, function(err, user){
+    if(err){
+      req.flash("error", err)
+      res.redirect('/')
     } else {
-      res.json({
-        msg: "You've already signed up! Please check your email to verify your account. (Check your spam if you can't see it!)"
+      passport.authenticate('local')(req, res, function(){
+
+        let mailOptions = {
+        from: req.body.email, // sender address
+        to: newUser.username, // list of receivers
+        subject: 'WordUP! Please confirm your email address',
+        text: 'Thanks for registering with WordUP.\n\rPlease follow this link to confirm your email address: \n\rhttp://localhost:3001/confirmEmail/' + newUser.emailConfirmURL
+        }
+
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, function(error, info){
+          if(error){
+            req.flash("error", "There was an error sending you an email, please try registering agian or contact WordUP if this keeps happening");
+            res.redirect('/')
+          }
+          req.flash("success", "Your account has been successfully created, and a confirmation email sent to you. If you don't see the email, check your spam!")
+          res.redirect('/matches');
+        });
       });
     }
   });
 });
 
-// user accesses the link in the email
-app.get('/email-verification/:URL', function(req, res){
-  var url = req.params.URL;
-
-  nev.confirmTempUser(url, function(err, user){
-    console.log('user')
-    console.log(user)
-    if(user) {
-      nev.sendConfirmationEmail('nickturner57@gmail.com', function(err, info){
-        if(err){
-          return res.status(404).send("We tried to send you a confirmation email, but it failed");
-        }
-        res.json({
-          msg: 'Account confirmed',
-          info: info
-        });
-      });
-    } else {
-      return res.status(404).send("Confirming your account failed...")
-    }
-  });
+app.get('/confirmEmail', function(req, res){ // If user's email isn't confirmed they're redirected here
+  res.send('Please check your emails to finish registration.')
 });
 
-
-
-//   User.register(newUser, req.body.password, function(err, user){
-//     if(err){
-//       req.flash("error", "There was an error creating your account. Please try again or contact WordUP if you keep having problems")
-//       res.redirect('/')
-//     }
-//     passport.authenticate('local')(req, res, function(){
-//       req.flash("success", "Your account has been successfully created, and a confirmation email sent to you. If you don't see the email, check your spam!")
-//       res.redirect('/matches');
-//     });
-//   });
-// });
+app.get('/confirmEmail/:URL', function(req,res){
+  User.findOne({"emailConfirmURL": req.params.URL}, function(err, foundUser){
+    if(err){
+      req.flash('error', 'Sorry there was an error verifying your account. Please contact WordUP if this keeps happening')
+      res.redirect('/');
+    }
+    foundUser.emailConfirmed = true;
+    foundUser.save();
+    req.flash("success", 'Your account has been verified. Welcome to WordUP! Please log in.')
+    res.redirect('/');
+  });
+});
 
 // User edit (edit profile)
 
 // Show edit form
 
-app.get('/users/:_id/edit', function(req, res){
+app.get('/users/:_id/edit', isLoggedIn, function(req, res){
   User.findById(req.params._id, function(err, foundUser){
     if(err){
       req.flash('error', "There was an error loading your profile.")
@@ -346,7 +267,7 @@ app.get('/users/:_id/edit', function(req, res){
 });
 
 // PUT edits
-app.put('/users/:_id', function(req, res){
+app.put('/users/:_id', isLoggedIn, function(req, res){
   upload(req, res, function (err){
     if (err) {
       console.log('error');
@@ -410,7 +331,7 @@ app.put('/users/:_id', function(req, res){
   });
 });
 
-app.post('/users/block', function(req,res){
+app.post('/users/block', isLoggedIn, function(req,res){
   var newBlockedUser = req.body.blockedUserId;
   User.findByIdAndUpdate(
     req.body.blockingUser,
@@ -432,7 +353,8 @@ app.post('/login', function(req, res, next) {
     if (err) { return next(err); }
     if (!user) {
       req.flash("error", "Invalid email address or password");
-      res.redirect('/'); return}
+      res.redirect('/'); return
+    }
 
     req.logIn(user, function(err) {
       User.findByIdAndUpdate(req.user._id, {lastLogin: Date.now()}, function(err, updatedUser){
@@ -456,7 +378,7 @@ app.get('/logout', function(req, res){
 
 // Delete User
 
-app.get('/deleteUser', function(req, res){
+app.get('/deleteUser', isLoggedIn, function(req, res){
   User.remove({_id: req.user._id}, function(err){
     if(err){
       console.log('Something went wrong');
@@ -479,7 +401,8 @@ app.get('/matches', isLoggedIn, function(req, res){
     req.session.query = {$and:
       [
         {learningLanguages: {$in: req.user.spokenLanguages}},
-        {_id: {$nin: [req.user.blockedUsers.split(","), req.user._id]}}
+        {_id: {$nin: [req.user.blockedUsers.split(","), req.user._id]}},
+        {profileComplete: {$ne: false}}
       ]
     }
   } else if(req.user.profileComplete) { // if user has spoken languages on their profile
@@ -487,7 +410,8 @@ app.get('/matches', isLoggedIn, function(req, res){
       [
         {learningLanguages: {$in: req.user.spokenLanguages}},
         {spokenLanguages: {$in: req.user.learningLanguages}},
-        {_id: {$nin: req.user._id}}
+        {_id: {$nin: req.user._id}},
+        {profileComplete: {$ne: false}}
       ]
     }
   } else { //if user profile is not complete...
@@ -512,6 +436,7 @@ app.post('/matches', isLoggedIn, function(req, res){
   req.session.query = {$and:
     [
       {_id: {$nin: req.session.loadedProfiles}},
+      {profileComplete: {$ne: false}},
       req.session.query
     ]
     }
@@ -550,7 +475,7 @@ app.post('/search', isLoggedIn, function(req,res){
   if((req.body.country).length > 0){
     req.session.query["$and"].push({ country: {$in: req.body.country.split(",") }});
   }
-  var query = User.find(req.session.query).sort({"lastLogin":-1}).limit(6);
+  var query = User.find({profileComplete: {$ne: false}}, req.session.query).sort({"lastLogin":-1}).limit(6);
   query.exec(function(err, foundUsers){
     if(err){
       console.log("error getting matches from database");
