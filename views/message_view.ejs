@@ -5,7 +5,7 @@
 </head>
 <body>
 
-  <div class="ui container">
+  <div class="ui container hide">
     <% if(error && error.length > 0){ %>
       <div class="ui red message" rolde="alert">
         <%= error %>
@@ -68,12 +68,16 @@
           <% messages.forEach(function(message, i){ %>
             <% if(message.recipient.username == otherUser){ %>
               <div class="msg-wrapper current-user">
+                <img src="<%= currentUser.photos[0] %>" class="currentUserPhoto" alt="a profile picture" />
                 <div class="msg msg-current-user">
                   <p><%= message.messageContent %></p>
                 </div>
               </div>
             <% } else { %>
               <div class="msg-wrapper other-user">
+                <% if(otherUserPhoto){ %>
+                  <img src="<%= otherUserPhoto %>" class="otherUserPhoto" alt="a profile picture" />
+                <% } %>
                 <div class="msg msg-other-user">
                   <p><%= message.messageContent %></p>
                 </div>

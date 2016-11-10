@@ -154,6 +154,8 @@ button {
   display: -ms-flexbox;
   display: flex;
   position: fixed;
+  top: 0;
+  left: 0;
   background-color: rgba(219,43,57,0.5);
   -webkit-box-pack: center;
       -ms-flex-pack: center;

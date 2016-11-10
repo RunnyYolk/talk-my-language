@@ -53,9 +53,9 @@ var upload = multer({storage: storage}).any('photos');
 
 //connect mongoDB
 // ========== For Local =============
-mongoose.connect("mongodb://localhost/tml");
+// mongoose.connect("mongodb://localhost/tml");
 // ========== For Heroku ============
-// mongoose.connect("mongodb://nick:1234@ds053176.mlab.com:53176/talkmylanguage");
+mongoose.connect("mongodb://nick:1234@ds053176.mlab.com:53176/talkmylanguage");
 mongoose.Promise = Promise;
 
 
@@ -100,7 +100,7 @@ function isLoggedIn(req, res, next){
   if(req.isAuthenticated()){
     return next();
   }
-  req.flash("error", "Please Log In or Sign Up");
+  req.flash("error", "Please log in or sign up");
   res.redirect('/');
 }
 
@@ -110,7 +110,7 @@ function checkConversationOwership (req, res, next) {
     if(req.isAuthenticated()){
             Conversation.findById(req.params._id, function(err, foundConversation){
                 if(err){
-                    req.flash('error', 'Error checking ownership of this conversation')
+                    req.flash('error', "We couldn't confirm who owns this conversation")
                     res.redirect("back");
                 } else {
                     // does user own the conversation?
@@ -129,7 +129,17 @@ function checkConversationOwership (req, res, next) {
 }
 
 function checkUserOwnership(req, res, next){
-  //Write some logic here to check if a user owns an account (for editing and deleting)
+  if(req.isAuthenticated()){
+    if(req.params._id == req.user._id) {
+      next();
+    } else {
+      req.flash("error", "Stop messing with other people's accounts!");
+      res.redirect('/matches')
+    }
+  } else {
+    req.flash("error", "You need to be logged in to do that")
+    res.redirect("back");
+  }
 }
 
 var connections = [];
@@ -147,8 +157,6 @@ function saveMessage(message, thread){
           conv.updated = Date.now();
           conv.messages.push(newMessage);
           conv.save();
-          console.log("convo saved line 138. Check new message pushed, new message for user and Date.now = " + Date.now());
-          console.log(conv)
           User.findByIdAndUpdate(message.recipient.id, {
             $addToSet: {updatedConversations: conv.id}
           }, function(err, updatedRecipient){
@@ -223,10 +231,10 @@ app.post('/signup', function(req, res){
         // send mail with defined transport object
         transporter.sendMail(mailOptions, function(error, info){
           if(error){
-            req.flash("error", "There was an error sending you an email, please try registering agian or contact WordUP if this keeps happening");
+            req.flash("error", "We tired to send you a confirmation email, but there was a problem. Please try registering again, or contact WordUP for help");
             res.redirect('/')
           }
-          req.flash("success", "Your account has been successfully created, and a confirmation email sent to you. If you don't see the email, check your spam!")
+          req.flash("success", "Your account has been successfully created, and a confirmation email has been sent to you. (If you don't see the email, check your spam!)")
           res.redirect('/matches');
         });
       });
@@ -255,10 +263,10 @@ app.get('/confirmEmail/:URL', function(req,res){
 
 // Show edit form
 
-app.get('/users/:_id/edit', isLoggedIn, function(req, res){
+app.get('/users/:_id/edit', isLoggedIn, checkUserOwnership, function(req, res){
   User.findById(req.params._id, function(err, foundUser){
     if(err){
-      req.flash('error', "There was an error loading your profile.")
+      req.flash('error', "There was an error loading your profile. Please contact WordUP if this keeps happening")
       res.redirect("back");
     } else {
       res.render("edit", {user_id: req.params._id, user: foundUser});
@@ -267,7 +275,7 @@ app.get('/users/:_id/edit', isLoggedIn, function(req, res){
 });
 
 // PUT edits
-app.put('/users/:_id', isLoggedIn, function(req, res){
+app.put('/users/:_id', isLoggedIn, checkUserOwnership, function(req, res){
   upload(req, res, function (err){
     if (err) {
       console.log('error');
@@ -341,7 +349,7 @@ app.post('/users/block', isLoggedIn, function(req,res){
       if(err){
         console.log("Error blocking user " + err);
       } else {
-        req.flash("success", "You Blocked" + req.body.blockedUserUsername);
+        req.flash("success", "You have blocked" + req.body.blockedUserUsername);
         res.redirect("/matches");
       }
     }
@@ -386,7 +394,7 @@ app.get('/deleteUser', isLoggedIn, function(req, res){
       req.flash('error', 'There was an error deleting your account. Please contact WordUP to have your account deleted.')
       res.redirect('/matches');
     } else {
-      req.flash('success', 'Profile deleted. Bye... :(')
+      req.flash('success', 'You profile has been deleted. Bye... :(')
       res.redirect('/')
     }
   })
@@ -397,25 +405,34 @@ app.get('/deleteUser', isLoggedIn, function(req, res){
 // Get Matches
 app.get('/matches', isLoggedIn, function(req, res){
   req.session.loadedProfiles = [];
-  if(req.user.blockedUsers){
-    req.session.query = {$and:
-      [
-        {learningLanguages: {$in: req.user.spokenLanguages}},
-        {_id: {$nin: [req.user.blockedUsers.split(","), req.user._id]}},
-        {profileComplete: {$ne: false}}
-      ]
-    }
-  } else if(req.user.profileComplete) { // if user has spoken languages on their profile
+  if(req.user.blockedUsers && req.user.blockedUsers.length > 0){
+    console.log('blocked users')
     req.session.query = {$and:
       [
         {learningLanguages: {$in: req.user.spokenLanguages}},
         {spokenLanguages: {$in: req.user.learningLanguages}},
-        {_id: {$nin: req.user._id}},
-        {profileComplete: {$ne: false}}
+        {_id: {$nin: req.user.blockedUsers.split(",")}},
+        {_id: {$ne: req.user._id}},
+        {profileComplete:{$ne:false}}
+      ]
+    }
+  } else if(req.user.profileComplete) { // if user has spoken languages on their profile
+    console.log('blocked users')
+    req.session.query = {$and:
+      [
+        {learningLanguages: {$in: req.user.spokenLanguages}},
+        {spokenLanguages: {$in: req.user.learningLanguages}},
+        {_id: {$ne: req.user._id}},
+        {profileComplete: {$ne : false}}
       ]
     }
   } else { //if user profile is not complete...
-    req.session.query = {}
+    req.session.query = {$and:
+      [
+        {_id: {$ne: req.user._id}},
+        {profileComplete: {$ne : false}}
+      ]
+    }
   }
   var q = User.find(req.session.query).sort({"lastLogin":-1}).limit(6)
   q.exec(function(err, foundUsers){
@@ -436,7 +453,7 @@ app.post('/matches', isLoggedIn, function(req, res){
   req.session.query = {$and:
     [
       {_id: {$nin: req.session.loadedProfiles}},
-      {profileComplete: {$ne: false}},
+      {profileComplete:{$ne:false}},
       req.session.query
     ]
     }
@@ -475,7 +492,7 @@ app.post('/search', isLoggedIn, function(req,res){
   if((req.body.country).length > 0){
     req.session.query["$and"].push({ country: {$in: req.body.country.split(",") }});
   }
-  var query = User.find({profileComplete: {$ne: false}}, req.session.query).sort({"lastLogin":-1}).limit(6);
+  var query = User.find({profileComplete:{$ne:false}}, req.session.query).sort({"lastLogin":-1}).limit(6);
   query.exec(function(err, foundUsers){
     if(err){
       console.log("error getting matches from database");
@@ -593,7 +610,7 @@ app.post('/messages', isLoggedIn, function(req, res){
     req.flash("success", "You sent a message!")
     res.redirect('/matches');
   } else {
-    req.flash("error", "Please complete your profile before sending messages to other users");
+    req.flash("error", "You need to complete your profile before sending messages to other users");
     res.redirect('/matches');
   }
 });
@@ -651,45 +668,50 @@ app.get('/messages', isLoggedIn, function(req, res){
       {"participants.user1.id" : req.user._id},
       {"participants.user2.id" : req.user._id} // find all conversations which
     ]                                          // current user is a part of
-  }, function(err, convos){                    // and keep them in 'convos'
-    if(err){
-      console.log('Error getting Convos ' + err)
+  }, function(err, convos){
+    if(!convos.length > 0) {
+      req.flash('error', "You don't have any messages to view yet.")
+      res.redirect('back');
     } else {
-      convos.forEach(function(cnv, i){
-        Message.findById(cnv.messages[cnv.messages.length -1], function(err, message){
-          if(err){
-            console.log('error getting message' + err)
-          } else {
-            cnv.lastMessage = message.messageContent
-            if(cnv.lastMessage.length > 50){
-              cnv.lastMessage = cnv.lastMessage.substring(0,49)+"...";
-            }
-            console.log('cnv.lastMessage');
-            console.log(cnv.lastMessage);
-          }
-        })
-        if(cnv.participants.user1.id == req.user._id){
-          ids.push(cnv.participants.user2.id); // If current user is convo participant
-        } else {                               // one, then push participant 2 into
-          ids.push(cnv.participants.user1.id); // ids array, and vis versa
-        }
-        ids.forEach(function(id, i){
-          User.findById(id, function(err, foundUser){
+      if(err){
+        console.log('Error getting Convos ' + err)
+      } else {
+        convos.forEach(function(cnv, i){
+          Message.findById(cnv.messages[cnv.messages.length -1], function(err, message){
             if(err){
-              console.log('err')
-              console.log(err)
-            } else if(foundUser){
-              var k = id
-              cnv.profilePic = foundUser.photos[0]
+              console.log('error getting message' + err)
+            } else {
+              cnv.lastMessage = message.messageContent
+              if(cnv.lastMessage.length > 50){
+                cnv.lastMessage = cnv.lastMessage.substring(0,49)+"...";
+              }
+              console.log('cnv.lastMessage');
+              console.log(cnv.lastMessage);
             }
-            if(i == (ids.length - 1)){
-              console.log('convos!!!!!!!')
-              console.log(convos)
-              res.render('messages', {convos: convos});
-            }
+          })
+          if(cnv.participants.user1.id == req.user._id){
+            ids.push(cnv.participants.user2.id); // If current user is convo participant
+          } else {                               // one, then push participant 2 into
+            ids.push(cnv.participants.user1.id); // ids array, and vis versa
+          }
+          ids.forEach(function(id, i){
+            User.findById(id, function(err, foundUser){
+              if(err){
+                console.log('err')
+                console.log(err)
+              } else if(foundUser){
+                var k = id
+                cnv.profilePic = foundUser.photos[0]
+              }
+              if(i == (ids.length - 1)){
+                console.log('convos!!!!!!!')
+                console.log(convos)
+                res.render('messages', {convos: convos});
+              }
+            });
           });
-        });
-      })
+        })
+      }
     }
   }).sort({"updated":-1});
 });
@@ -698,10 +720,24 @@ app.get('/messages', isLoggedIn, function(req, res){
 app.get('/messages/:_id', checkConversationOwership, function(req, res){
   var messages = [];
   var thread = req.params._id;
+  var otherUserId
+  var otherUserPhoto
   Conversation.findById(req.params._id).exec(function(err, conv){
     if(err){
       console.log("Error finding conversation " + err);
     } else {
+      if(conv.participants.user1.id == req.user._id) {
+        otherUserId = conv.participants.user2.id
+      } else if(conv.participants.user1.id == req.user._id) {
+        otherUserId = conv.participants.user2.id
+      }
+      User.findById(otherUserId).exec(function(err, foundUser){
+        if(err){
+          console.log('error finding user' + err)
+        } else {
+          otherUserPhoto = foundUser.photos[0];
+        }
+      })
       conv.messages.forEach(function(messageId, i){
         Message.findById(messageId).exec(function(err, msg){
           if(err){
@@ -718,7 +754,7 @@ app.get('/messages/:_id', checkConversationOwership, function(req, res){
                 console.log(err)
               }
             });
-            res.render('message_view', {thread: thread, messages: messages});
+            res.render('message_view', {thread: thread, messages: messages, otherUserPhoto: otherUserPhoto});
           }
         })
       })
@@ -727,8 +763,8 @@ app.get('/messages/:_id', checkConversationOwership, function(req, res){
 })
 
 // ======== For Heroku ========
-// server.listen(process.env.PORT || 80 , process.env.IP, function(){
+server.listen(process.env.PORT || 8080 , process.env.IP, function(){
 // ======== For Local =========
-server.listen(3000, process.env.IP, function(){
+// server.listen(3000, process.env.IP, function(){
   console.log('Fire it UP!');
 });
