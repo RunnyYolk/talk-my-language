@@ -21,6 +21,7 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "connect-flash": "^0.1.1",
+    "connect-mongo": "^1.3.2",
     "croppie": "^2.4.0",
     "ejs": "^2.5.2",
     "express": "^4.14.0",

@@ -30,7 +30,7 @@ var bodyParser     = require("body-parser"),
     nodemailer     = require('nodemailer'),
     randomstring   = require('randomstring'),
     config         = require('./config'),
-    MemoryStore    = require('session-memory-store')(session);
+    MongoStore     = require('connect-mongo')(session);
 
 const saltRounds = 10;
 const myPlaintextPassword = 'word up dogue';
@@ -80,7 +80,9 @@ app.use('/images', express.static(__dirname + '/writable'));
 // Passport Configuration
 app.use(require('express-session')({
   secret: 'Runny Yolk is 100% awesome',
-  store: new MemoryStore(),
+  store: new MongoStore(
+    {mongooseConnection: mongoose.connection, autoRemove: 'disabled'}
+  ),
   resave: false,
   saveUninitialized: false
 }));
@@ -385,30 +387,38 @@ app.post('/users/block', isLoggedIn, function(req,res){
 
 app.post('/login', function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
-    if (err) { return next(err); }
+    console.log('info');
+    console.log(info)
+    if (err) {
+      return next(err);
+    }
     if (!user) {
       req.flash("error", "Invalid email address or password");
       res.redirect('/');
       return;
     }
-
-    req.logIn(user, function(err) {
-      User.findByIdAndUpdate(req.user._id, {lastLogin: Date.now()}, function(err, updatedUser){
+      console.log('req')
+      console.log(req.user)
+      req.logIn(user, function(err) {
         if(err){
-          console.log('error finding / updating user')
+          console.log('err')
           console.log(err)
-        } else {
         }
+        User.findByIdAndUpdate(req.user._id, {lastLogin: Date.now()}, function(err, updatedUser){
+          if(err){
+            console.log('error finding / updating user')
+            console.log(err)
+          } else {
+          }
+        });
+        console.log("login")
+        if (err) {
+          return next(err);
+        }
+        res.redirect('/matches');
+        return;
       });
-      console.log("login")
-      if (err) {
-        return next(err);
-      }
-      console.log('MemoryStore');
-      console.log(MemoryStore);
-      res.redirect('/matches');
-      return;
-    });
+
   })(req, res, next);
 });
 
