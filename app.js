@@ -29,6 +29,7 @@ var bodyParser     = require("body-parser"),
     session        = require('express-session'),
     nodemailer     = require('nodemailer'),
     randomstring   = require('randomstring'),
+    config         = require('./config'),
     MemoryStore    = require('session-memory-store')(session);
 
 const saltRounds = 10;
@@ -46,8 +47,16 @@ var storage = multer.diskStorage({
   }
 });
 
-// // create reusable transporter object using the default SMTP transport
-var transporter = nodemailer.createTransport(process.env.SMTPS);
+// create reusable transporter object using the default SMTP transport
+var transporter = nodemailer.createTransport(('SMTP',{
+            host: config.email.host,
+            port: config.email.port,
+            auth: {
+                user: config.email.username,
+                pass: config.email.password
+            },
+        })
+    );
 
 var upload = multer({storage: storage}).any('photos');
 
@@ -55,7 +64,7 @@ var upload = multer({storage: storage}).any('photos');
 // ========== For Local =============
 // mongoose.connect("mongodb://localhost/tml");
 // ========== For Heroku ============
-mongoose.connect("mongodb://nick:1234@ds053176.mlab.com:53176/talkmylanguage");
+mongoose.connect("mongodb://" + config.db.username + ":" + config.db.password + "@ds149577.mlab.com:49577/wordup");
 mongoose.Promise = Promise;
 
 
@@ -96,12 +105,14 @@ function isLoggedIn(req, res, next){
   if(!req.user.emailConfirmed){
     req.flash("error", "You need to confirm your email address before you can access the site");
     res.redirect('/confirmEmail');
+    return;
   }
   if(req.isAuthenticated()){
     return next();
   }
   req.flash("error", "Please log in or sign up");
   res.redirect('/');
+  return;
 }
 
 // Middleware to check ownership of a conversation
@@ -112,6 +123,7 @@ function checkConversationOwership (req, res, next) {
                 if(err){
                     req.flash('error', "We couldn't confirm who owns this conversation")
                     res.redirect("back");
+                    return;
                 } else {
                     // does user own the conversation?
                     if(foundConversation.participants.user1.id == req.user._id || foundConversation.participants.user2.id == req.user._id) {
@@ -119,12 +131,14 @@ function checkConversationOwership (req, res, next) {
                     } else {
                         req.flash("error", "You are not a member of this conversation");
                         res.redirect("back");
+                        return;
                     }
                 }
             });
     } else {
         req.flash("error", "You need to be logged in to do that")
         res.redirect("back");
+        return;
     }
 }
 
@@ -134,11 +148,13 @@ function checkUserOwnership(req, res, next){
       next();
     } else {
       req.flash("error", "Stop messing with other people's accounts!");
-      res.redirect('/matches')
+      res.redirect('/matches');
+      return;
     }
   } else {
     req.flash("error", "You need to be logged in to do that")
     res.redirect("back");
+    return;
   }
 }
 
@@ -218,11 +234,12 @@ app.post('/signup', function(req, res){
     if(err){
       req.flash("error", err)
       res.redirect('/')
+      return;
     } else {
       passport.authenticate('local')(req, res, function(){
 
         let mailOptions = {
-        from: req.body.email, // sender address
+        from: 'wordup@nickturner.io', // sender address
         to: newUser.username, // list of receivers
         subject: 'WordUP! Please confirm your email address',
         text: 'Thanks for registering with WordUP.\n\rPlease follow this link to confirm your email address: \n\rhttp://localhost:3001/confirmEmail/' + newUser.emailConfirmURL
@@ -231,11 +248,16 @@ app.post('/signup', function(req, res){
         // send mail with defined transport object
         transporter.sendMail(mailOptions, function(error, info){
           if(error){
+            console.log('error sending email');
+            console.log(error);
             req.flash("error", "We tired to send you a confirmation email, but there was a problem. Please try registering again, or contact WordUP for help");
             res.redirect('/')
+            return;
+          } else {
+            req.flash("success", "Your account has been successfully created, and a confirmation email has been sent to you. (If you don't see the email, check your spam!)")
+            res.redirect('/confirmEmail');
+            return;
           }
-          req.flash("success", "Your account has been successfully created, and a confirmation email has been sent to you. (If you don't see the email, check your spam!)")
-          res.redirect('/matches');
         });
       });
     }
@@ -243,7 +265,7 @@ app.post('/signup', function(req, res){
 });
 
 app.get('/confirmEmail', function(req, res){ // If user's email isn't confirmed they're redirected here
-  res.send('Please check your emails to finish registration.')
+  res.render('confirmEmail')
 });
 
 app.get('/confirmEmail/:URL', function(req,res){
@@ -251,11 +273,13 @@ app.get('/confirmEmail/:URL', function(req,res){
     if(err){
       req.flash('error', 'Sorry there was an error verifying your account. Please contact WordUP if this keeps happening')
       res.redirect('/');
+      return;
     }
     foundUser.emailConfirmed = true;
     foundUser.save();
     req.flash("success", 'Your account has been verified. Welcome to WordUP! Please log in.')
     res.redirect('/');
+    return;
   });
 });
 
@@ -268,6 +292,7 @@ app.get('/users/:_id/edit', isLoggedIn, checkUserOwnership, function(req, res){
     if(err){
       req.flash('error', "There was an error loading your profile. Please contact WordUP if this keeps happening")
       res.redirect("back");
+      return;
     } else {
       res.render("edit", {user_id: req.params._id, user: foundUser});
     }
@@ -334,6 +359,7 @@ app.put('/users/:_id', isLoggedIn, checkUserOwnership, function(req, res){
         console.log(err);
       } else {
         res.redirect('/matches');
+        return;
       }
     });
   });
@@ -351,6 +377,7 @@ app.post('/users/block', isLoggedIn, function(req,res){
       } else {
         req.flash("success", "You have blocked" + req.body.blockedUserUsername);
         res.redirect("/matches");
+        return;
       }
     }
   );
@@ -361,7 +388,8 @@ app.post('/login', function(req, res, next) {
     if (err) { return next(err); }
     if (!user) {
       req.flash("error", "Invalid email address or password");
-      res.redirect('/'); return
+      res.redirect('/');
+      return;
     }
 
     req.logIn(user, function(err) {
@@ -373,8 +401,13 @@ app.post('/login', function(req, res, next) {
         }
       });
       console.log("login")
-      if (err) { return next(err); }
-      return res.redirect('/matches');
+      if (err) {
+        return next(err);
+      }
+      console.log('MemoryStore');
+      console.log(MemoryStore);
+      res.redirect('/matches');
+      return;
     });
   })(req, res, next);
 });
@@ -382,6 +415,7 @@ app.post('/login', function(req, res, next) {
 app.get('/logout', function(req, res){
     req.logout();
     res.redirect("/");
+    return;
 });
 
 // Delete User
@@ -393,9 +427,11 @@ app.get('/deleteUser', isLoggedIn, function(req, res){
       console.log(err)
       req.flash('error', 'There was an error deleting your account. Please contact WordUP to have your account deleted.')
       res.redirect('/matches');
+      return;
     } else {
       req.flash('success', 'You profile has been deleted. Bye... :(')
       res.redirect('/')
+      return;
     }
   })
 })
@@ -406,7 +442,6 @@ app.get('/deleteUser', isLoggedIn, function(req, res){
 app.get('/matches', isLoggedIn, function(req, res){
   req.session.loadedProfiles = [];
   if(req.user.blockedUsers && req.user.blockedUsers.length > 0){
-    console.log('blocked users')
     req.session.query = {$and:
       [
         {learningLanguages: {$in: req.user.spokenLanguages}},
@@ -417,7 +452,6 @@ app.get('/matches', isLoggedIn, function(req, res){
       ]
     }
   } else if(req.user.profileComplete) { // if user has spoken languages on their profile
-    console.log('blocked users')
     req.session.query = {$and:
       [
         {learningLanguages: {$in: req.user.spokenLanguages}},
@@ -437,13 +471,14 @@ app.get('/matches', isLoggedIn, function(req, res){
   var q = User.find(req.session.query).sort({"lastLogin":-1}).limit(6)
   q.exec(function(err, foundUsers){
     if(err){
-      console.log("error getting matches from database");
-      console.log(err);
+      req.flash("error", "There was an error getting other users' information. Please contact WordUP if this keeps happening.")
+      res.redirect("/");
+      return;
     } else {
       foundUsers.forEach(function(user){
         req.session.loadedProfiles.push(user._id);
+        res.render('matches', {users:foundUsers});
       });
-      res.render('matches', {users:foundUsers});
     }
   });
 });
@@ -485,14 +520,17 @@ app.post('/search', isLoggedIn, function(req,res){
   req.session.query['$and']=[]; // filter the search by any criteria given by the user
   if((req.body.learninglanguages).length > 0){ // if the criteria has a value or values
     req.session.query["$and"].push({ learningLanguages: {$in: req.body.learninglanguages.split(",") }}); // add to the query object
+    console.log('523')
   }
   if((req.body.spokenlanguages).length > 0){
     req.session.query["$and"].push({ spokenLanguages: {$in: req.body.spokenlanguages.split(",") }});
+    console.log('527')
   }
   if((req.body.country).length > 0){
     req.session.query["$and"].push({ country: {$in: req.body.country.split(",") }});
+    console.log('531')
   }
-  var query = User.find({profileComplete:{$ne:false}}, req.session.query).sort({"lastLogin":-1}).limit(6);
+  var query = User.find({$and: [{profileComplete:{$ne:false}}, req.session.query]}).sort({"lastLogin":-1}).limit(6);
   query.exec(function(err, foundUsers){
     if(err){
       console.log("error getting matches from database");
@@ -514,6 +552,7 @@ app.get('/users/:_id/view', isLoggedIn, function(req, res){
     if(err){
       req.flash("error", "Sorry, there was an error finding that user")
       res.redirect("back");
+      return;
     } else if(req.user._id == req.params._id) {
       res.render('viewOwn', {user: foundUser});
     } else {
@@ -609,9 +648,11 @@ app.post('/messages', isLoggedIn, function(req, res){
     });
     req.flash("success", "You sent a message!")
     res.redirect('/matches');
+    return;
   } else {
     req.flash("error", "You need to complete your profile before sending messages to other users");
     res.redirect('/matches');
+    return;
   }
 });
 
@@ -655,6 +696,7 @@ app.post('/messages/:_id', isLoggedIn, function(req, res){
         }
       });
       res.redirect('back');
+      return;
     }
   });
 });
@@ -672,6 +714,7 @@ app.get('/messages', isLoggedIn, function(req, res){
     if(!convos.length > 0) {
       req.flash('error', "You don't have any messages to view yet.")
       res.redirect('back');
+      return;
     } else {
       if(err){
         console.log('Error getting Convos ' + err)
@@ -762,9 +805,9 @@ app.get('/messages/:_id', checkConversationOwership, function(req, res){
   })
 })
 
-// ======== For Heroku ========
-server.listen(process.env.PORT || 8080 , process.env.IP, function(){
+// ======== For Production ========
+// server.listen(process.env.PORT || 8080 , process.env.IP, function(){
 // ======== For Local =========
-// server.listen(3000, process.env.IP, function(){
+server.listen(3000, process.env.IP, function(){
   console.log('Fire it UP!');
 });

@@ -4,7 +4,6 @@
 
 </head>
 <body>
-
   <div class="ui container hide">
     <% if(error && error.length > 0){ %>
       <div class="ui red message" rolde="alert">
@@ -17,23 +16,24 @@
       </div>
     <% } %>
   </div>
-
-  <div class="ui fixed inverted secondary menu navbar page">
-    <a class="item">
-      <span class="t">Word</span><span class="ml">UP</span>
-    </a>
-    <a class="item" href="/messages">
-      <span>Messages</span>
-      <% if(currentUser.updatedConversations.length > 0) { %>
-        <div class="newMessages">
-          <span id="numNewMsgs"><%= currentUser.updatedConversations.length %></span>
-        </div>
-      <% } %>
-    </a>
-    <a class="item" href="/matches">
-      <span>Matches</span>
-    </a>
-    <div class="menu-content-right">
+  <div class="nav-bar">
+    <div class="nav-bar left">
+      <a class="item">
+        <span class="t">Word</span><span class="ml">UP</span>
+      </a>
+      <a class="item" href="/messages">
+        <span>Messages</span>
+        <% if(currentUser.updatedConversations.length > 0) { %>
+          <div class="newMessages">
+            <span id="numNewMsgs"><%= currentUser.updatedConversations.length %></span>
+          </div>
+        <% } %>
+      </a>
+      <a class="item" href="/matches">
+        <span>Matches</span>
+      </a>
+    </div>
+    <div class="nav-bar right">
       <a class="search-button" href="/search">
         <span class="search-icon"></span>
       </a>
@@ -49,7 +49,7 @@
   </div>
 
   <div class="title-wrapper">
-    <div class="header-wrapper">
+    <div class="title">
       <h1>Find Users</h1>
     </div>
   </div>
@@ -604,7 +604,7 @@
           </div>
         </div>
       </div>
-      <button class="ui button" type="submit" name="submit">Search!</button>
+      <button class="ui button" type="submit"  id="submit-btn" name="submit" disabled>Search!</button>
       <button class="ui reset button" type="reset" name="reset">Reset Form</button>
     </form>
   </div>

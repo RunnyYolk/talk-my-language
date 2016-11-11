@@ -21,10 +21,10 @@ $(document).ready(function(){
 
   var setLayout = function(){
     if($(this).width() < 992){
-      $("#profile-container").attr("class", "sixteen wide column")
+      $("#profile-message-container").attr("class", "sixteen wide column")
       $("#image-container").attr("class", "sixteen wide column")
     } else {
-      $("#profile-container").attr("class", "ten wide column")
+      $("#profile-message-container").attr("class", "ten wide column")
       $("#image-container").attr("class", "six wide column")
     }
   }

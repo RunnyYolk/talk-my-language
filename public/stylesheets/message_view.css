@@ -4,29 +4,6 @@ body, html {
   overflow: hidden;
 }
 
-.title-wrapper {
-  background-color: #ED6A5A;
-  height: 100px;
-  margin-top: 70px;
-}
-
-.header-wrapper {
-  margin: 0 190px;
-}
-
-h1 {
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
-  letter-spacing: .2em;
-  font-size: 3.5em;
-  color: white;
-  margin: 0;
-  margin-top: -14px;
-  margin-left: -6px;
-  line-height: 100px;
-  text-transform: uppercase;
-}
-
 .main-wrapper {
   display: -webkit-box;
   display: -ms-flexbox;

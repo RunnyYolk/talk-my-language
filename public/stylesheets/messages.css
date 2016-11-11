@@ -2,13 +2,6 @@ body, html {
   background-color: #f8f8fb;
 }
 
-.title-wrapper {
-  background-color: #ED6A5A;
-  height: 100px;
-  margin-top: 70px;
-  margin-bottom: 40px;
-}
-
 .header-wrapper {
   margin: 0 190px;
 }
@@ -43,7 +36,7 @@ h1 {
           flex-direction: column;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
-  width: 510px;
+  max-width: 510px;
   margin-top: 55px;
 }
 
@@ -166,10 +159,14 @@ a:hover {
   }
 
   .messages-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin: 0 auto;
   }
 
   .convo-wrapper {
+    /*margin: 0 auto;*/
     width: 90vw;
   }
 }

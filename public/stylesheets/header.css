@@ -11,21 +11,46 @@
   font-size: 1.7em;
 }
 
-.ui.inverted.secondary.menu {
+.nav-bar {
   background-color: #313B72;
-  height: 70px;
+  min-height: 70px;
   margin-bottom: 0;
-
+  display: flex;
 }
 
-.ui.inverted.secondary.menu span {
+.nav-bar.left {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  flex-basis: 50vw;
+  display: flex;
+  padding-left: 20px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.nav-bar.right {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  flex-basis: 50vw;
+  display: flex;
+  padding-right: 20px;
+  align-items: center;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+
+.item {
+  margin: 0 15px;
+}
+
+.nav-bar span {
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   color: white;
   font-size: 1.7em;
 }
 
-.ui.inverted.secondary.menu .t {
+.nav-bar .t {
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   font-size: 2em;
@@ -34,7 +59,7 @@
   margin-bottom: -6px;
 }
 
-.ui.inverted.secondary.menu .ml {
+.nav-bar .ml {
   font-family: 'Galada', cursive;
   text-transform: capitalize;
   font-size: 2em;
@@ -68,16 +93,36 @@
   height: 30px;
 }
 
-#userName, #logout {
-  float: right;
+.title-wrapper {
+  background-color: #ED6A5A;
+  min-height: 100px;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.menu-content-right {
-  margin-left: auto;
-  margin-right: 50px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+.header-wrapper {
+  display: block;
+  width: 100%;
+}
+
+.title h1 {
+font-family: 'Open Sans', sans-serif;
+font-weight: 700;
+letter-spacing: .2em;
+font-size: 3.5em;
+color: white;
+text-align: center;
+margin: 0;
+width: 100%;
+line-height: 100px;
+text-transform: uppercase;
+/*white-space: nowrap;*/
+}
+
+#userName, #logout {
+  float: right;
 }
 
 .ui .message {
@@ -163,4 +208,35 @@
   font-weight: 300;
   font-size: 14px;
   color: rgba(255,255,255,0.85);
+}
+
+@media screen and (max-width: 900px) {
+  .nav-bar {
+    flex-wrap: wrap;
+    /*height: auto;*/
+    font-size: calc(7px + .8vw);
+  }
+
+  .nav-bar.left {
+    flex-basis: 100vw;
+    justify-content: space-around;
+    margin: 0 auto;
+  }
+
+  .nav-bar.right {
+    flex-basis: 100vw;
+    justify-content: space-around;
+    margin: 0 auto;
+  }
+
+  .title-wrapper {
+    justify-content: center;
+  }
+
+  .title h1 {
+    text-align: center;
+    margin: 0 auto;
+    line-height: 45px;
+  }
+
 }

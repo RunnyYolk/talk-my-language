@@ -1,37 +1,29 @@
 body {
   background:
     -webkit-linear-gradient(
-      rgba(105,112,152,0.7),
-      rgba(105,112,152,0.7)
+      rgba(63,118,156,0.8),
+      rgba(63,118,156,0.8)
       ),
     url('/stylesheets/front.jpg') no-repeat center center fixed ;
   background:
     linear-gradient(
-      rgba(105,112,152,0.7),
-      rgba(105,112,152,0.7)
+      rgba(63,118,156,0.8),
+      rgba(63,118,156,0.8)
       ),
     url('/stylesheets/front.jpg') no-repeat center center fixed ;
     background-size: cover;
 }
 
-.main-wrapper {
+/*.main-wrapper {
   width: 100vw;
-  height: 100vh;
-  align-items: center;
-  display: -webkit-box;
-  display: -ms-flexbox;
+  height: 200vh;
+}*/
+
+.title-wrapper {
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
 }
 
 h1 {
-  position: relative;
   text-align: center;
   color: white;
   font-size: 5em;
@@ -58,7 +50,6 @@ p {
 }
 
 .tagline {
-  position: relative;
   font-family: "HelveticaNeue-Ultra-Light", "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-size: 3em;
   letter-spacing: 4px;
@@ -75,9 +66,9 @@ p {
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  height: 100vh;
+  min-height: 100vh;
+  /*height: 100vh;*/
   margin: auto;
-  /*background-color: rgba(0,0,0,0.2);*/
 }
 
 input {
@@ -107,11 +98,12 @@ input {
 }
 
 .checkbox p {
+  font-size: 15px;
   margin-bottom: 4vh;
 }
 
 .tos, .priv-pol {
-  border-bottom: 2px solid rgba(255,255,255,0.9);
+  border-bottom: 1px solid rgba(255,255,255,0.9);
   cursor: pointer;
 }
 
@@ -124,7 +116,7 @@ input {
 button {
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
-  font-size: 25px;
+  font-size: 20px;
   letter-spacing: .1em;
   color: white;
   background: none;
@@ -590,7 +582,8 @@ option {
 /* Haruki */
 
 .input--haruki {
-	margin: 4em 1em 1em;
+	margin: 1em;
+  margin-top: 35px;
 }
 
 .input__field--haruki {
@@ -693,4 +686,38 @@ select:-webkit-autofill:focus {
 
 input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px #4ca7b3 inset !important;
+}
+
+@media screen and (max-width: 800px) {
+
+  h1 {
+    padding-top: 15px;
+    font-size: calc(20px + 7vw);
+  }
+
+  .form {
+    margin: 0;
+    width: 100%;
+  }
+
+  .tagline {
+    font-size: calc(10px + 2.5vw);
+    width: 100%;
+  }
+
+  .button-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content:space-around;
+  }
+
+  button {
+    margin: 0;
+  }
+
+  .checkbox p {
+    margin: 15px;
+    font-size: calc(10px + .7vw);
+  }
+
 }

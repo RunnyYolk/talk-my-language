@@ -1,0 +1,37 @@
+<% include ../partials/header %>
+<link rel="stylesheet" type="text/css" href="/stylesheets/confirmEmail.css">
+
+</head>
+<body>
+
+  <div class="ui container hide">
+    <% if(error && error.length > 0){ %>
+      <div class="ui red message" rolde="alert">
+        <%= error %>
+      </div>
+    <% } %>
+    <% if(success && success.length > 0){ %>
+      <div class="ui green message" rolde="alert">
+        <%= success %>
+      </div>
+    <% } %>
+  </div>
+
+    <div class="main-wrapper">
+      <form class="form" action="/signup" method="post">
+        <div class="title-wrapper">
+          <h1><span class="talk">Word</span> <span class="ml">UP</span></h1>
+          <p class="tagline">
+            We sent you an email! Please follow the link to complete your registration.
+          </p>
+        </div>
+        <div class="checkbox">
+          <p>By using this site you agree to the <span class="tos">terms of service</span> and <span class="priv-pol">privacy policy</span></p>
+        </div>
+
+      </form>
+    </div>
+  <script src="/scripts/index.js"></script>
+  <script src="/scripts/classie.js"></script>
+
+<% include ../partials/footer %>
